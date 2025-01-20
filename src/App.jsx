@@ -1,5 +1,18 @@
+import { ThemeProvider } from "@emotion/react";
+import { lightTheme } from "./theme/LightTheme";
+import { CssBaseline } from "@mui/material";
+import { BrowserRouter } from "react-router-dom";
+import Routers from "./router/Routers";
+
 export default function App() {
   return (
-    <h1 className="text-3xl font-bold underline text-center">Hello world!</h1>
+    <>
+      <ThemeProvider theme={lightTheme}>
+        <CssBaseline />
+        <BrowserRouter>
+          <Routers />
+        </BrowserRouter>
+      </ThemeProvider>
+    </>
   );
 }
