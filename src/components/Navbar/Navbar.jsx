@@ -20,6 +20,7 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Skeleton,
 } from "@mui/material";
 
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -38,6 +39,9 @@ import NotificationAddIcon from "@mui/icons-material/NotificationAdd";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import GroupsIcon from "@mui/icons-material/Groups";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutAction } from "../../redux/Auth/Action";
 
 const pages = [
   {
@@ -112,6 +116,11 @@ function Navbar() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [openStudentOption, setOpenStudentOption] = React.useState(false);
   const [openTeacherOption, setOpenTeacherOption] = React.useState(false);
+  const navigate = useNavigate();
+  const { authReducer } = useSelector((store) => store);
+  const dispatch = useDispatch();
+  const isAuthLoading = authReducer.isLoading;
+  const [isDelayedLoading, setIsDelayedLoading] = React.useState(true);
 
   const handleOpenMenuStudent = (event) => {
     setAnchorElStudent(event.currentTarget);
@@ -137,6 +146,29 @@ function Navbar() {
     setAnchorElUser(null);
   };
 
+  const handleNavigateToLoginPage = () => {
+    handleCloseUserMenu();
+    navigate("/account/login");
+  };
+
+  const handleLogout = () => {
+    dispatch(logoutAction());
+    setAnchorElUser(null);
+    navigate("/account/login");
+  };
+
+  // handle loading :
+  React.useEffect(() => {
+    if (isAuthLoading) {
+      setIsDelayedLoading(true);
+    } else {
+      const timer = setTimeout(() => {
+        setIsDelayedLoading(false);
+      }, 800);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isAuthLoading]);
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -147,7 +179,8 @@ function Navbar() {
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            onClick={() => navigate("/")}
+            className="cursor-pointer"
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -344,14 +377,21 @@ function Navbar() {
           >
             UTE
           </Typography>
+
           {/* END LOGO ON SMALL SCREEN*/}
 
           {/* START AVATAR SETTING */}
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                {false ? (
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                {authReducer.user && isDelayedLoading ? (
+                  <Skeleton variant="circular" height={40} width={40} />
+                ) : authReducer.user && !isDelayedLoading ? (
+                  <Avatar
+                    className="uppercase"
+                    alt={authReducer.user?.fullName}
+                    src={authReducer.user?.image}
+                  />
                 ) : (
                   <AccountCircleIcon className="text-white" fontSize="large" />
                 )}
@@ -373,16 +413,23 @@ function Navbar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {false
+              {authReducer.user
                 ? loggedInSettings.map((setting) => (
-                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                    <MenuItem
+                      key={setting}
+                      onClick={
+                        setting === "Đăng xuất"
+                          ? handleLogout
+                          : handleCloseUserMenu
+                      }
+                    >
                       <Typography sx={{ textAlign: "center" }}>
                         {setting}
                       </Typography>
                     </MenuItem>
                   ))
                 : nonLoggedInSettings.map((setting) => (
-                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                    <MenuItem key={setting} onClick={handleNavigateToLoginPage}>
                       <Typography sx={{ textAlign: "center" }}>
                         {setting}
                       </Typography>
