@@ -17,6 +17,7 @@ const authReducer = (state = initialState, action) => {
     case actionTypes.LOGIN_USER_REQUEST:
     case actionTypes.REFRESH_TOKEN_REQUEST:
     case actionTypes.GET_USER_INFO_REQUEST:
+    case actionTypes.UPDATE_USER_PROFILE_REQUEST:
       return {
         ...state,
         isLoading: true,
@@ -40,6 +41,7 @@ const authReducer = (state = initialState, action) => {
       };
 
     case actionTypes.GET_USER_INFO_SUCCESS:
+    case actionTypes.UPDATE_USER_PROFILE_SUCCESS:
       return {
         ...state,
         isLoading: false,
@@ -63,6 +65,7 @@ const authReducer = (state = initialState, action) => {
     case actionTypes.LOGIN_USER_FAILURE:
     case actionTypes.REFRESH_TOKEN_FAILURE:
     case actionTypes.GET_USER_INFO_FAILURE:
+    case actionTypes.UPDATE_USER_PROFILE_FAILURE:
       return {
         ...state,
         isLoading: false,

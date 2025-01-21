@@ -112,3 +112,25 @@ export const clearAuthSuccess = () => async (dispatch) => {
     console.log(error);
   }
 };
+
+export const updateUserProfileAction = (requestData) => async (dispatch) => {
+  dispatch({ type: actionTypes.UPDATE_USER_PROFILE_REQUEST });
+
+  try {
+    const response = await axiosAPI.put(
+      "/accounts/profile",
+      requestData.userProfileData
+    );
+
+    dispatch({
+      type: actionTypes.UPDATE_USER_PROFILE_SUCCESS,
+      payload: response.data,
+    });
+
+    if (!requestData.isAuthLoading) requestData.navigate("/user/profile");
+
+    console.log("UPDATE PROFILE SUCCESS");
+  } catch (error) {
+    dispatch({ type: actionTypes.UPDATE_USER_PROFILE_FAILURE, payload: error });
+  }
+};

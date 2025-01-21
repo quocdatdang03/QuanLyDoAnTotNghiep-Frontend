@@ -157,6 +157,11 @@ function Navbar() {
     navigate("/account/login");
   };
 
+  const handleNavigateToProfile = () => {
+    setAnchorElUser(null);
+    navigate("/user/profile");
+  };
+
   // handle loading :
   React.useEffect(() => {
     if (isAuthLoading) {
@@ -387,11 +392,19 @@ function Navbar() {
                 {authReducer.user && isDelayedLoading ? (
                   <Skeleton variant="circular" height={40} width={40} />
                 ) : authReducer.user && !isDelayedLoading ? (
-                  <Avatar
-                    className="uppercase"
-                    alt={authReducer.user?.fullName}
-                    src={authReducer.user?.image}
-                  />
+                  authReducer.user?.image ? (
+                    <img
+                      className="rounded-full w-10 h-10"
+                      src={authReducer.user?.image}
+                      alt="Avatar"
+                    />
+                  ) : (
+                    <Avatar
+                      className="uppercase"
+                      alt={authReducer.user?.fullName}
+                      src={authReducer.user?.image}
+                    />
+                  )
                 ) : (
                   <AccountCircleIcon className="text-white" fontSize="large" />
                 )}
@@ -420,7 +433,7 @@ function Navbar() {
                       onClick={
                         setting === "Đăng xuất"
                           ? handleLogout
-                          : handleCloseUserMenu
+                          : handleNavigateToProfile
                       }
                     >
                       <Typography sx={{ textAlign: "center" }}>

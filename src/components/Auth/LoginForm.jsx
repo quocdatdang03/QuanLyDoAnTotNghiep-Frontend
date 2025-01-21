@@ -168,12 +168,9 @@ const LoginForm = () => {
             variant="contained"
             sx={{ paddingY: 1 }}
             type="submit"
+            loading={isDelayedLoading}
           >
-            {isDelayedLoading ? (
-              <CircularProgress style={{ color: "white" }} />
-            ) : (
-              "Đăng Nhập"
-            )}
+            Đăng Nhập
           </Button>
           <p className="text-sm font-light text-gray-500 dark:text-gray-400">
             Bạn chưa có tài khoản?
