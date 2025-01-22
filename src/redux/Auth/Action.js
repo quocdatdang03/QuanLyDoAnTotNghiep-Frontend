@@ -134,3 +134,62 @@ export const updateUserProfileAction = (requestData) => async (dispatch) => {
     dispatch({ type: actionTypes.UPDATE_USER_PROFILE_FAILURE, payload: error });
   }
 };
+
+/******************  Handle Reset password *******************/
+
+export const sendResetPasswordEmailAction =
+  (requestData) => async (dispatch) => {
+    dispatch({ type: actionTypes.SEND_RESET_PASSWORD_EMAIL_REQUEST });
+
+    try {
+      const response = await axiosAPI.post(
+        `/auth/forgotPassword?email=${requestData.email}`
+      );
+
+      dispatch({
+        type: actionTypes.SEND_RESET_PASSWORD_EMAIL_SUCCESS,
+        payload: {
+          resetPasswordEmail: requestData.email,
+          messageSuccess: response.data,
+        },
+      });
+
+      if (!requestData.isAuthLoading && response.data)
+        requestData.navigate("/account/reset-password");
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      console.log(errorMessage);
+      dispatch({
+        type: actionTypes.SEND_RESET_PASSWORD_EMAIL_FAILURE,
+        payload: errorMessage,
+      });
+    }
+  };
+
+export const resetPasswordAction = (requestData) => async (dispatch) => {
+  dispatch({ type: actionTypes.RESET_PASSWORD_REQUEST });
+
+  try {
+    const response = await axiosAPI.put(
+      "/auth/resetPassword",
+      requestData.resetPasswordData
+    );
+
+    dispatch({
+      type: actionTypes.RESET_PASSWORD_SUCCESS,
+      payload: response.data,
+    });
+
+    if (!requestData.isAuthLoading && response.data)
+      requestData.navigate("/account/login");
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || error.message;
+    console.log(errorMessage);
+    dispatch({
+      type: actionTypes.RESET_PASSWORD_FAILURE,
+      payload: errorMessage,
+    });
+  }
+};
+
+/****************** End Handle Reset password *******************/

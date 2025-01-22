@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 // import RegisterForm from "./RegisterForm";
 import LoginForm from "./LoginForm";
+import ForgotPasswordForm from "./ForgotPasswordForm";
+import ResetPasswordForm from "./ResetPasswordForm";
 // import VerificationForm from "./VerificationForm";
 // import ForgotPasswordForm from "./ForgotPasswordForm";
 // import SendEmailForgotPasswordSuccess from "./SendEmailForgotPasswordSuccess";
@@ -41,6 +43,10 @@ const Auth = () => {
       </div>
       {/* {location.pathname === "/account/register" && <RegisterForm />} */}
       {location.pathname === "/account/login" && <LoginForm />}
+      {location.pathname === "/account/forgot-password" && (
+        <ForgotPasswordForm />
+      )}
+      {location.pathname === "/account/reset-password" && <ResetPasswordForm />}
       {/* {location.pathname === "/account/verify-email" && <VerificationForm />}
       {location.pathname === "/account/forgot-password" && (
         <ForgotPasswordForm />

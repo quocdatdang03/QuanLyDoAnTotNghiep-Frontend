@@ -17,7 +17,11 @@ import { Link, useNavigate } from "react-router-dom";
 //   resendCodeAction,
 // } from "../../Redux/Auth/Action";
 import { loginFormValidation } from "./validation/loginFormValidation";
-import { clearAuthError, loginUserAction } from "../../redux/Auth/Action";
+import {
+  clearAuthError,
+  clearAuthSuccess,
+  loginUserAction,
+} from "../../redux/Auth/Action";
 
 const initialValues = {
   email: "",
@@ -77,6 +81,23 @@ const LoginForm = () => {
       return () => clearTimeout(timer);
     }
   }, [isAuthLoading]);
+
+  // handle close message success or error:
+  useEffect(() => {
+    let timer;
+    if (authReducer.success) {
+      timer = setTimeout(() => {
+        dispatch(clearAuthSuccess());
+      }, 5000);
+    }
+    if (authReducer.error) {
+      timer = setTimeout(() => {
+        dispatch(clearAuthError());
+      }, 5000);
+    }
+
+    return () => clearTimeout(timer);
+  }, [authReducer.success, authReducer.error, dispatch]);
   return (
     <div className="w-full rounded lg shadow md:mt-0 sm:max-w-md xl:p-0">
       <div className="w-full p-6 space-y-4 md:space-y-6 sm:p-8 rounded shadow-md">

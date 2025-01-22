@@ -18,6 +18,8 @@ const authReducer = (state = initialState, action) => {
     case actionTypes.REFRESH_TOKEN_REQUEST:
     case actionTypes.GET_USER_INFO_REQUEST:
     case actionTypes.UPDATE_USER_PROFILE_REQUEST:
+    case actionTypes.SEND_RESET_PASSWORD_EMAIL_REQUEST:
+    case actionTypes.RESET_PASSWORD_REQUEST:
       return {
         ...state,
         isLoading: true,
@@ -48,6 +50,23 @@ const authReducer = (state = initialState, action) => {
         user: action.payload,
       };
 
+    case actionTypes.SEND_RESET_PASSWORD_EMAIL_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        error: null,
+        resetPasswordEmail: action.payload.resetPasswordEmail,
+        success: action.payload.messageSuccess,
+      };
+
+    case actionTypes.RESET_PASSWORD_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        error: null,
+        success: action.payload,
+      };
+
     case actionTypes.LOGOUT:
       return initialState;
 
@@ -66,6 +85,8 @@ const authReducer = (state = initialState, action) => {
     case actionTypes.REFRESH_TOKEN_FAILURE:
     case actionTypes.GET_USER_INFO_FAILURE:
     case actionTypes.UPDATE_USER_PROFILE_FAILURE:
+    case actionTypes.SEND_RESET_PASSWORD_EMAIL_FAILURE:
+    case actionTypes.RESET_PASSWORD_FAILURE:
       return {
         ...state,
         isLoading: false,
