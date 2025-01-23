@@ -193,7 +193,7 @@ const LoginForm = () => {
           >
             Đăng Nhập
           </Button>
-          <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+          {/* <p className="text-sm font-light text-gray-500 dark:text-gray-400">
             Bạn chưa có tài khoản?
             <span
               onClick={() => navigate("/account/register")}
@@ -201,7 +201,7 @@ const LoginForm = () => {
             >
               Đăng ký
             </span>
-          </p>
+          </p> */}
           <p className="text-center">
             <span
               className="cursor-pointer hover:underline"

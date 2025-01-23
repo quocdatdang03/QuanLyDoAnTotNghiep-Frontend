@@ -47,6 +47,7 @@ const pages = [
   {
     icon: <HomeIcon />,
     title: "Trang Chủ",
+    path: "",
   },
   {
     icon: <NewspaperIcon />,
@@ -70,18 +71,22 @@ const sinhVienOptions = [
   {
     icon: <HistoryEduIcon />,
     title: "Đăng ký GVHD",
+    path: "/student/instructors/register",
   },
   {
     icon: <GroupIcon />,
     title: "Đăng ký nhóm",
+    path: "/student/teams/register",
   },
   {
     icon: <ManageHistoryIcon />,
     title: "Quản lý tiến độ",
+    path: "/student/progress/manage",
   },
   {
     icon: <DescriptionIcon />,
     title: "Tài liệu hướng dẫn",
+    path: "/student/documents",
   },
 ];
 const giangVienOptions = [
@@ -162,6 +167,16 @@ function Navbar() {
     navigate("/user/profile");
   };
 
+  const handleNavigateToPath = (path) => {
+    handleCloseMenuStudent();
+    navigate(path);
+  };
+
+  const handleNavigateToPathOnDrawer = (path) => {
+    setOpenDrawer(false);
+    navigate(path);
+  };
+
   // handle loading :
   React.useEffect(() => {
     if (isAuthLoading) {
@@ -204,65 +219,70 @@ function Navbar() {
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) =>
               page.title === "Sinh Viên" ? (
-                <div key={page.title}>
-                  <Button
-                    onMouseEnter={handleOpenMenuStudent}
-                    sx={{
-                      my: 2,
-                      color: "white",
-                      display: "block",
-                      textTransform: "none",
-                    }}
-                  >
-                    {page.title}
-                    <ArrowDropDownIcon />
-                  </Button>
-                  <Menu
-                    anchorEl={anchorElStudent}
-                    open={Boolean(anchorElStudent)}
-                    onClose={handleCloseMenuStudent}
-                    MenuListProps={{ onMouseLeave: handleCloseMenuStudent }}
-                  >
-                    {sinhVienOptions.map((item) => (
-                      <MenuItem
-                        key={item.title}
-                        onClick={handleCloseMenuStudent}
-                      >
-                        {item.title}
-                      </MenuItem>
-                    ))}
-                  </Menu>
-                </div>
+                authReducer.user?.roles[0].roleName === "STUDENT" && (
+                  <div key={page.title}>
+                    <Button
+                      onMouseEnter={handleOpenMenuStudent}
+                      sx={{
+                        my: 2,
+                        color: "white",
+                        display: "block",
+                        textTransform: "none",
+                      }}
+                    >
+                      {page.title}
+                      <ArrowDropDownIcon />
+                    </Button>
+                    <Menu
+                      anchorEl={anchorElStudent}
+                      open={Boolean(anchorElStudent)}
+                      onClose={handleCloseMenuStudent}
+                      MenuListProps={{ onMouseLeave: handleCloseMenuStudent }}
+                    >
+                      {sinhVienOptions.map((item) => (
+                        <MenuItem
+                          key={item.title}
+                          onClick={() => handleNavigateToPath(item.path)}
+                        >
+                          {item.title}
+                        </MenuItem>
+                      ))}
+                    </Menu>
+                  </div>
+                )
               ) : page.title === "Giảng Viên" ? (
-                <div key={page.title}>
-                  <Button
-                    onMouseEnter={handleOpenMenuTeacher}
-                    sx={{
-                      my: 2,
-                      color: "white",
-                      display: "block",
-                      textTransform: "none",
-                    }}
-                  >
-                    {page.title}
-                    <ArrowDropDownIcon />
-                  </Button>
-                  <Menu
-                    anchorEl={anchorElTeacher}
-                    open={Boolean(anchorElTeacher)}
-                    onClose={handleCloseMenuTeacher}
-                    MenuListProps={{ onMouseLeave: handleCloseMenuTeacher }}
-                  >
-                    {giangVienOptions.map((option) => (
-                      <MenuItem
-                        key={option.title}
-                        onClick={handleCloseMenuTeacher}
-                      >
-                        {option.title}
-                      </MenuItem>
-                    ))}
-                  </Menu>
-                </div>
+                authReducer.user?.roles[0].roleName === "TEACHER" ||
+                (authReducer.user?.roles[0].roleName === "ADMIN" && (
+                  <div key={page.title}>
+                    <Button
+                      onMouseEnter={handleOpenMenuTeacher}
+                      sx={{
+                        my: 2,
+                        color: "white",
+                        display: "block",
+                        textTransform: "none",
+                      }}
+                    >
+                      {page.title}
+                      <ArrowDropDownIcon />
+                    </Button>
+                    <Menu
+                      anchorEl={anchorElTeacher}
+                      open={Boolean(anchorElTeacher)}
+                      onClose={handleCloseMenuTeacher}
+                      MenuListProps={{ onMouseLeave: handleCloseMenuTeacher }}
+                    >
+                      {giangVienOptions.map((option) => (
+                        <MenuItem
+                          key={option.title}
+                          onClick={handleCloseMenuTeacher}
+                        >
+                          {option.title}
+                        </MenuItem>
+                      ))}
+                    </Menu>
+                  </div>
+                ))
               ) : (
                 <Button
                   key={page.title}
@@ -293,61 +313,76 @@ function Navbar() {
               <List component="nav" className="w-[250px]">
                 {pages.map((page, index) =>
                   page.title === "Sinh Viên" ? (
-                    <>
-                      <ListItemButton
-                        onClick={() => setOpenStudentOption(!openStudentOption)}
-                      >
-                        <ListItemIcon>{page.icon}</ListItemIcon>
-                        <ListItemText primary={page.title} />
-                        {openStudentOption ? (
-                          <ExpandLessIcon />
-                        ) : (
-                          <ExpandMoreIcon />
-                        )}
-                      </ListItemButton>
-                      <Collapse
-                        in={openStudentOption}
-                        timeout="auto"
-                        unmountOnExit
-                      >
-                        <List component="div" disablePadding>
-                          {sinhVienOptions.map((item) => (
-                            <ListItemButton sx={{ pl: 4 }} key={item.title}>
-                              <ListItemIcon>{item.icon}</ListItemIcon>
-                              <ListItemText primary={item.title} />
-                            </ListItemButton>
-                          ))}
-                        </List>
-                      </Collapse>
-                    </>
+                    authReducer.user?.roles[0].roleName === "STUDENT" && (
+                      <>
+                        <ListItemButton
+                          onClick={() =>
+                            setOpenStudentOption(!openStudentOption)
+                          }
+                        >
+                          <ListItemIcon>{page.icon}</ListItemIcon>
+                          <ListItemText primary={page.title} />
+                          {openStudentOption ? (
+                            <ExpandLessIcon />
+                          ) : (
+                            <ExpandMoreIcon />
+                          )}
+                        </ListItemButton>
+                        <Collapse
+                          in={openStudentOption}
+                          timeout="auto"
+                          unmountOnExit
+                        >
+                          <List component="div" disablePadding>
+                            {sinhVienOptions.map((item) => (
+                              <ListItemButton
+                                sx={{ pl: 4 }}
+                                key={item.title}
+                                onClick={() =>
+                                  handleNavigateToPathOnDrawer(item.path)
+                                }
+                              >
+                                <ListItemIcon>{item.icon}</ListItemIcon>
+                                <ListItemText primary={item.title} />
+                              </ListItemButton>
+                            ))}
+                          </List>
+                        </Collapse>
+                      </>
+                    )
                   ) : page.title === "Giảng Viên" ? (
-                    <>
-                      <ListItemButton
-                        onClick={() => setOpenTeacherOption(!openTeacherOption)}
-                      >
-                        <ListItemIcon>{page.icon}</ListItemIcon>
-                        <ListItemText primary={page.title} />
-                        {openTeacherOption ? (
-                          <ExpandLessIcon />
-                        ) : (
-                          <ExpandMoreIcon />
-                        )}
-                      </ListItemButton>
-                      <Collapse
-                        in={openTeacherOption}
-                        timeout="auto"
-                        unmountOnExit
-                      >
-                        <List component="div" disablePadding>
-                          {giangVienOptions.map((item) => (
-                            <ListItemButton sx={{ pl: 4 }} key={item.title}>
-                              <ListItemIcon>{item.icon}</ListItemIcon>
-                              <ListItemText primary={item.title} />
-                            </ListItemButton>
-                          ))}
-                        </List>
-                      </Collapse>
-                    </>
+                    authReducer.user?.roles[0].roleName === "TEACHER" ||
+                    (authReducer.user?.roles[0].roleName === "ADMIN" && (
+                      <>
+                        <ListItemButton
+                          onClick={() =>
+                            setOpenTeacherOption(!openTeacherOption)
+                          }
+                        >
+                          <ListItemIcon>{page.icon}</ListItemIcon>
+                          <ListItemText primary={page.title} />
+                          {openTeacherOption ? (
+                            <ExpandLessIcon />
+                          ) : (
+                            <ExpandMoreIcon />
+                          )}
+                        </ListItemButton>
+                        <Collapse
+                          in={openTeacherOption}
+                          timeout="auto"
+                          unmountOnExit
+                        >
+                          <List component="div" disablePadding>
+                            {giangVienOptions.map((item) => (
+                              <ListItemButton sx={{ pl: 4 }} key={item.title}>
+                                <ListItemIcon>{item.icon}</ListItemIcon>
+                                <ListItemText primary={item.title} />
+                              </ListItemButton>
+                            ))}
+                          </List>
+                        </Collapse>
+                      </>
+                    ))
                   ) : (
                     <ListItem key={page.title} disablePadding>
                       <ListItemButton sx={{ paddingRight: 8 }}>

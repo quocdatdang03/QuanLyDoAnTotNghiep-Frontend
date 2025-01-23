@@ -41,6 +41,19 @@ const ProfileDetails = () => {
               : "Giảng viên"}
           </span>
         </p>
+        {userInfo?.roles[0].roleName === "TEACHER" ||
+          (userInfo?.roles[0].roleName === "ADMIN" && (
+            <>
+              <p>
+                <b className="pr-2">Khoa:</b>
+                <span>{userInfo?.userDetails.faculty.facultyName}</span>
+              </p>
+              <p>
+                <b className="pr-2">Học vị:</b>
+                <span>{userInfo?.userDetails.degree.degreeName}</span>
+              </p>
+            </>
+          ))}
       </div>
     </>
   );

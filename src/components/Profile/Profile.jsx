@@ -24,8 +24,8 @@ const Profile = () => {
             />
             <div className="text-center">
               <div className="space-y-1">
-                <h1>Dang Quoc Dat</h1>
-                <p>21115053120309</p>
+                <h1>{authReducer.user?.fullName}</h1>
+                <p>{authReducer.user?.code}</p>
               </div>
               <Button
                 sx={{ marginTop: 2 }}

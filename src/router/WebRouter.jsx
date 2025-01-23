@@ -5,15 +5,41 @@ import Navbar from "../components/Navbar/Navbar";
 import Footer from "../components/Footer/Footer";
 import Auth from "../components/Auth/Auth";
 import Profile from "../components/Profile/Profile";
+import { useSelector } from "react-redux";
+import StudentRoutes from "../components/studentComponent/StudentRoutes";
+import NotFound from "../components/errors/NotFound";
+import Unauthenticated from "../components/errors/Unauthenticated";
+import Forbidden from "../components/errors/Forbidden";
 
 const WebRouter = () => {
+  const { authReducer } = useSelector((store) => store);
+
   return (
     <>
       <Navbar />
       <Routes>
         <Route path="/account/:siteName" element={<Auth />} />
         <Route path="/" element={<Home />} />
-        <Route path="/user/profile/*" element={<Profile />} />
+        <Route
+          path="/user/profile/*"
+          element={authReducer.user ? <Profile /> : <Unauthenticated />}
+        />
+        {authReducer.user ? (
+          <Route
+            path="/student/*"
+            element={
+              authReducer.user?.roles[0].roleName === "STUDENT" ? (
+                <StudentRoutes />
+              ) : (
+                <Forbidden />
+              )
+            }
+          />
+        ) : (
+          <Route path="/student/*" element={<Unauthenticated />} />
+        )}
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
     </>
