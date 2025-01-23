@@ -10,6 +10,7 @@ import StudentRoutes from "../components/studentComponent/StudentRoutes";
 import NotFound from "../components/errors/NotFound";
 import Unauthenticated from "../components/errors/Unauthenticated";
 import Forbidden from "../components/errors/Forbidden";
+import TeacherRoutes from "../components/teacherComponent/TeacherRoutes";
 
 const WebRouter = () => {
   const { authReducer } = useSelector((store) => store);
@@ -25,18 +26,34 @@ const WebRouter = () => {
           element={authReducer.user ? <Profile /> : <Unauthenticated />}
         />
         {authReducer.user ? (
-          <Route
-            path="/student/*"
-            element={
-              authReducer.user?.roles[0].roleName === "STUDENT" ? (
-                <StudentRoutes />
-              ) : (
-                <Forbidden />
-              )
-            }
-          />
+          <>
+            <Route
+              path="/student/*"
+              element={
+                authReducer.user?.roles[0].roleName === "STUDENT" ? (
+                  <StudentRoutes />
+                ) : (
+                  <Forbidden />
+                )
+              }
+            />
+            <Route
+              path="/teacher/*"
+              element={
+                authReducer.user?.roles[0].roleName === "TEACHER" ||
+                authReducer.user?.roles[0].roleName === "ADMIN" ? (
+                  <TeacherRoutes />
+                ) : (
+                  <Forbidden />
+                )
+              }
+            />
+          </>
         ) : (
-          <Route path="/student/*" element={<Unauthenticated />} />
+          <>
+            <Route path="/student/*" element={<Unauthenticated />} />
+            <Route path="/teacher/*" element={<Unauthenticated />} />
+          </>
         )}
 
         <Route path="*" element={<NotFound />} />

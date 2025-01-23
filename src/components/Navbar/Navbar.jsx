@@ -93,22 +93,27 @@ const giangVienOptions = [
   {
     icon: <NotificationAddIcon />,
     title: "Đăng thông báo",
+    path: "/teacher/announcements",
   },
   {
     icon: <ListAltIcon />,
     title: "Danh sách đề tài",
+    path: "/teacher/projects",
   },
   {
     icon: <GroupsIcon />,
     title: "Danh sách sinh viên",
+    path: "/teacher/students",
   },
   {
     icon: <ManageHistoryIcon />,
     title: "Quản lý tiến độ",
+    path: "/teacher/progresses",
   },
   {
     icon: <DescriptionIcon />,
     title: "Tài liệu hướng dẫn",
+    path: "/teacher/documents",
   },
 ];
 const loggedInSettings = ["Thông tin cá nhân", "Đăng xuất"];
@@ -167,8 +172,13 @@ function Navbar() {
     navigate("/user/profile");
   };
 
-  const handleNavigateToPath = (path) => {
+  const handleNavigateToStudentPath = (path) => {
     handleCloseMenuStudent();
+    navigate(path);
+  };
+
+  const handleNavigateToTeacherPath = (path) => {
+    handleCloseMenuTeacher();
     navigate(path);
   };
 
@@ -242,7 +252,7 @@ function Navbar() {
                       {sinhVienOptions.map((item) => (
                         <MenuItem
                           key={item.title}
-                          onClick={() => handleNavigateToPath(item.path)}
+                          onClick={() => handleNavigateToStudentPath(item.path)}
                         >
                           {item.title}
                         </MenuItem>
@@ -275,7 +285,9 @@ function Navbar() {
                       {giangVienOptions.map((option) => (
                         <MenuItem
                           key={option.title}
-                          onClick={handleCloseMenuTeacher}
+                          onClick={() =>
+                            handleNavigateToTeacherPath(option.path)
+                          }
                         >
                           {option.title}
                         </MenuItem>
@@ -374,7 +386,13 @@ function Navbar() {
                         >
                           <List component="div" disablePadding>
                             {giangVienOptions.map((item) => (
-                              <ListItemButton sx={{ pl: 4 }} key={item.title}>
+                              <ListItemButton
+                                sx={{ pl: 4 }}
+                                key={item.title}
+                                onClick={() =>
+                                  handleNavigateToPathOnDrawer(item.path)
+                                }
+                              >
                                 <ListItemIcon>{item.icon}</ListItemIcon>
                                 <ListItemText primary={item.title} />
                               </ListItemButton>
