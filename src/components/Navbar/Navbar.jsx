@@ -440,7 +440,7 @@ function Navbar() {
 
           {/* START AVATAR SETTING */}
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+            <Tooltip title={authReducer.user?.fullName}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 {authReducer.user && isDelayedLoading ? (
                   <Skeleton variant="circular" height={40} width={40} />
