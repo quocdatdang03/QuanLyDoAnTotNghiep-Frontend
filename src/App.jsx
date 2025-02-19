@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { isTokenExpired, setupAxiosInterceptors } from "./config/api";
 import { getUserInfoAction } from "./redux/Auth/Action";
+import { Toaster } from "react-hot-toast";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ export default function App() {
       <ThemeProvider theme={lightTheme}>
         <CssBaseline />
         <BrowserRouter>
+          <Toaster />
           <Routers />
         </BrowserRouter>
       </ThemeProvider>
