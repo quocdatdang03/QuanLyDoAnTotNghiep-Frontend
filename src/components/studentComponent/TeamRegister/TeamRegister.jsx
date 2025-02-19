@@ -28,8 +28,8 @@ import {
   Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import React, { useEffect, useRef, useState } from "react";
-import defaultImage from "../../../assets/images/dev-image.png";
+import { useEffect, useRef, useState } from "react";
+import defaultImage from "../../../assets/images/default-avatar.png";
 import { useDispatch, useSelector } from "react-redux";
 
 import SearchIcon from "@mui/icons-material/Search";
@@ -41,11 +41,15 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import { getAllStudentsByFacultyAndKeyword } from "../../../redux/Student/Action";
 import {
   addStudentToTeamAction,
+  createTeamAction,
   removeStudentFromTeamAction,
 } from "../../../redux/Team/Action";
 import { useFormik } from "formik";
 import { teamRegisterFormValidation } from "./validation/teamRegisterFormValidation";
 import { isPresentInTemporaryTeamMember } from "../../../config/logic";
+import { useNavigate } from "react-router-dom";
+import NotificationModal from "../../modals/NotificationModal";
+import toast from "react-hot-toast";
 
 const style = {
   position: "absolute",
@@ -66,10 +70,13 @@ const TeamRegister = () => {
   const { studentReducer } = useSelector((store) => store);
   const { teamReducer } = useSelector((store) => store);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isDelayedLoading, setIsDelayedLoading] = useState(true);
   const isStudentLoading = studentReducer.isLoading;
+  const isTeamLoading = teamReducer.isLoading;
   const [keyword, setKeyword] = useState("");
   const [openModal, setOpenModal] = useState(false);
+  const [openModalNotification, setOpenModalNotification] = useState(false);
   const [openAlert, setOpenALert] = useState(false);
   const [alertType, setAlertType] = useState("success");
   const [alertMessage, setAlertMessage] = useState("");
@@ -143,8 +150,12 @@ const TeamRegister = () => {
 
   const handleAddToTeam = (student) => {
     if (teamReducer?.temporaryTeamMember.length >= 4) {
-      showAlert(
-        "error",
+      // showAlert(
+      //   "error",
+      //   "Số lượng thành viên tối đa là 5 người (tính cả nhóm trưởng)"
+      // );
+
+      toast.error(
         "Số lượng thành viên tối đa là 5 người (tính cả nhóm trưởng)"
       );
       return;
@@ -153,7 +164,8 @@ const TeamRegister = () => {
       studentCode: student.studentCode,
     };
     dispatch(addStudentToTeamAction(requestData));
-    showAlert("success", "Thêm thành viên vào nhóm thành công.");
+    // showAlert("success", "Thêm thành viên vào nhóm thành công.");
+    toast.success("Thêm thành viên vào nhóm thành công.");
   };
 
   const handleRemoveStudentFromTeam = (student) => {
@@ -170,13 +182,23 @@ const TeamRegister = () => {
     validationSchema: teamRegisterFormValidation,
     onSubmit: (values) => {
       const requestData = {
-        teamName: values.teamName,
-        memberQuantity: teamReducer?.temporaryTeamMember.length,
-        studentIds: teamReducer?.temporaryTeamMember.map(
-          (item) => item.studentId
-        ),
+        teamData: {
+          teamName: values.teamName,
+          memberQuantity: teamReducer?.temporaryTeamMember.length,
+          studentIds: teamReducer?.temporaryTeamMember.map(
+            (item) => item.studentId
+          ),
+        },
+        isTeamLoading,
+        navigate,
       };
       console.log(requestData);
+      dispatch(createTeamAction(requestData));
+
+      if (!isTeamLoading) {
+        setOpenModal(false);
+        setOpenModalNotification(true);
+      }
     },
   });
 
@@ -273,7 +295,7 @@ const TeamRegister = () => {
                       ) : (
                         <CardMedia
                           sx={{ height: 250 }}
-                          image={defaultImage}
+                          image={item.image || defaultImage}
                           title={item.fullName}
                         />
                       )}
@@ -514,6 +536,13 @@ const TeamRegister = () => {
           </Alert>
         </div>
       )}
+
+      {/* ALERT CREATE TEAM SUCCESS */}
+      <NotificationModal
+        openModal={openModalNotification}
+        setOpenModal={setOpenModalNotification}
+        message="Tạo nhóm thành công"
+      />
     </>
   );
 };
