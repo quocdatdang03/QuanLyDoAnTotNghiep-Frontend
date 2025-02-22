@@ -1,0 +1,234 @@
+import React, { useEffect, useRef, useState } from "react";
+import ChatMessage from "../Chat/ChatMessage";
+import { useDispatch, useSelector } from "react-redux";
+import { getChatMessagesByRoomIdAction } from "../../../../redux/Chat/Action";
+import { over } from "stompjs";
+import { IconButton } from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
+import SockJS from "sockjs-client/dist/sockjs";
+import CloseIcon from "@mui/icons-material/Close";
+
+var client = null;
+const TabChatMessage = () => {
+  const { chatReducer } = useSelector((store) => store);
+  const { authReducer } = useSelector((store) => store);
+
+  const dispatch = useDispatch();
+
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState("");
+  const [isSelectedMessage, setIsSelectedMessage] = useState(null);
+  const [stompClient, setStompClient] = useState(null);
+  const inputRef = useRef(null);
+  const chatContainerRef = useRef(null);
+  const currentMessageRef = useRef({});
+
+  // get chat messages:
+  useEffect(() => {
+    console.log(chatReducer.chatRoom?.chatRoomId);
+    if (chatReducer.chatRoom?.chatRoomId) {
+      dispatch(
+        getChatMessagesByRoomIdAction({
+          roomId: chatReducer.chatRoom?.chatRoomId,
+        })
+      );
+    }
+  }, [chatReducer.chatRoom?.chatRoomId, dispatch]);
+
+  // handle set chat message
+  useEffect(() => {
+    setMessages(chatReducer.messages);
+  }, [chatReducer.messages]);
+
+  // handle connect to websocket server:
+  useEffect(() => {
+    let socket = new SockJS("http://localhost:8989/ws");
+    client = over(socket);
+
+    client.connect(
+      {},
+      () => {
+        console.log(
+          "--------------------Connected to the Websocket server--------------------"
+        );
+
+        // subscibe to the topic:
+        client.subscribe(
+          `/topic/chatRoom.${chatReducer.chatRoom?.chatRoomId}`,
+          (msg) => {
+            const receivedMessage = JSON.parse(msg.body);
+
+            setMessages((prevMessages) => {
+              // for sending message without duplicate chatMessageId
+              if (
+                !prevMessages.some(
+                  (item) => item.chatMessageId === receivedMessage.chatMessageId
+                )
+              ) {
+                return [...prevMessages, JSON.parse(msg.body)];
+              } else {
+                // for update when revoke message
+                return prevMessages.map((item) =>
+                  item.chatMessageId === receivedMessage.chatMessageId
+                    ? receivedMessage
+                    : item
+                );
+              }
+            });
+          }
+        );
+      },
+      (error) => {
+        console.error(
+          "+++++++++++++++++++++++++++WebSocket connection error:",
+          error
+        );
+      }
+    );
+    setStompClient(client);
+
+    return () => {
+      if (client && client.connected) {
+        client.disconnect();
+      }
+    };
+  }, [chatReducer.chatRoom?.chatRoomId]);
+
+  // handle send message:
+  const handleSendMessage = () => {
+    const chatMessage = {
+      chatRoomId: chatReducer.chatRoom?.chatRoomId,
+      senderId: authReducer.user?.accountId,
+      content: message,
+      parentMessageId: isSelectedMessage
+        ? isSelectedMessage.chatMessageId
+        : null,
+    };
+
+    stompClient.send("/app/sendMessage", {}, JSON.stringify(chatMessage));
+    setMessage("");
+    setIsSelectedMessage(null);
+    inputRef.current.focus();
+  };
+
+  // handle select message :
+  const handleSelectMessage = (item) => {
+    setIsSelectedMessage(item);
+    inputRef.current.focus();
+  };
+
+  const handleScrollToParentMessage = (parentMessageId) => {
+    if (currentMessageRef.current[parentMessageId]) {
+      const parentElement = currentMessageRef.current[parentMessageId];
+      const chatContainer = chatContainerRef.current;
+
+      if (chatContainer) {
+        // Tính toán để parentElement nằm ở cuối khung chat
+        const targetScrollTop =
+          parentElement.offsetTop -
+          chatContainer.offsetTop -
+          (chatContainer.clientHeight - parentElement.clientHeight);
+
+        chatContainer.scrollTo({
+          top: targetScrollTop,
+          behavior: "smooth",
+        });
+      }
+    }
+  };
+
+  // handle message scroll to latest message:
+  useEffect(() => {
+    if (chatContainerRef.current)
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+  }, [messages]);
+
+  return (
+    <div className="flex flex-col justify-center items-center">
+      <div className="border w-[60%] shadow-lg rounded-lg overflow-hidden">
+        <h1 className="text-center font-semibold text-xl uppercase border-b py-5">
+          Hỏi đáp thắc mắc
+        </h1>
+        <div
+          ref={chatContainerRef}
+          className="h-[380px] bg-gray-100 overflow-y-auto p-5 space-y-5"
+        >
+          {messages?.map((item, index) => {
+            return (
+              <ChatMessage
+                sender={item.sender}
+                content={item.content}
+                createdAt={item.timestamp}
+                parentMessage={item.parentMessage}
+                isOwnMessage={
+                  item.sender?.accountId === authReducer.user?.accountId
+                }
+                chatRoomId={chatReducer.chatRoom?.chatRoomId}
+                chatMessageId={item.chatMessageId}
+                stompClient={stompClient}
+                isRevokedMessage={item.isRevoked}
+                setMessages={setMessages}
+                onSelectMessage={handleSelectMessage}
+                currentMessageRef={(el) => {
+                  if (el) {
+                    currentMessageRef.current[item.chatMessageId] = el;
+                  }
+                }}
+                onScrollToParentMessage={handleScrollToParentMessage}
+                key={index}
+              />
+            );
+          })}
+        </div>
+        <div className="flex flex-col bg-slate-50 pt-2">
+          {isSelectedMessage && (
+            <div className="relative flex gap-4 p-3 bg-blue-100 mx-3 rounded-lg border-l-4 border-blue-400">
+              <img
+                className="w-8 h-8 rounded-full self-start"
+                src={isSelectedMessage?.sender.image}
+              />
+              <div className="flex flex-col gap-2">
+                <h3 className="text-md">
+                  {isSelectedMessage?.sender.fullName}
+                </h3>
+                <p className="text-sm">{isSelectedMessage?.content}</p>
+              </div>
+
+              <div className="absolute top-1 right-3">
+                <IconButton
+                  size="small"
+                  onClick={() => setIsSelectedMessage(null)}
+                >
+                  <CloseIcon />
+                </IconButton>
+              </div>
+            </div>
+          )}
+
+          <div className="flex items-center gap-3 justify-center p-1 shadow-lg">
+            <input
+              className="w-full py-2 rounded-full px-5 border bg-gray-200 focus:outline-none"
+              type="text"
+              placeholder="Aa"
+              ref={inputRef}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+            />
+            <IconButton
+              sx={{ padding: 1 }}
+              color="info"
+              onClick={handleSendMessage}
+            >
+              <SendIcon />
+            </IconButton>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default TabChatMessage;

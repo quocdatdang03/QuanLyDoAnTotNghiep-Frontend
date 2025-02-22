@@ -10,9 +10,15 @@ export default {
           "80%": { opacity: 1, transform: "translateX(0)" },
           "100%": { opacity: 0, transform: "translateX(200px)" },
         },
+
+        "show-time-detail": {
+          "0%": { opacity: 0, transform: "translateY(100%)" },
+          "100%": { opacity: 1, transform: "translateY(0)" },
+        },
       },
       animation: {
         "fade-in-out": "fade-in-out 3s ease-in-out",
+        "show-time-detail": "show-time-detail 1s ease-in-out",
       },
     },
   },

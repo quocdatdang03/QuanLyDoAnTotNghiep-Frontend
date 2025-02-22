@@ -9,8 +9,6 @@ import {
   Container,
   IconButton,
   Skeleton,
-  Tab,
-  Tabs,
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -20,15 +18,10 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import SchoolIcon from "@mui/icons-material/School";
 import ClassIcon from "@mui/icons-material/Class";
 import DeleteIcon from "@mui/icons-material/Delete";
-import SendIcon from "@mui/icons-material/Send";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getTeamDetailsAction } from "../../../redux/Team/Action";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import TabPanel from "@mui/lab/TabPanel";
-import ChatMessage from "./Chat/ChatMessage";
 
 const TeamDetails = () => {
   const dispatch = useDispatch();
@@ -37,7 +30,6 @@ const TeamDetails = () => {
   const { authReducer } = useSelector((store) => store);
   const [isDelayedLoading, setIsDelayedLoading] = useState(true);
   const isTeamLoading = teamReducer.isLoading;
-  const [tabValue, setTabValue] = useState("1");
 
   // get Team details:
   useEffect(() => {
@@ -60,10 +52,6 @@ const TeamDetails = () => {
       return () => clearTimeout(timer);
     }
   }, [isTeamLoading]);
-
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
-  };
 
   return (
     <Container className="border border-red-400">
@@ -190,55 +178,6 @@ const TeamDetails = () => {
               </CardActions>
             </Card>
           ))}
-        </div>
-
-        {/* TAB LIST */}
-        <div className="mt-10">
-          <TabContext value={tabValue}>
-            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <TabList onChange={handleTabChange}>
-                <Tab label="Đánh giá của giáo viên" value="1" />
-                <Tab label="Báo cáo của sinh viên" value="2" />
-                <Tab label="Hỏi đáp với giáo viên" value="3" />
-              </TabList>
-            </Box>
-            <TabPanel value="1">Item One</TabPanel>
-            <TabPanel value="2">Item Two</TabPanel>
-
-            {/* Tab Chat */}
-            <TabPanel value="3">
-              <div className="flex flex-col justify-center items-center">
-                <div className="border w-[60%] shadow-lg rounded-lg overflow-hidden">
-                  <h1 className="text-center font-semibold text-xl uppercase border-b py-5">
-                    Hỏi đáp thắc mắc
-                  </h1>
-                  <div className="h-[380px] bg-gray-200 overflow-y-auto p-5 space-y-3">
-                    {[false, false, true, true, false, true].map(
-                      (item, index) => {
-                        return (
-                          <ChatMessage
-                            avatar={defaultImage}
-                            isOwnMessage={item}
-                            key={index}
-                          />
-                        );
-                      }
-                    )}
-                  </div>
-                  <div className="flex items-center gap-3 justify-center p-1 shadow-lg">
-                    <input
-                      className="w-full py-2 rounded-full px-5 border bg-gray-200 focus:outline-none"
-                      type="text"
-                      placeholder="Aa"
-                    />
-                    <IconButton sx={{ padding: 1 }} color="info">
-                      <SendIcon />
-                    </IconButton>
-                  </div>
-                </div>
-              </div>
-            </TabPanel>
-          </TabContext>
         </div>
       </div>
     </Container>
