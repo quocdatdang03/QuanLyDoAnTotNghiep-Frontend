@@ -117,11 +117,14 @@ const TabChatMessage = () => {
     inputRef.current.focus();
   };
 
+  // handle scroll to parent message
   const handleScrollToParentMessage = (parentMessageId) => {
     if (currentMessageRef.current[parentMessageId]) {
       const parentElement = currentMessageRef.current[parentMessageId];
       const chatContainer = chatContainerRef.current;
 
+      // offsetTop : khoảng cách từ element hiện tại tới đỉnh của toàn bộ trag web
+      // clientHeight: height của element hiện tại
       if (chatContainer) {
         // Tính toán để parentElement nằm ở cuối khung chat
         const targetScrollTop =
@@ -141,7 +144,8 @@ const TabChatMessage = () => {
   useEffect(() => {
     if (chatContainerRef.current)
       chatContainerRef.current.scrollTo({
-        top: chatContainerRef.current.scrollHeight,
+        // top : là vị trí cuộn dọc của phần tử ---- top : 0 -> scroll tới vị trí đầu tiên của div, top : scrollHeight -> scroll tới vị trí cuối cùng div
+        top: chatContainerRef.current.scrollHeight, // scrollHeight : là tổng height của div chatContainerRef
         behavior: "smooth",
       });
   }, [messages]);
