@@ -229,7 +229,7 @@ function Navbar() {
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) =>
               page.title === "Sinh Viên" ? (
-                authReducer.user?.roles[0].roleName === "STUDENT" && (
+                authReducer.user?.roles[0].roleName === "SINHVIEN" && (
                   <div key={page.title}>
                     <Button
                       onMouseEnter={handleOpenMenuStudent}
@@ -261,7 +261,7 @@ function Navbar() {
                   </div>
                 )
               ) : page.title === "Giảng Viên" ? (
-                authReducer.user?.roles[0].roleName === "TEACHER" ||
+                authReducer.user?.roles[0].roleName === "GIANGVIEN" ||
                 (authReducer.user?.roles[0].roleName === "ADMIN" && (
                   <div key={page.title}>
                     <Button
@@ -325,7 +325,7 @@ function Navbar() {
               <List component="nav" className="w-[250px]">
                 {pages.map((page, index) =>
                   page.title === "Sinh Viên" ? (
-                    authReducer.user?.roles[0].roleName === "STUDENT" && (
+                    authReducer.user?.roles[0].roleName === "SINHVIEN" && (
                       <>
                         <ListItemButton
                           onClick={() =>
@@ -363,7 +363,7 @@ function Navbar() {
                       </>
                     )
                   ) : page.title === "Giảng Viên" ? (
-                    authReducer.user?.roles[0].roleName === "TEACHER" ||
+                    authReducer.user?.roles[0].roleName === "GIANGVIEN" ||
                     (authReducer.user?.roles[0].roleName === "ADMIN" && (
                       <>
                         <ListItemButton

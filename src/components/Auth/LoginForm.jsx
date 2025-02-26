@@ -24,7 +24,7 @@ import {
 } from "../../redux/Auth/Action";
 
 const initialValues = {
-  email: "",
+  code: "",
   password: "",
 };
 
@@ -133,21 +133,21 @@ const LoginForm = () => {
         )}
         <form className="space-y-4 md:space-y-6" onSubmit={formik.handleSubmit}>
           <div>
-            <label htmlFor="email" className="block mb-2 text-sm font-medium">
-              Email của bạn
+            <label htmlFor="code" className="block mb-2 text-sm font-medium">
+              Tài khoản của bạn
             </label>
             <TextField
-              label="Nhập email"
+              label="Nhập tài khoản"
               variant="outlined"
               fullWidth
               sx={{ marginBottom: 2 }}
-              type="email"
-              name="email"
+              type="text"
+              name="code"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.email}
-              error={formik.errors.email && Boolean(formik.errors.email)}
-              helperText={formik.errors.email && formik.errors.email}
+              value={formik.values.code}
+              error={formik.errors.code && Boolean(formik.errors.code)}
+              helperText={formik.errors.code && formik.errors.code}
             />
           </div>
           <div>

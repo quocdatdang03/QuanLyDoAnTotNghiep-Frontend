@@ -36,12 +36,12 @@ const ProfileDetails = () => {
         <p>
           <b className="pr-2">Chức vụ:</b>
           <span>
-            {userInfo?.roles[0].roleName === "STUDENT"
+            {userInfo?.roles[0].roleName === "SINHVIEN"
               ? "Sinh viên"
               : "Giảng viên"}
           </span>
         </p>
-        {userInfo?.roles[0].roleName === "TEACHER" ||
+        {userInfo?.roles[0].roleName === "GIANGVIEN" ||
           (userInfo?.roles[0].roleName === "ADMIN" && (
             <>
               <p>
