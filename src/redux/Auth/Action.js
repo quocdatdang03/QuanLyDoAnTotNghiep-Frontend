@@ -19,7 +19,11 @@ export const loginUserAction = (requestData) => async (dispatch) => {
     console.log("LOGIN SUCCESS: ");
     console.log(response.data);
 
-    if (!requestData.isAuthLoading) requestData.navigate("/");
+    if (!requestData.isAuthLoading) {
+      if (response.data.roles[0].roleName === "ADMIN")
+        requestData.navigate("/admin");
+      else requestData.navigate("/");
+    }
   } catch (error) {
     console.log(error);
     const errorMessage = error.response?.data?.message || error.message;
@@ -128,6 +132,28 @@ export const updateUserProfileAction = (requestData) => async (dispatch) => {
     });
 
     if (!requestData.isAuthLoading) requestData.navigate("/user/profile");
+
+    console.log("UPDATE PROFILE SUCCESS");
+  } catch (error) {
+    dispatch({ type: actionTypes.UPDATE_USER_PROFILE_FAILURE, payload: error });
+  }
+};
+
+export const updateAdminProfileAction = (requestData) => async (dispatch) => {
+  dispatch({ type: actionTypes.UPDATE_USER_PROFILE_REQUEST });
+
+  try {
+    const response = await axiosAPI.put(
+      "/accounts/profile",
+      requestData.userProfileData
+    );
+
+    dispatch({
+      type: actionTypes.UPDATE_USER_PROFILE_SUCCESS,
+      payload: response.data,
+    });
+
+    if (!requestData.isAuthLoading) requestData.navigate("/admin/profile");
 
     console.log("UPDATE PROFILE SUCCESS");
   } catch (error) {
