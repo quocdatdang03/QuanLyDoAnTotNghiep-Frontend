@@ -27,6 +27,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import ManageStudentRegister from "../ManageStudentRegister/ManageStudentRegister";
 import ManageSemester from "../ManageSemester/ManageSemester";
 import AdminProfile from "../AdminProfile/AdminProfile";
+import FormEditSchoolYear from "../ManageSemester/FormEditSchoolYear";
 
 // +++++++++++++  start for drawer
 const drawerWidth = 320;
@@ -238,6 +239,10 @@ export const SideBar = () => {
         <Routes>
           <Route path="/profile/*" element={<AdminProfile />} />
           <Route path="/manage-semester" element={<ManageSemester />} />
+          <Route
+            path="/manage-semester/schoolYear/edit"
+            element={<FormEditSchoolYear />}
+          />
           <Route
             path="/manage-registerStudent"
             element={<ManageStudentRegister />}
