@@ -4,6 +4,7 @@ import {
   Button,
   Fade,
   FormControl,
+  FormHelperText,
   InputLabel,
   MenuItem,
   Modal,
@@ -31,24 +32,13 @@ import { useFormik } from "formik";
 import { formSchoolYearValidation } from "./validation/formSchoolYearValidation";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-
-const rows = [
-  {
-    semesterName: "224",
-    schoolYearName: "2024-2025",
-    isCurrent: true,
-  },
-  {
-    semesterName: "223",
-    schoolYearName: "2023-2024",
-    isCurrent: false,
-  },
-  {
-    semesterName: "123",
-    schoolYearName: "2023-2024",
-    isCurrent: false,
-  },
-];
+import {
+  createSemesterAction,
+  deleteSemesterAction,
+  getAllSemestersAction,
+  getSemesterByIdAction,
+} from "../../../redux/Semester/Action";
+import { formSemesterValidation } from "./validation/formSemesterValidation";
 
 const style = {
   position: "absolute",
@@ -63,19 +53,30 @@ const style = {
 };
 
 const ManageSemester = () => {
-  const { schoolYearReducer } = useSelector((store) => store);
+  const { schoolYearReducer, semesterReducer } = useSelector((store) => store);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [openDeleteSchoolYearModal, setOpenDeleteSchoolYearModal] =
+    useState(false);
+  const [openDeleteSemesterModal, setOpenDeleteSemesterModal] = useState(false);
   const [selectedSchoolYear, setSelectedSchoolYear] = useState(null);
+  const [selectedSemester, setSelectedSemester] = useState(null);
   const isSchoolYearLoading = schoolYearReducer.isLoading;
+  const isSemesterLoading = semesterReducer.isLoading;
 
-  var totalElements = schoolYearReducer.schoolYearPagination?.totalElements;
-  var pageSize = schoolYearReducer.schoolYearPagination?.pageSize;
-  var currentPageNumber = schoolYearReducer.schoolYearPagination?.pageNumber;
+  var totalElementsSchoolYear =
+    schoolYearReducer.schoolYearPagination?.totalElements;
+  var pageSizeSchoolYear = schoolYearReducer.schoolYearPagination?.pageSize;
+  var currentPageNumberSchoolYear =
+    schoolYearReducer.schoolYearPagination?.pageNumber;
+
+  var totalElementsSemester = semesterReducer.semesterPagination?.totalElements;
+  var pageSizeSemester = semesterReducer.semesterPagination?.pageSize;
+  var currentPageNumberSemester =
+    semesterReducer.semesterPagination?.pageNumber;
 
   // handle create school year:
-  const formik = useFormik({
+  const formikSchoolYear = useFormik({
     validationSchema: formSchoolYearValidation,
     initialValues: {
       startYear: "",
@@ -88,13 +89,39 @@ const ManageSemester = () => {
     },
   });
 
-  // get all school years:
+  // handle create semester:
+  const formikSemester = useFormik({
+    validationSchema: formSemesterValidation,
+    initialValues: {
+      semesterName: "",
+      schoolYearId: "",
+    },
+
+    onSubmit: (values, { resetForm }) => {
+      dispatch(createSemesterAction(values));
+
+      const requestDataSemester = {
+        semesterPagination: {},
+      };
+      dispatch(getAllSemestersAction(requestDataSemester));
+
+      resetForm();
+    },
+  });
+
+  // get all school years and all semesters:
   useEffect(() => {
-    const requestData = {
+    const requestDataSchoolYear = {
       schoolYearPagination: {},
     };
 
-    dispatch(getAllSchoolYearsAction(requestData));
+    const requestDataSemester = {
+      semesterPagination: {},
+    };
+
+    dispatch(getAllSchoolYearsAction(requestDataSchoolYear));
+
+    dispatch(getAllSemestersAction(requestDataSemester));
   }, [dispatch]);
 
   // handle change school year page:
@@ -108,14 +135,34 @@ const ManageSemester = () => {
     dispatch(getAllSchoolYearsAction(requestData));
   };
 
+  // handle change semester page:
+  const handleChangePageSemester = (e, value) => {
+    const requestData = {
+      semesterPagination: {
+        pageNumber: value,
+      },
+    };
+
+    dispatch(getAllSemestersAction(requestData));
+  };
+
   // handle open/close delete modal:
-  const handleOpenModal = (item) => {
-    setOpenDeleteModal(true);
+  const handleOpenDeleteSchoolYearModal = (item) => {
+    setOpenDeleteSchoolYearModal(true);
     setSelectedSchoolYear(item);
   };
 
-  const handleCloseModal = () => {
-    setOpenDeleteModal(false);
+  const handleCloseDeleteSchoolYearModal = () => {
+    setOpenDeleteSchoolYearModal(false);
+  };
+
+  const handleOpenDeleteSemesterModal = (item) => {
+    setOpenDeleteSemesterModal(true);
+    setSelectedSemester(item);
+  };
+
+  const handleCloseDeleteSemesterModal = () => {
+    setOpenDeleteSemesterModal(false);
   };
 
   // handle delete school year :
@@ -124,8 +171,18 @@ const ManageSemester = () => {
       schoolYearId: selectedSchoolYear?.schoolYearId,
     };
     dispatch(deleteSchoolYearAction(requestData));
-    setOpenDeleteModal(false);
+    setOpenDeleteSchoolYearModal(false);
     toast.success("Xóa năm học thành công");
+  };
+
+  // handle delete semester :
+  const handleDeleteSemester = () => {
+    const requestData = {
+      semesterId: selectedSemester?.semesterId,
+    };
+    dispatch(deleteSemesterAction(requestData));
+    setOpenDeleteSemesterModal(false);
+    toast.success("Xóa học kỳ thành công");
   };
 
   // handle open form edit school year:
@@ -137,6 +194,17 @@ const ManageSemester = () => {
     };
 
     dispatch(getSchoolYearByIdAction(requestData));
+  };
+
+  // handle open form edit school year:
+  const handleOpenFormEditSemester = (semesterId) => {
+    const requestData = {
+      semesterId,
+      navigate,
+      isSemesterLoading,
+    };
+
+    dispatch(getSemesterByIdAction(requestData));
   };
 
   return (
@@ -155,7 +223,7 @@ const ManageSemester = () => {
             <div>
               <form
                 className="space-y-4 md:space-y-6"
-                onSubmit={formik.handleSubmit}
+                onSubmit={formikSchoolYear.handleSubmit}
               >
                 <div className="grid grid-cols-2 gap-5">
                   <div>
@@ -172,15 +240,16 @@ const ManageSemester = () => {
                       sx={{ marginBottom: 2 }}
                       type="number"
                       name="startYear"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.startYear}
+                      onChange={formikSchoolYear.handleChange}
+                      onBlur={formikSchoolYear.handleBlur}
+                      value={formikSchoolYear.values.startYear}
                       error={
-                        formik.errors.startYear &&
-                        Boolean(formik.errors.startYear)
+                        formikSchoolYear.errors.startYear &&
+                        Boolean(formikSchoolYear.errors.startYear)
                       }
                       helperText={
-                        formik.errors.startYear && formik.errors.startYear
+                        formikSchoolYear.errors.startYear &&
+                        formikSchoolYear.errors.startYear
                       }
                     />
                   </div>
@@ -198,14 +267,16 @@ const ManageSemester = () => {
                       sx={{ marginBottom: 2 }}
                       type="number"
                       name="endYear"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.endYear}
+                      onChange={formikSchoolYear.handleChange}
+                      onBlur={formikSchoolYear.handleBlur}
+                      value={formikSchoolYear.values.endYear}
                       error={
-                        formik.errors.endYear && Boolean(formik.errors.endYear)
+                        formikSchoolYear.errors.endYear &&
+                        Boolean(formikSchoolYear.errors.endYear)
                       }
                       helperText={
-                        formik.errors.endYear && formik.errors.endYear
+                        formikSchoolYear.errors.endYear &&
+                        formikSchoolYear.errors.endYear
                       }
                     />
                   </div>
@@ -231,11 +302,11 @@ const ManageSemester = () => {
             <div>
               <form
                 className="space-y-4 md:space-y-6"
-                //   onSubmit={formik.handleSubmit}
+                onSubmit={formikSemester.handleSubmit}
               >
                 <div>
                   <label
-                    htmlFor="semester"
+                    htmlFor="semesterName"
                     className="block mb-2 text-sm font-medium"
                   >
                     Học kỳ
@@ -245,49 +316,60 @@ const ManageSemester = () => {
                     variant="outlined"
                     fullWidth
                     sx={{ marginBottom: 2 }}
-                    type="text"
-                    name="semester"
-                    //   onChange={formik.handleChange}
-                    //   onBlur={formik.handleBlur}
-                    //   value={formik.values.code}
-                    //   error={formik.errors.code && Boolean(formik.errors.code)}
-                    //   helperText={formik.errors.code && formik.errors.code}
+                    type="number"
+                    name="semesterName"
+                    onChange={formikSemester.handleChange}
+                    onBlur={formikSemester.handleBlur}
+                    value={formikSemester.values.semesterName}
+                    error={
+                      formikSemester.errors.semesterName &&
+                      Boolean(formikSemester.errors.semesterName)
+                    }
+                    helperText={
+                      formikSemester.errors.semesterName &&
+                      formikSemester.errors.semesterName
+                    }
                   />
                 </div>
                 <div>
                   <label
-                    htmlFor="code"
+                    htmlFor="schoolYearId"
                     className="block mb-2 text-sm font-medium"
                   >
                     Chọn năm học
                   </label>
                   <FormControl
                     fullWidth
-                    //   error={Boolean(
-                    //     formik.errors.categoryId && formik.touched.categoryId
-                    //   )}
+                    error={Boolean(
+                      formikSemester.errors.schoolYearId &&
+                        formikSemester.touched.schoolYearId
+                    )}
                   >
                     <InputLabel>Năm học</InputLabel>
                     <Select
-                      // value={formik.values.categoryId}
+                      value={formikSemester.values.schoolYearId}
                       label="Năm học"
-                      name="categoryId"
-                      // onChange={formik.handleChange}
+                      name="schoolYearId"
+                      onChange={formikSemester.handleChange}
                     >
-                      {/* {ingredientReducer.ingredientCategories?.map((item) => {
-                      return (
-                        <MenuItem key={item.id} value={item.id}>
-                          {item.name}
-                        </MenuItem>
-                      );
-                    })} */}
-                      <MenuItem value={10}>223</MenuItem>
-                      <MenuItem value={20}>124</MenuItem>
-                      <MenuItem value={30}>224</MenuItem>
+                      {schoolYearReducer.schoolYearPagination?.content.map(
+                        (item) => {
+                          return (
+                            <MenuItem
+                              key={item.schoolYearId}
+                              value={item.schoolYearId}
+                            >
+                              {item.schoolYearName}
+                            </MenuItem>
+                          );
+                        }
+                      )}
                     </Select>
-                    {/* {formik.errors.categoryId && (
-                    <FormHelperText>{formik.errors.categoryId}</FormHelperText>
-                  )} */}
+                    {formikSemester.errors.schoolYearId && (
+                      <FormHelperText>
+                        {formikSemester.errors.schoolYearId}
+                      </FormHelperText>
+                    )}
                   </FormControl>
                 </div>
                 <Button
@@ -347,7 +429,9 @@ const ManageSemester = () => {
                             <Button
                               variant="contained"
                               color="error"
-                              onClick={() => handleOpenModal(item)}
+                              onClick={() =>
+                                handleOpenDeleteSchoolYearModal(item)
+                              }
                             >
                               Xóa
                             </Button>
@@ -362,8 +446,8 @@ const ManageSemester = () => {
             {/* Pagination */}
             <div className="flex items-center justify-center mt-10">
               <Pagination
-                count={Math.ceil(totalElements / pageSize)}
-                page={currentPageNumber || 1}
+                count={Math.ceil(totalElementsSchoolYear / pageSizeSchoolYear)}
+                page={currentPageNumberSchoolYear || 1}
                 color="primary"
                 onChange={handleChangePageSchoolYear}
               />
@@ -386,54 +470,70 @@ const ManageSemester = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((item, index) => (
-                    <TableRow
-                      key={item.semesterName}
-                      className={`${item.isCurrent ? "bg-green-300" : "bg-white"}`}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell align="center">{index + 1}</TableCell>
-                      <TableCell align="center">
-                        {item.semesterName}{" "}
-                        {item.isCurrent && (
-                          <i className="font-bold">(Học kỳ hiện tại)</i>
-                        )}
-                      </TableCell>
-                      <TableCell align="center">
-                        {item.schoolYearName}
-                      </TableCell>
-                      <TableCell align="center">
-                        <div className="flex justify-center space-x-2">
-                          <Button variant="contained" color="warning">
-                            Sửa
-                          </Button>
-                          <Button variant="contained" color="error">
-                            Xóa
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {semesterReducer.semesterPagination?.content.map(
+                    (item, index) => (
+                      <TableRow
+                        key={item.semesterId}
+                        className={`${item.isCurrent ? "bg-green-300" : "bg-white"}`}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell align="center">{index + 1}</TableCell>
+                        <TableCell align="center">
+                          {item.semesterName}{" "}
+                          {item.isCurrent && (
+                            <i className="font-bold">(Học kỳ hiện tại)</i>
+                          )}
+                        </TableCell>
+                        <TableCell align="center">
+                          {item.schoolYear.schoolYearName}
+                        </TableCell>
+                        <TableCell align="center">
+                          <div className="flex justify-center space-x-2">
+                            <Button
+                              variant="contained"
+                              color="warning"
+                              onClick={() =>
+                                handleOpenFormEditSemester(item.semesterId)
+                              }
+                            >
+                              Sửa
+                            </Button>
+                            <Button
+                              variant="contained"
+                              color="error"
+                              onClick={() =>
+                                handleOpenDeleteSemesterModal(item)
+                              }
+                            >
+                              Xóa
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
             {/* Pagination */}
             <div className="flex items-center justify-center mt-10">
               <Pagination
-                count={10}
-                page={1}
+                count={Math.ceil(totalElementsSemester / pageSizeSemester)}
+                page={currentPageNumberSemester || 1}
                 color="primary"
-                // onChange={handleChangePage}
+                onChange={handleChangePageSemester}
               />
             </div>
           </div>
         </div>
       </div>
 
-      {/* // DELETE SCHOOL YEAR MODAL : */}
+      {/* DELETE SCHOOL YEAR MODAL : */}
       <Modal
-        open={openDeleteModal}
-        onClose={handleCloseModal}
+        open={openDeleteSchoolYearModal}
+        onClose={handleCloseDeleteSchoolYearModal}
         closeAfterTransition
         slots={{ backdrop: Backdrop }}
         slotProps={{
@@ -442,7 +542,7 @@ const ManageSemester = () => {
           },
         }}
       >
-        <Fade in={openDeleteModal}>
+        <Fade in={openDeleteSchoolYearModal}>
           <Box sx={style}>
             <Typography variant="h5" component="h1" sx={{ marginBottom: 2 }}>
               Xác nhận xóa?
@@ -456,11 +556,50 @@ const ManageSemester = () => {
                 <Button
                   variant="contained"
                   color="inherit"
-                  onClick={handleCloseModal}
+                  onClick={handleCloseDeleteSchoolYearModal}
                 >
                   Hủy bỏ
                 </Button>
                 <Button variant="contained" onClick={handleDeleteSchoolYear}>
+                  Xóa
+                </Button>
+              </div>
+            </div>
+          </Box>
+        </Fade>
+      </Modal>
+
+      {/* DELETE SEMESTER MODAL : */}
+      <Modal
+        open={openDeleteSemesterModal}
+        onClose={handleOpenDeleteSemesterModal}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={openDeleteSemesterModal}>
+          <Box sx={style}>
+            <Typography variant="h5" component="h1" sx={{ marginBottom: 2 }}>
+              Xác nhận xóa?
+            </Typography>
+            <div>
+              <p>
+                Bạn có chắc chắn muốn xóa học kỳ:{" "}
+                {selectedSemester?.semesterName}
+              </p>
+              <div className="mt-3 space-x-3 text-right">
+                <Button
+                  variant="contained"
+                  color="inherit"
+                  onClick={handleCloseDeleteSemesterModal}
+                >
+                  Hủy bỏ
+                </Button>
+                <Button variant="contained" onClick={handleDeleteSemester}>
                   Xóa
                 </Button>
               </div>

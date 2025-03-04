@@ -28,6 +28,7 @@ import ManageStudentRegister from "../ManageStudentRegister/ManageStudentRegiste
 import ManageSemester from "../ManageSemester/ManageSemester";
 import AdminProfile from "../AdminProfile/AdminProfile";
 import FormEditSchoolYear from "../ManageSemester/FormEditSchoolYear";
+import FormEditSemester from "../ManageSemester/FormEditSemester";
 
 // +++++++++++++  start for drawer
 const drawerWidth = 320;
@@ -242,6 +243,10 @@ export const SideBar = () => {
           <Route
             path="/manage-semester/schoolYear/edit"
             element={<FormEditSchoolYear />}
+          />
+          <Route
+            path="/manage-semester/semester/edit"
+            element={<FormEditSemester />}
           />
           <Route
             path="/manage-registerStudent"
