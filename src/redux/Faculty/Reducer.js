@@ -1,36 +1,37 @@
 import * as actionTypes from "./ActionType";
 
 const initialState = {
-  studentPagination: null,
+  faculties: [],
+  faculty: null,
+  isLoading: false,
   error: null,
   success: null,
-  isLoading: false,
 };
 
-const studentReducer = (state = initialState, action) => {
+const facultyReducer = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.FILTER_ALL_STUDENTS_REQUEST:
+    case actionTypes.GET_ALL_FACULTY_REQUEST:
       return {
         ...state,
         isLoading: true,
-        success: null,
         error: null,
+        success: null,
       };
 
-    case actionTypes.FILTER_ALL_STUDENTS_SUCCESS:
+    case actionTypes.GET_ALL_FACULTY_SUCCESS:
       return {
         ...state,
         isLoading: false,
-        studentPagination: action.payload,
+        faculties: action.payload,
         error: null,
       };
 
-    case actionTypes.FILTER_ALL_STUDENTS_FAILURE:
+    case actionTypes.GET_ALL_FACULTY_FAILURE:
       return {
         ...state,
         isLoading: false,
-        success: null,
         error: action.payload,
+        success: null,
       };
 
     default:
@@ -38,4 +39,4 @@ const studentReducer = (state = initialState, action) => {
   }
 };
 
-export default studentReducer;
+export default facultyReducer;

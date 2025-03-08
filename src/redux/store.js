@@ -6,6 +6,8 @@ import { teamReducer } from "./Team/Reducer";
 import chatReducer from "./Chat/Reducer";
 import schoolYearReducer from "./SchoolYear/Reducer";
 import semesterReducer from "./Semester/Reducer";
+import facultyReducer from "./Faculty/Reducer";
+import classReducer from "./Class/Reducer";
 
 const rootReducer = combineReducers({
   authReducer: authReducer,
@@ -14,6 +16,8 @@ const rootReducer = combineReducers({
   chatReducer: chatReducer,
   schoolYearReducer: schoolYearReducer,
   semesterReducer: semesterReducer,
+  facultyReducer: facultyReducer,
+  classReducer: classReducer,
 });
 
 export const store = legacy_createStore(rootReducer, applyMiddleware(thunk));
