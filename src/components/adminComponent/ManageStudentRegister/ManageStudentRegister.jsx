@@ -19,6 +19,8 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -48,6 +50,32 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+// Table header data:
+const tableHeaderDatas = [
+  {
+    title: "STT",
+  },
+  {
+    title: "Mã sinh viên",
+    sortByField: "account.code",
+  },
+  {
+    title: "Họ tên",
+    sortByField: "account.fullName",
+  },
+  {
+    title: "Lớp",
+    sortByField: "clazz.className",
+  },
+  {
+    title: "Khoa",
+    sortByField: "clazz.faculty.facultyName",
+  },
+  {
+    title: "Học kỳ",
+  },
+];
+
 const ManageStudentRegister = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -56,6 +84,10 @@ const ManageStudentRegister = () => {
   const [classId, setClassId] = useState("");
   const [facultyId, setFacultyId] = useState("");
   const [currentPageNum, setCurrentPageNum] = useState(1);
+  const [sortDir, setSortDir] = useState("asc");
+  const [sortBy, setSortBy] = useState("account.fullName");
+
+  console.log(sortBy);
 
   const { semesterReducer, facultyReducer, classReducer, studentReducer } =
     useSelector((store) => store);
@@ -90,6 +122,8 @@ const ManageStudentRegister = () => {
         classId,
         facultyId,
         pageNumber: value,
+        sortDir,
+        sortBy,
       },
     };
 
@@ -100,14 +134,16 @@ const ManageStudentRegister = () => {
     dispatch(filterAllStudentsAction(requestData));
   };
 
-  const handleFilterStudent = () => {
+  const handleFilterStudent = (pageNum) => {
     const requestData = {
       keyword,
       studentPagination: {
         semesterId,
         classId,
         facultyId,
-        pageNumber: currentPageNum,
+        pageNumber: pageNum,
+        sortDir,
+        sortBy,
       },
     };
 
@@ -118,8 +154,15 @@ const ManageStudentRegister = () => {
 
   // handle filter by keyword, semester, class, faculty
   useEffect(() => {
-    handleFilterStudent();
+    // Nếu filter -> reset về pageNumber là 1
+    handleFilterStudent(1);
   }, [keyword, semesterId, facultyId, classId]);
+
+  // handle sort by and sort dir
+  useEffect(() => {
+    // Nếu filter -> reset về pageNumber là 1
+    handleFilterStudent(currentPageNum);
+  }, [sortBy, sortDir]);
 
   // handle clear search
   const handleClearSearch = () => {
@@ -128,6 +171,20 @@ const ManageStudentRegister = () => {
     setClassId("");
     setFacultyId("");
     setCurrentPageNum(1);
+    setSortDir("asc");
+    setSortBy("account.fullName");
+  };
+
+  // handle sort dir:
+  const handleSortDir = () => {
+    if (sortDir === "asc") setSortDir("desc");
+    else setSortDir("asc");
+  };
+
+  // handle set sort by:
+  const handleSortBy = (fieldName) => {
+    console.log("SET:" + fieldName);
+    setSortBy(fieldName);
   };
 
   return (
@@ -160,7 +217,7 @@ const ManageStudentRegister = () => {
               type="button"
               sx={{ p: "10px" }}
               aria-label="search"
-              onClick={handleFilterStudent}
+              onClick={() => handleFilterStudent(1)}
             >
               <SearchIcon />
             </IconButton>
@@ -272,12 +329,29 @@ const ManageStudentRegister = () => {
           <Table sx={{ minWidth: 700 }} aria-label="customized table">
             <TableHead>
               <TableRow>
-                <StyledTableCell align="left">STT</StyledTableCell>
-                <StyledTableCell align="left">Mã sinh viên</StyledTableCell>
-                <StyledTableCell align="left">Họ tên</StyledTableCell>
-                <StyledTableCell align="left">Lớp</StyledTableCell>
-                <StyledTableCell align="left">Khoa</StyledTableCell>
-                <StyledTableCell align="left">Học kỳ</StyledTableCell>
+                {/* TABLE HEADER */}
+                {tableHeaderDatas.map((item, index) => {
+                  return (
+                    <StyledTableCell key={index} align="left">
+                      <div
+                        className={`flex items-center gap-3 ${item.sortByField && "cursor-pointer hover:underline"}`}
+                        onClick={() =>
+                          sortBy === item.sortByField
+                            ? handleSortDir()
+                            : item.sortByField && handleSortBy(item.sortByField)
+                        }
+                      >
+                        <span className="select-none">{item.title}</span>
+                        {sortBy === item.sortByField && sortDir === "asc" && (
+                          <ArrowUpwardIcon fontSize="medium" />
+                        )}
+                        {sortBy === item.sortByField && sortDir === "desc" && (
+                          <ArrowDownwardIcon fontSize="medium" />
+                        )}
+                      </div>
+                    </StyledTableCell>
+                  );
+                })}
               </TableRow>
             </TableHead>
             <TableBody>
