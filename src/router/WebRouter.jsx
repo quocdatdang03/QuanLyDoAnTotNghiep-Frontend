@@ -30,7 +30,7 @@ const WebRouter = () => {
             <Route
               path="/student/*"
               element={
-                authReducer.user?.roles[0].roleName === "STUDENT" ? (
+                authReducer.user?.roles[0].roleName === "SINHVIEN" ? (
                   <StudentRoutes />
                 ) : (
                   <Forbidden />
@@ -40,7 +40,7 @@ const WebRouter = () => {
             <Route
               path="/teacher/*"
               element={
-                authReducer.user?.roles[0].roleName === "TEACHER" ||
+                authReducer.user?.roles[0].roleName === "GIANGVIEN" ||
                 authReducer.user?.roles[0].roleName === "ADMIN" ? (
                   <TeacherRoutes />
                 ) : (

@@ -7,3 +7,11 @@ export const isPresentInTemporaryTeamMember = (
   }
   return false;
 };
+
+export const isPresentInChoosenStudentsList = (student, choosenStudents) => {
+  for (let item of choosenStudents) {
+    if (student.studentCode === item.studentCode) return true;
+  }
+
+  return false;
+};

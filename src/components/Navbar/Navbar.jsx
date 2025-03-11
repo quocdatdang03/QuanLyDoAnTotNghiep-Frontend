@@ -261,8 +261,8 @@ function Navbar() {
                   </div>
                 )
               ) : page.title === "Giảng Viên" ? (
-                authReducer.user?.roles[0].roleName === "GIANGVIEN" ||
-                (authReducer.user?.roles[0].roleName === "ADMIN" && (
+                (authReducer.user?.roles[0].roleName === "GIANGVIEN" ||
+                  authReducer.user?.roles[0].roleName === "ADMIN") && (
                   <div key={page.title}>
                     <Button
                       onMouseEnter={handleOpenMenuTeacher}
@@ -294,7 +294,7 @@ function Navbar() {
                       ))}
                     </Menu>
                   </div>
-                ))
+                )
               ) : (
                 <Button
                   key={page.title}
@@ -363,8 +363,8 @@ function Navbar() {
                       </>
                     )
                   ) : page.title === "Giảng Viên" ? (
-                    authReducer.user?.roles[0].roleName === "GIANGVIEN" ||
-                    (authReducer.user?.roles[0].roleName === "ADMIN" && (
+                    (authReducer.user?.roles[0].roleName === "GIANGVIEN" ||
+                      authReducer.user?.roles[0].roleName === "ADMIN") && (
                       <>
                         <ListItemButton
                           onClick={() =>
@@ -400,7 +400,7 @@ function Navbar() {
                           </List>
                         </Collapse>
                       </>
-                    ))
+                    )
                   ) : (
                     <ListItem key={page.title} disablePadding>
                       <ListItemButton sx={{ paddingRight: 8 }}>
@@ -447,7 +447,7 @@ function Navbar() {
                 ) : authReducer.user && !isDelayedLoading ? (
                   authReducer.user?.image ? (
                     <img
-                      className="rounded-full w-10 h-10"
+                      className="rounded-full w-10 h-10 object-cover object-center"
                       src={authReducer.user?.image}
                       alt="Avatar"
                     />
