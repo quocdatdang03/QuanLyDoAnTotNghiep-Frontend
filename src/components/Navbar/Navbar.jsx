@@ -33,6 +33,7 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import NewspaperIcon from "@mui/icons-material/Newspaper";
 import ContactPageIcon from "@mui/icons-material/ContactPage";
+import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import PersonIcon from "@mui/icons-material/Person";
 import Person3Icon from "@mui/icons-material/Person3";
 import NotificationAddIcon from "@mui/icons-material/NotificationAdd";
@@ -292,6 +293,16 @@ function Navbar() {
                           {option.title}
                         </MenuItem>
                       ))}
+                      {authReducer.user?.userDetails.isLeader && (
+                        <MenuItem
+                          key="Phân chia GVHD"
+                          onClick={() =>
+                            handleNavigateToTeacherPath("/teacher/instructors")
+                          }
+                        >
+                          Phân chia GVHD
+                        </MenuItem>
+                      )}
                     </Menu>
                   </div>
                 )
@@ -397,6 +408,22 @@ function Navbar() {
                                 <ListItemText primary={item.title} />
                               </ListItemButton>
                             ))}
+                            {authReducer.user?.userDetails.isLeader && (
+                              <ListItemButton
+                                sx={{ pl: 4 }}
+                                key="Phân chia GVHD"
+                                onClick={() =>
+                                  handleNavigateToPathOnDrawer(
+                                    "/teacher/instructors"
+                                  )
+                                }
+                              >
+                                <ListItemIcon>
+                                  <AssignmentIndIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Phân chia GVHD" />
+                              </ListItemButton>
+                            )}
                           </List>
                         </Collapse>
                       </>

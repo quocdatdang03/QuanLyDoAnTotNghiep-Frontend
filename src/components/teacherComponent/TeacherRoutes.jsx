@@ -7,8 +7,12 @@ import ProgressManager from "../studentComponent/ProgressManager/ProgressManager
 import { TeacherDocument } from "./TeacherDocument/TeacherDocument";
 import { TeacherAnnouncement } from "./Announcement/TeacherAnnouncement";
 import InstructorDivision from "./InstructorDivision/InstructorDivision";
+import { useSelector } from "react-redux";
+import Forbidden from "../errors/Forbidden";
 
 const TeacherRoutes = () => {
+  const { authReducer } = useSelector((store) => store);
+
   return (
     <Routes>
       <Route path="/announcements" element={<TeacherAnnouncement />} />
@@ -16,7 +20,16 @@ const TeacherRoutes = () => {
       <Route path="/students" element={<StudentManager />} />
       <Route path="/progresses" element={<ProgressManager />} />
       <Route path="/documents" element={<TeacherDocument />} />
-      <Route path="/instructors" element={<InstructorDivision />} />
+      <Route
+        path="/instructors"
+        element={
+          authReducer.user?.userDetails.isLeader ? (
+            <InstructorDivision />
+          ) : (
+            <Forbidden />
+          )
+        }
+      />
 
       <Route path="*" element={<NotFound />} />
     </Routes>
