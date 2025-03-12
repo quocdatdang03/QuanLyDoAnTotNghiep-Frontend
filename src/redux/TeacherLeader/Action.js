@@ -173,3 +173,126 @@ export const removeChoosenInstructorAction =
       });
     }
   };
+
+export const assignInstructorAction = (requestData) => async (dispatch) => {
+  dispatch({ type: actionTypes.ASSIGN_INSTRUCTOR_REQUEST });
+
+  try {
+    const response = await axiosAPI.put(
+      `/instructors/assign-students`,
+      requestData.assignInstructorData
+    );
+
+    dispatch({
+      type: actionTypes.ASSIGN_INSTRUCTOR_SUCCESS,
+      payload: response.data,
+    });
+
+    if (response.data) requestData.navigate("results");
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || error.message;
+    dispatch({
+      type: actionTypes.ASSIGN_INSTRUCTOR_FAILURE,
+      payload: errorMessage,
+    });
+  }
+};
+
+export const getAllStudentsHavingInstructorAction =
+  (requestData) => async (dispatch) => {
+    dispatch({
+      type: actionTypes.GET_ALL_STUDENTS_HAVING_INSTRUCTOR_BY_FACULTY_REQUEST,
+    });
+
+    try {
+      const { keyword, studentPagination } = requestData;
+      const params = new URLSearchParams();
+
+      if (keyword) params.append("keyword", keyword.trim());
+
+      if (studentPagination?.pageNumber)
+        params.append("pageNumber", studentPagination.pageNumber);
+
+      if (studentPagination?.pageSize)
+        params.append("pageSize", studentPagination.pageSize);
+
+      if (studentPagination?.sortBy)
+        params.append("sortBy", studentPagination.sortBy);
+
+      if (studentPagination?.sortDir)
+        params.append("sortDir", studentPagination.sortDir);
+
+      if (studentPagination?.classId)
+        params.append("classId", studentPagination.classId);
+
+      if (studentPagination?.instructorCode)
+        params.append("instructorCode", studentPagination.instructorCode);
+
+      const response = await axiosAPI.get(
+        `/instructors/students/having-instructor?${params.toString()}`
+      );
+
+      console.log(response.data);
+
+      dispatch({
+        type: actionTypes.GET_ALL_STUDENTS_HAVING_INSTRUCTOR_BY_FACULTY_SUCCESS,
+        payload: response.data,
+      });
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      dispatch({
+        type: actionTypes.GET_ALL_STUDENTS_HAVING_INSTRUCTOR_BY_FACULTY_FAILURE,
+        payload: errorMessage,
+      });
+    }
+  };
+
+export const removeInstructorFromStudentAction =
+  (requestData) => async (dispatch) => {
+    dispatch({ type: actionTypes.REMOVE_INSTRUCTOR_FROM_STUDENT_REQUEST });
+
+    try {
+      const response = await axiosAPI.patch(
+        "/instructors/remove-instructor",
+        requestData.removeInstructorData
+      );
+
+      dispatch({
+        type: actionTypes.REMOVE_INSTRUCTOR_FROM_STUDENT_SUCCESS,
+        payload: response.data,
+      });
+
+      if (response.data) requestData.toast.success("Hủy bỏ GVHD thành công");
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      dispatch({
+        type: actionTypes.REMOVE_INSTRUCTOR_FROM_STUDENT_FAILURE,
+        payload: errorMessage,
+      });
+    }
+  };
+
+export const changeInstructorOfStudentAction =
+  (requestData) => async (dispatch) => {
+    dispatch({ type: actionTypes.CHANGE_INSTRUCTOR_OF_STUDENT_REQUEST });
+
+    try {
+      const response = await axiosAPI.patch(
+        "/instructors/change-instructor",
+        requestData.changeInstructorData
+      );
+
+      dispatch({
+        type: actionTypes.CHANGE_INSTRUCTOR_OF_STUDENT_SUCCESS,
+        payload: response.data,
+      });
+
+      if (response.data) requestData.toast.success("Thay đổi GVHD thành công");
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      dispatch({
+        type: actionTypes.CHANGE_INSTRUCTOR_OF_STUDENT_FAILURE,
+        payload: errorMessage,
+      });
+    }
+  };

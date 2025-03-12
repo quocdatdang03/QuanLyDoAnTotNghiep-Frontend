@@ -9,6 +9,7 @@ import { TeacherAnnouncement } from "./Announcement/TeacherAnnouncement";
 import InstructorDivision from "./InstructorDivision/InstructorDivision";
 import { useSelector } from "react-redux";
 import Forbidden from "../errors/Forbidden";
+import InstructorDivisionResult from "./InstructorDivision/InstructorDivisionResult";
 
 const TeacherRoutes = () => {
   const { authReducer } = useSelector((store) => store);
@@ -25,6 +26,16 @@ const TeacherRoutes = () => {
         element={
           authReducer.user?.userDetails.isLeader ? (
             <InstructorDivision />
+          ) : (
+            <Forbidden />
+          )
+        }
+      />
+      <Route
+        path="/instructors/results"
+        element={
+          authReducer.user?.userDetails.isLeader ? (
+            <InstructorDivisionResult />
           ) : (
             <Forbidden />
           )

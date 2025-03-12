@@ -12,6 +12,7 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import SchoolIcon from "@mui/icons-material/School";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import {
   Collapse,
   Drawer,
@@ -294,14 +295,28 @@ function Navbar() {
                         </MenuItem>
                       ))}
                       {authReducer.user?.userDetails.isLeader && (
-                        <MenuItem
-                          key="Phân chia GVHD"
-                          onClick={() =>
-                            handleNavigateToTeacherPath("/teacher/instructors")
-                          }
-                        >
-                          Phân chia GVHD
-                        </MenuItem>
+                        <>
+                          <MenuItem
+                            key="Phân chia GVHD"
+                            onClick={() =>
+                              handleNavigateToTeacherPath(
+                                "/teacher/instructors"
+                              )
+                            }
+                          >
+                            Phân chia GVHD
+                          </MenuItem>
+                          <MenuItem
+                            key="DSSV đã phân chia GVHD"
+                            onClick={() =>
+                              handleNavigateToTeacherPath(
+                                "/teacher/instructors/results"
+                              )
+                            }
+                          >
+                            DSSV đã phân chia GVHD
+                          </MenuItem>
+                        </>
                       )}
                     </Menu>
                   </div>
@@ -409,20 +424,36 @@ function Navbar() {
                               </ListItemButton>
                             ))}
                             {authReducer.user?.userDetails.isLeader && (
-                              <ListItemButton
-                                sx={{ pl: 4 }}
-                                key="Phân chia GVHD"
-                                onClick={() =>
-                                  handleNavigateToPathOnDrawer(
-                                    "/teacher/instructors"
-                                  )
-                                }
-                              >
-                                <ListItemIcon>
-                                  <AssignmentIndIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="Phân chia GVHD" />
-                              </ListItemButton>
+                              <>
+                                <ListItemButton
+                                  sx={{ pl: 4 }}
+                                  key="Phân chia GVHD"
+                                  onClick={() =>
+                                    handleNavigateToPathOnDrawer(
+                                      "/teacher/instructors"
+                                    )
+                                  }
+                                >
+                                  <ListItemIcon>
+                                    <AssignmentIndIcon />
+                                  </ListItemIcon>
+                                  <ListItemText primary="Phân chia GVHD" />
+                                </ListItemButton>
+                                <ListItemButton
+                                  sx={{ pl: 4 }}
+                                  key="DSSV đã phân chia GVHD"
+                                  onClick={() =>
+                                    handleNavigateToPathOnDrawer(
+                                      "/teacher/instructors/results"
+                                    )
+                                  }
+                                >
+                                  <ListItemIcon>
+                                    <PeopleAltIcon />
+                                  </ListItemIcon>
+                                  <ListItemText primary="DSSV đã phân chia GVHD" />
+                                </ListItemButton>
+                              </>
                             )}
                           </List>
                         </Collapse>

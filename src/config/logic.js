@@ -8,8 +8,8 @@ export const isPresentInTemporaryTeamMember = (
   return false;
 };
 
-export const isPresentInChoosenStudentsList = (student, choosenStudents) => {
-  for (let item of choosenStudents) {
+export const isStudentPresentInList = (student, studentList) => {
+  for (let item of studentList) {
     if (student.studentCode === item.studentCode) return true;
   }
 

@@ -1,8 +1,9 @@
-import { isPresentInChoosenStudentsList } from "../../config/logic";
+import { isStudentPresentInList } from "../../config/logic";
 import * as actionTypes from "./ActionType";
 
 const initialState = {
   studentPagination: null,
+  studentHavingInstructorPagination: null,
   choosenStudents: [],
   classes: null,
   instructors: null,
@@ -21,6 +22,10 @@ const teacherLeaderReducer = (state = initialState, action) => {
     case actionTypes.REMOVE_STUDENT_FROM_TEMPORARY_LIST_REQUEST:
     case actionTypes.GET_ALL_INSTRUCTOS_BY_FACULTY_OF_TEACHER_LEADER_REQUEST:
     case actionTypes.REMOVE_INSTRUCTOR_REQUEST:
+    case actionTypes.ASSIGN_INSTRUCTOR_REQUEST:
+    case actionTypes.GET_ALL_STUDENTS_HAVING_INSTRUCTOR_BY_FACULTY_REQUEST:
+    case actionTypes.REMOVE_INSTRUCTOR_FROM_STUDENT_REQUEST:
+    case actionTypes.CHANGE_INSTRUCTOR_OF_STUDENT_REQUEST:
       return {
         ...state,
         isLoading: true,
@@ -48,7 +53,7 @@ const teacherLeaderReducer = (state = initialState, action) => {
       return {
         ...state,
         isLoading: false,
-        choosenStudents: isPresentInChoosenStudentsList(
+        choosenStudents: isStudentPresentInList(
           action.payload,
           state.choosenStudents
         )
@@ -89,6 +94,55 @@ const teacherLeaderReducer = (state = initialState, action) => {
         error: null,
       };
 
+    case actionTypes.ASSIGN_INSTRUCTOR_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        success: action.payload,
+        choosenInstructor: null,
+        choosenStudents: [],
+        error: null,
+      };
+
+    case actionTypes.GET_ALL_STUDENTS_HAVING_INSTRUCTOR_BY_FACULTY_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        studentHavingInstructorPagination: action.payload,
+        error: null,
+      };
+
+    case actionTypes.REMOVE_INSTRUCTOR_FROM_STUDENT_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+
+        studentHavingInstructorPagination: {
+          ...state.studentHavingInstructorPagination,
+          content: state.studentHavingInstructorPagination.content.filter(
+            (item) => item.studentCode !== action.payload.studentCode
+          ),
+        },
+
+        error: null,
+      };
+
+    case actionTypes.CHANGE_INSTRUCTOR_OF_STUDENT_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+
+        studentHavingInstructorPagination: {
+          ...state.studentHavingInstructorPagination,
+          content: state.studentHavingInstructorPagination.content.map(
+            (item) =>
+              item.studentCode === action.payload.studentCode
+                ? action.payload
+                : item
+          ),
+        },
+      };
+
     case actionTypes.GET_ALL_STUDENTS_WITHOUT_INSTRUCTOR_FAILURE:
     case actionTypes.GET_ALL_CLASSES_BY_FACULTY_OF_TEACHER_LEADER_FAILURE:
     case actionTypes.CHOOSE_STUDENT_FAILURE:
@@ -96,6 +150,10 @@ const teacherLeaderReducer = (state = initialState, action) => {
     case actionTypes.REMOVE_STUDENT_FROM_TEMPORARY_LIST_FAILURE:
     case actionTypes.GET_ALL_INSTRUCTOS_BY_FACULTY_OF_TEACHER_LEADER_FAILURE:
     case actionTypes.REMOVE_INSTRUCTOR_FAILURE:
+    case actionTypes.ASSIGN_INSTRUCTOR_FAILURE:
+    case actionTypes.GET_ALL_STUDENTS_HAVING_INSTRUCTOR_BY_FACULTY_FAILURE:
+    case actionTypes.REMOVE_INSTRUCTOR_FROM_STUDENT_FAILURE:
+    case actionTypes.CHANGE_INSTRUCTOR_OF_STUDENT_FAILURE:
       return {
         ...state,
         isLoading: false,

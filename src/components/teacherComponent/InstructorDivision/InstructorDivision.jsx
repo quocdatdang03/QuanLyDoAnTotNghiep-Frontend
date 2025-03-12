@@ -46,6 +46,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
+  assignInstructorAction,
   chooseInstructorAction,
   chooseStudentAction,
   getAllClassesByFacultyOfTeacherLeaderAction,
@@ -54,8 +55,8 @@ import {
   removeChoosenInstructorAction,
   removeStudentFromTemporaryList,
 } from "../../../redux/TeacherLeader/Action";
-import { isPresentInChoosenStudentsList } from "../../../config/logic";
 import toast from "react-hot-toast";
+import { isStudentPresentInList } from "../../../config/logic";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -167,6 +168,15 @@ const InstructorDivision = () => {
   const { teacherLeaderReducer } = useSelector((store) => store);
 
   const isInstructorLoading = teacherLeaderReducer.isLoading;
+
+  const colors = [
+    "success",
+    "primary",
+    "secondary",
+    "error",
+    "warning",
+    "info",
+  ];
 
   // get all info for pagination:
   const totalElements = teacherLeaderReducer.studentPagination?.totalElements;
@@ -321,6 +331,28 @@ const InstructorDivision = () => {
     setOpenModalConfirmAssignInstructor(false);
   };
 
+  // handle Assign Instructor:
+  const handleAssignInstructor = () => {
+    if (
+      teacherLeaderReducer.choosenStudents.length <= 0 ||
+      !teacherLeaderReducer.choosenInstructor
+    ) {
+      toast.error("Vui lòng chọn sinh viên hoặc GVHD");
+    } else {
+      const requestData = {
+        assignInstructorData: {
+          instructorCode: teacherLeaderReducer.choosenInstructor?.teacherCode,
+          studentCodes: teacherLeaderReducer.choosenStudents?.map(
+            (item) => item.studentCode
+          ),
+        },
+        navigate,
+      };
+
+      dispatch(assignInstructorAction(requestData));
+    }
+  };
+
   // handle loading :
   useEffect(() => {
     if (isInstructorLoading) {
@@ -346,6 +378,7 @@ const InstructorDivision = () => {
           Phân chia giảng viên hướng dẫn
         </Typography>
 
+        {/* DSSV chưa được phân GVHD */}
         <div>
           <h1 className="text-xl font-bold mt-5">Danh sách sinh viên</h1>
 
@@ -507,6 +540,12 @@ const InstructorDivision = () => {
                               {item.recommendedTeachers.length > 0 ? (
                                 item.recommendedTeachers?.map(
                                   (recommendedInstructorItem) => {
+                                    const recommendedInstructorColor =
+                                      colors[
+                                        recommendedInstructorItem.teacherId %
+                                          colors.length
+                                      ];
+
                                     return (
                                       <Chip
                                         key={
@@ -516,7 +555,7 @@ const InstructorDivision = () => {
                                           recommendedInstructorItem.teacherName
                                         }
                                         variant="filled"
-                                        color="info"
+                                        color={recommendedInstructorColor}
                                       />
                                     );
                                   }
@@ -529,7 +568,7 @@ const InstructorDivision = () => {
                             </div>
                           </TableCell>
                           <TableCell align="left">
-                            {isPresentInChoosenStudentsList(
+                            {isStudentPresentInList(
                               item,
                               teacherLeaderReducer?.choosenStudents
                             ) ? (
@@ -575,6 +614,7 @@ const InstructorDivision = () => {
         </div>
 
         <div>
+          {/* DSSV đang chọn */}
           <Typography
             className="uppercase text-center"
             sx={{ fontSize: 20, marginTop: 7, marginBottom: 2 }}
@@ -628,12 +668,17 @@ const InstructorDivision = () => {
                         {item.recommendedTeachers.length > 0 ? (
                           item.recommendedTeachers?.map(
                             (recommendedInstructorItem) => {
+                              const recommendedInstructorColor =
+                                colors[
+                                  recommendedInstructorItem.teacherId %
+                                    colors.length
+                                ];
                               return (
                                 <Chip
                                   key={recommendedInstructorItem.teacherId}
                                   label={recommendedInstructorItem.teacherName}
                                   variant="filled"
-                                  color="info"
+                                  color={recommendedInstructorColor}
                                 />
                               );
                             }
@@ -1087,7 +1132,11 @@ const InstructorDivision = () => {
               >
                 Hủy
               </Button>
-              <Button color="success" variant="contained">
+              <Button
+                color="success"
+                variant="contained"
+                onClick={handleAssignInstructor}
+              >
                 Xác nhận
               </Button>
             </div>
