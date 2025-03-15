@@ -4,9 +4,9 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
-import { uploadImageToCloudinary } from "../../util/UploadImageToCloudinary";
 import { updateProfileFormValidation } from "./validation/updateProfileFormValidation";
 import { updateUserProfileAction } from "../../redux/Auth/Action";
+import { uploadFileToCloudinary } from "../../util/UploadFileToCloudinary";
 
 const FormUpdateProfile = () => {
   const { authReducer } = useSelector((store) => store);
@@ -19,7 +19,7 @@ const FormUpdateProfile = () => {
     setUploadImage(true);
 
     const imageData = e.target.files[0];
-    const imageUrlFromCloudinary = await uploadImageToCloudinary(
+    const imageUrlFromCloudinary = await uploadFileToCloudinary(
       imageData,
       "User-Profile"
     );

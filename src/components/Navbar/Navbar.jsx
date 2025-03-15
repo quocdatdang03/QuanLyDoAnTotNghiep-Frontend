@@ -72,8 +72,8 @@ const pages = [
 const sinhVienOptions = [
   {
     icon: <HistoryEduIcon />,
-    title: "Đăng ký GVHD",
-    path: "/student/instructors/register",
+    title: "Đăng ký đề tài",
+    path: "/student/project/register",
   },
   {
     icon: <GroupIcon />,
