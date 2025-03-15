@@ -50,13 +50,12 @@ import { ChevronLeftOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 const FormEditProject = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [uploadFile, setUploadFile] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
 
   const { authReducer, projectReducer } = useSelector((store) => store);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const projectStatusId = projectReducer.project?.projectStatus.projectStatusId;
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 

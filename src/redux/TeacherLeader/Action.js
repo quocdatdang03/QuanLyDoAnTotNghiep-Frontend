@@ -28,7 +28,7 @@ export const getAllStudentsWithoutInstructor =
         params.append("classId", studentPagination.classId);
 
       const response = await axiosAPI.get(
-        `/instructors/students/no-instructor?${params.toString()}`
+        `/instructor-leader/students/no-instructor?${params.toString()}`
       );
       console.log(response.data);
 
@@ -53,7 +53,7 @@ export const getAllClassesByFacultyOfTeacherLeaderAction =
     });
 
     try {
-      const response = await axiosAPI.get("/instructors/classes");
+      const response = await axiosAPI.get("/instructor-leader/classes");
 
       console.log(response.data);
 
@@ -117,7 +117,7 @@ export const getAllInstructorsByFacultyOfTeacherLeaderAction =
     });
 
     try {
-      const response = await axiosAPI.get(`/instructors/faculty`);
+      const response = await axiosAPI.get(`/instructor-leader/faculty`);
 
       console.log(response.data);
 
@@ -179,7 +179,7 @@ export const assignInstructorAction = (requestData) => async (dispatch) => {
 
   try {
     const response = await axiosAPI.put(
-      `/instructors/assign-students`,
+      `/instructor-leader/assign-students`,
       requestData.assignInstructorData
     );
 
@@ -229,7 +229,7 @@ export const getAllStudentsHavingInstructorAction =
         params.append("instructorCode", studentPagination.instructorCode);
 
       const response = await axiosAPI.get(
-        `/instructors/students/having-instructor?${params.toString()}`
+        `/instructor-leader/students/having-instructor?${params.toString()}`
       );
 
       console.log(response.data);
@@ -253,7 +253,7 @@ export const removeInstructorFromStudentAction =
 
     try {
       const response = await axiosAPI.patch(
-        "/instructors/remove-instructor",
+        "/instructor-leader/remove-instructor",
         requestData.removeInstructorData
       );
 
@@ -278,7 +278,7 @@ export const changeInstructorOfStudentAction =
 
     try {
       const response = await axiosAPI.patch(
-        "/instructors/change-instructor",
+        "/instructor-leader/change-instructor",
         requestData.changeInstructorData
       );
 
