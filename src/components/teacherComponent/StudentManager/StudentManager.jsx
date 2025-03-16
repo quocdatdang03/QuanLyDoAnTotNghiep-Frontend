@@ -23,17 +23,17 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {
-  chooseStudentAction,
-  getAllClassesByFacultyOfTeacherLeaderAction,
-  getAllStudentsWithoutInstructor,
-} from "../../../redux/TeacherLeader/Action";
 
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import noResultImage from "../../../assets/images/no-result-img.png";
 import SearchIcon from "@mui/icons-material/Search";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import {
+  getAllClassesByFacultyOfTeacherAction,
+  getAllStudentsByInstructorAction,
+} from "../../../redux/Teacher/Action";
+import { getAllSemestersWithoutPaginationAction } from "../../../redux/Semester/Action";
 
 // Table header data:
 const tableHeaderDatas = [
@@ -57,7 +57,7 @@ const tableHeaderDatas = [
   },
   {
     title: "Khoa",
-    sortByField: "clazz.faculty.facultyName",
+    // sortByField: "clazz.faculty.facultyName",
   },
   {
     title: "Học kỳ",
@@ -68,88 +68,9 @@ const tableHeaderDatas = [
   {
     title: "Đề tài tốt nghiệp",
   },
-  {
-    title: "Hành động",
-  },
-];
-
-// FAKE DATA :
-const fakeStudents = [
-  {
-    studentCode: "SV001",
-    image: "https://via.placeholder.com/150",
-    fullName: "Nguyễn Văn A",
-    studentClass: {
-      className: "CNTT - K14",
-      faculty: {
-        facultyName: "Công nghệ thông tin",
-      },
-    },
-    semesters: [
-      { semesterId: 1, semesterName: "Học kỳ 1" },
-      { semesterId: 2, semesterName: "Học kỳ 2" },
-    ],
-    instructor: {
-      fullName: "TS. Trần Minh B",
-    },
-    project: {
-      projectName: "Hệ thống quản lý sinh viên",
-    },
-  },
-  {
-    studentCode: "SV002",
-    image: "https://via.placeholder.com/150",
-    fullName: "Trần Thị B",
-    studentClass: {
-      className: "CNTT - K14",
-      faculty: {
-        facultyName: "Công nghệ thông tin",
-      },
-    },
-    semesters: [{ semesterId: 1, semesterName: "Học kỳ 1" }],
-    instructor: {
-      fullName: "TS. Phạm Văn C",
-    },
-    project: null,
-  },
-  {
-    studentCode: "SV003",
-    image: "https://via.placeholder.com/150",
-    fullName: "Lê Văn C",
-    studentClass: {
-      className: "KTPM - K14",
-      faculty: {
-        facultyName: "Kỹ thuật phần mềm",
-      },
-    },
-    semesters: [
-      { semesterId: 1, semesterName: "Học kỳ 1" },
-      { semesterId: 2, semesterName: "Học kỳ 2" },
-      { semesterId: 3, semesterName: "Học kỳ 3" },
-    ],
-    instructor: {
-      fullName: "TS. Nguyễn Văn D",
-    },
-    project: {
-      projectName: "Ứng dụng chat realtime",
-    },
-  },
-  {
-    studentCode: "SV004",
-    image: "https://via.placeholder.com/150",
-    fullName: "Hoàng Thị D",
-    studentClass: {
-      className: "HTTT - K14",
-      faculty: {
-        facultyName: "Hệ thống thông tin",
-      },
-    },
-    semesters: [{ semesterId: 1, semesterName: "Học kỳ 1" }],
-    instructor: {
-      fullName: "TS. Lê Thị E",
-    },
-    project: null,
-  },
+  // {
+  //   title: "Hành động",
+  // },
 ];
 
 const StudentManager = () => {
@@ -158,6 +79,7 @@ const StudentManager = () => {
   const [keyword, setKeyword] = useState("");
   const [semesterId, setSemesterId] = useState("");
   const [classId, setClassId] = useState("");
+  const [havingProject, setHavingProject] = useState("");
 
   const [currentPageNum, setCurrentPageNum] = useState(1);
 
@@ -165,11 +87,9 @@ const StudentManager = () => {
   const [sortBy, setSortBy] = useState("account.fullName");
   const [isDelayedLoading, setIsDelayedLoading] = useState(true);
 
-  const { teacherLeaderReducer, semesterReducer } = useSelector(
-    (store) => store
-  );
+  const { teacherReducer, semesterReducer } = useSelector((store) => store);
 
-  const isInstructorLoading = teacherLeaderReducer.isLoading;
+  const isInstructorLoading = teacherReducer.isLoading;
 
   const colors = [
     "success",
@@ -181,20 +101,22 @@ const StudentManager = () => {
   ];
 
   // get all info for pagination:
-  const totalElements = teacherLeaderReducer.studentPagination?.totalElements;
-  const pageSize = teacherLeaderReducer.studentPagination?.pageSize;
-  const pageNumber = teacherLeaderReducer.studentPagination?.pageNumber;
+  const totalElements =
+    teacherReducer.studentsOfInstructorPagination?.totalElements;
+  const pageSize = teacherReducer.studentsOfInstructorPagination?.pageSize;
+  const pageNumber = teacherReducer.studentsOfInstructorPagination?.pageNumber;
 
-  // get all classes by faculty of teacher leader :
+  // get all classes by faculty of teacher :
   useEffect(() => {
-    dispatch(getAllClassesByFacultyOfTeacherLeaderAction());
+    dispatch(getAllClassesByFacultyOfTeacherAction());
+    dispatch(getAllSemestersWithoutPaginationAction());
   }, [dispatch]);
 
   // get all students have no instructor
   useEffect(() => {
     const requestData = {};
 
-    dispatch(getAllStudentsWithoutInstructor(requestData));
+    dispatch(getAllStudentsByInstructorAction(requestData));
   }, [dispatch]);
 
   // handle change page:
@@ -202,7 +124,9 @@ const StudentManager = () => {
     const requestData = {
       keyword,
       studentPagination: {
+        semesterId,
         classId,
+        havingProject,
         pageNumber: value,
         sortDir,
         sortBy,
@@ -213,14 +137,16 @@ const StudentManager = () => {
 
     setCurrentPageNum(value);
 
-    dispatch(getAllStudentsWithoutInstructor(requestData));
+    dispatch(getAllStudentsByInstructorAction(requestData));
   };
 
   const handleFilterStudent = (pageNum) => {
     const requestData = {
       keyword,
       studentPagination: {
+        semesterId,
         classId,
+        havingProject,
         pageNumber: pageNum,
         sortDir,
         sortBy,
@@ -229,14 +155,14 @@ const StudentManager = () => {
 
     console.log(requestData);
 
-    dispatch(getAllStudentsWithoutInstructor(requestData));
+    dispatch(getAllStudentsByInstructorAction(requestData));
   };
 
   // handle filter by keyword, semester, class, faculty
   useEffect(() => {
     // Nếu filter -> reset về pageNumber là 1
     handleFilterStudent(1);
-  }, [keyword, classId]);
+  }, [keyword, classId, semesterId, havingProject]);
 
   // handle sort by and sort dir
   useEffect(() => {
@@ -248,6 +174,8 @@ const StudentManager = () => {
   const handleClearSearch = () => {
     setKeyword("");
     setClassId("");
+    setSemesterId("");
+    setHavingProject("");
     setCurrentPageNum(1);
     setSortDir("asc");
     setSortBy("account.fullName");
@@ -263,15 +191,6 @@ const StudentManager = () => {
   const handleSortBy = (fieldName) => {
     console.log("SET:" + fieldName);
     setSortBy(fieldName);
-  };
-
-  // handle add student to temporary list:
-  const handleAddStudentToTemporaryList = (studentCode) => {
-    const requestData = {
-      studentCode: studentCode,
-      toast,
-    };
-    dispatch(chooseStudentAction(requestData));
   };
 
   // handle loading :
@@ -355,7 +274,7 @@ const StudentManager = () => {
                 <MenuItem value="">
                   <em>Học kỳ</em> {/* Giá trị rỗng để hiển thị khi chưa chọn */}
                 </MenuItem>
-                {semesterReducer.semesterPagination?.content?.map((item) => {
+                {semesterReducer.semesters?.map((item) => {
                   return (
                     <MenuItem key={item.semesterId} value={item.semesterId}>
                       {item.semesterName}
@@ -381,7 +300,7 @@ const StudentManager = () => {
                 <MenuItem value="">
                   <em>Lớp</em> {/* Giá trị rỗng để hiển thị khi chưa chọn */}
                 </MenuItem>
-                {teacherLeaderReducer.classes?.map((item) => {
+                {teacherReducer.classes?.map((item) => {
                   return (
                     <MenuItem key={item.classId} value={item.classId}>
                       {item.className}
@@ -399,21 +318,16 @@ const StudentManager = () => {
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                value={classId}
+                value={havingProject}
                 label="Đề tài tốt nghiệp"
-                onChange={(e) => setClassId(e.target.value)}
+                onChange={(e) => setHavingProject(e.target.value)}
               >
                 <MenuItem value="">
                   <em>Đề tài tốt nghiệp</em>{" "}
                   {/* Giá trị rỗng để hiển thị khi chưa chọn */}
                 </MenuItem>
-                {teacherLeaderReducer.classes?.map((item) => {
-                  return (
-                    <MenuItem key={item.classId} value={item.classId}>
-                      {item.className}
-                    </MenuItem>
-                  );
-                })}
+                <MenuItem value={true}>Đã đăng ký đề tài</MenuItem>
+                <MenuItem value={false}>Chưa đăng ký đề tài</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -428,7 +342,7 @@ const StudentManager = () => {
         )}
 
         {/* TABLE */}
-        {/* {teacherLeaderReducer.studentPagination?.content.length <= 0 ? (
+        {teacherReducer.studentsOfInstructorPagination?.content.length <= 0 ? (
           <div className="flex flex-col justify-center items-center">
             <img
               className="w-52 h-52"
@@ -437,104 +351,120 @@ const StudentManager = () => {
             />
             <i className="text-center text-xl uppercase">Danh sách trống</i>
           </div>
-        ) : ( */}
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 700 }} aria-label="customized table">
-            <TableHead>
-              <TableRow>
-                {/* TABLE HEADER */}
-                {tableHeaderDatas.map((item, index) => {
-                  return (
-                    <TableCell key={index} align="left">
-                      <div
-                        className={`flex items-center gap-3 ${item.sortByField && "cursor-pointer hover:underline"}`}
-                        onClick={() =>
-                          sortBy === item.sortByField
-                            ? handleSortDir()
-                            : item.sortByField && handleSortBy(item.sortByField)
-                        }
-                      >
-                        <span className="select-none">{item.title}</span>
-                        {sortBy === item.sortByField && sortDir === "asc" && (
-                          <ArrowUpwardIcon fontSize="medium" />
-                        )}
-                        {sortBy === item.sortByField && sortDir === "desc" && (
-                          <ArrowDownwardIcon fontSize="medium" />
-                        )}
-                      </div>
-                    </TableCell>
-                  );
-                })}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {fakeStudents.map((item, index) => {
-                return (
-                  <TableRow key={item.studentCode}>
-                    <TableCell align="left">{index + 1}</TableCell>
-                    <TableCell align="left">
-                      <img
-                        className="w-16 h-16 object-cover object-center rounded-"
-                        src={item.image}
-                        alt={item.fullName}
-                      />
-                    </TableCell>
-                    <TableCell align="left">{item.studentCode}</TableCell>
-                    <TableCell align="left">{item.fullName}</TableCell>
-                    <TableCell align="left">
-                      {item.studentClass.className}
-                    </TableCell>
-                    <TableCell align="left">
-                      {item.studentClass.faculty.facultyName}
-                    </TableCell>
-                    <TableCell align="left">
-                      <div className="flex items-center gap-3">
-                        {item.semesters?.map((semesterItem, i) => {
-                          return (
-                            <p
-                              className="flex items-center"
-                              key={semesterItem.semesterId}
-                            >
-                              {semesterItem.semesterName}
-
-                              {i !== item.semesters.length - 1 && (
-                                <span className="ml-3">|</span>
-                              )}
-                            </p>
-                          );
-                        })}
-                      </div>
-                    </TableCell>
-                    <TableCell align="left">
-                      <div className="flex flex-wrap items-center gap-3">
-                        <div className="flex flex-wrap items-center gap-3">
-                          <Chip
-                            label={item.instructor.fullName}
-                            variant="filled"
-                            color="info"
-                          />
+        ) : (
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 700 }} aria-label="customized table">
+              <TableHead>
+                <TableRow>
+                  {/* TABLE HEADER */}
+                  {tableHeaderDatas.map((item, index) => {
+                    return (
+                      <TableCell key={index} align="left">
+                        <div
+                          className={`flex items-center gap-3 ${item.sortByField && "cursor-pointer hover:underline"}`}
+                          onClick={() =>
+                            sortBy === item.sortByField
+                              ? handleSortDir()
+                              : item.sortByField &&
+                                handleSortBy(item.sortByField)
+                          }
+                        >
+                          <span className="select-none">{item.title}</span>
+                          {sortBy === item.sortByField && sortDir === "asc" && (
+                            <ArrowUpwardIcon fontSize="medium" />
+                          )}
+                          {sortBy === item.sortByField &&
+                            sortDir === "desc" && (
+                              <ArrowDownwardIcon fontSize="medium" />
+                            )}
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell align="left">
-                      {item.project ? (
-                        <p>Đã đăng ký đề tài</p>
-                      ) : (
-                        <p>Chưa đăng ký đề tài</p>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        {/* )} */}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {teacherReducer.studentsOfInstructorPagination?.content.map(
+                  (item, index) => {
+                    return (
+                      <TableRow key={item.studentCode}>
+                        <TableCell align="left">{index + 1}</TableCell>
+                        <TableCell align="left">
+                          <img
+                            className="w-16 h-16 object-cover object-center rounded-"
+                            src={item.image}
+                            alt={item.fullName}
+                          />
+                        </TableCell>
+                        <TableCell align="left">{item.studentCode}</TableCell>
+                        <TableCell align="left">{item.fullName}</TableCell>
+                        <TableCell align="left">
+                          {item.studentClass.className}
+                        </TableCell>
+                        <TableCell align="left">
+                          {item.studentClass.faculty.facultyName}
+                        </TableCell>
+                        <TableCell align="left">
+                          <div className="flex items-center gap-3">
+                            {item.semesters?.map((semesterItem, i) => {
+                              return (
+                                <p
+                                  className="flex items-center"
+                                  key={semesterItem.semesterId}
+                                >
+                                  {semesterItem.semesterName}
+
+                                  {i !== item.semesters.length - 1 && (
+                                    <span className="ml-3">|</span>
+                                  )}
+                                </p>
+                              );
+                            })}
+                          </div>
+                        </TableCell>
+                        <TableCell align="left">
+                          <div className="flex flex-wrap items-center gap-3">
+                            <div className="flex flex-wrap items-center gap-3">
+                              <Chip
+                                label={item.instructor.fullName}
+                                variant="filled"
+                                color="info"
+                              />
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell align="left">
+                          {item.project ? (
+                            <div>
+                              <p className="text-green-500 font-semibold italic">
+                                Đã đăng ký đề tài
+                              </p>
+                              <p className="mt-1 italic text-gray-500">
+                                {item.project.createdAt &&
+                                  new Date(
+                                    item.project.createdAt
+                                  ).toLocaleString("en-GB")}
+                              </p>
+                            </div>
+                          ) : (
+                            <p className="text-red-500 font-semibold italic">
+                              Chưa đăng ký đề tài
+                            </p>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  }
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
 
         {/* END TABLE */}
 
         {/* Pagination */}
-        {teacherLeaderReducer.studentPagination?.content.length > 0 && (
+        {teacherReducer.studentsOfInstructorPagination?.content.length > 0 && (
           <div className="flex items-center justify-center mt-10">
             <Pagination
               count={Math.ceil(totalElements / pageSize)}

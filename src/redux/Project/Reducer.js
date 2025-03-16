@@ -54,7 +54,6 @@ const projectReducer = (state = initialState, action) => {
       };
 
     case actionTypes.CREATE_PROJECT_FAILURE:
-    case actionTypes.GET_PROJECT_BY_STUDENTCODE_FAILURE:
     case actionTypes.GET_INSTRUCTOR_OF_PROJECT_BY_STUDENTCODE_FAILURE:
     case actionTypes.DELETE_PROJECT_FILE_BY_ID_FAILURE:
     case actionTypes.UPDATE_PROJECT_FAILURE:
@@ -64,6 +63,13 @@ const projectReducer = (state = initialState, action) => {
         error: action.payload,
       };
 
+    case actionTypes.GET_PROJECT_BY_STUDENTCODE_FAILURE:
+      return {
+        ...state,
+        project: null,
+        isLoading: false,
+        error: action.payload,
+      };
     default:
       return state;
   }

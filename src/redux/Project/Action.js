@@ -72,6 +72,7 @@ export const getProjectByStudentCodeAction =
       });
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;
+      console.log(errorMessage);
       dispatch({
         type: actionTypes.GET_PROJECT_BY_STUDENTCODE_FAILURE,
         payload: errorMessage,

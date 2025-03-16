@@ -2,6 +2,7 @@ import * as actionTypes from "./ActionType";
 
 const initialState = {
   semesterPagination: null,
+  semesters: null,
   semester: null,
   isLoading: false,
   error: null,
@@ -15,6 +16,7 @@ const semesterReducer = (state = initialState, action) => {
     case actionTypes.DELETE_SEMESTER_REQUEST:
     case actionTypes.GET_SEMESTER_BY_ID_REQUEST:
     case actionTypes.UPDATE_SEMESTER_BY_ID_REQUEST:
+    case actionTypes.GET_ALL_SEMESTER_WITHOUT_PAGINATION_REQUEST:
       return {
         ...state,
         isLoading: true,
@@ -76,11 +78,20 @@ const semesterReducer = (state = initialState, action) => {
         },
       };
 
+    case actionTypes.GET_ALL_SEMESTER_WITHOUT_PAGINATION_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        semesters: action.payload,
+        error: null,
+      };
+
     case actionTypes.GET_ALL_SEMESTER_FAILURE:
     case actionTypes.CREATE_SEMESTER_FAILURE:
     case actionTypes.DELETE_SEMESTER_FAILURE:
     case actionTypes.GET_SEMESTER_BY_ID_FAILURE:
     case actionTypes.UPDATE_SEMESTER_BY_ID_FAILURE:
+    case actionTypes.GET_ALL_SEMESTER_WITHOUT_PAGINATION_FAILURE:
       return {
         ...state,
         isLoading: false,

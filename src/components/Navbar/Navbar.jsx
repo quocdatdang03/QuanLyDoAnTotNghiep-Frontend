@@ -98,14 +98,14 @@ const giangVienOptions = [
     path: "/teacher/announcements",
   },
   {
-    icon: <ListAltIcon />,
-    title: "Danh sách đề tài",
-    path: "/teacher/projects",
-  },
-  {
     icon: <GroupsIcon />,
     title: "Danh sách sinh viên",
     path: "/teacher/students",
+  },
+  {
+    icon: <ListAltIcon />,
+    title: "Danh sách đề tài",
+    path: "/teacher/projects",
   },
   {
     icon: <ManageHistoryIcon />,

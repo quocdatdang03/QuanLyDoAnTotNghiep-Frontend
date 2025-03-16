@@ -131,3 +131,23 @@ export const updateSemesterAction = (requestData) => async (dispatch) => {
     });
   }
 };
+
+export const getAllSemestersWithoutPaginationAction =
+  () => async (dispatch) => {
+    dispatch({ type: actionTypes.GET_ALL_SEMESTER_WITHOUT_PAGINATION_REQUEST });
+
+    try {
+      const response = await axiosAPI.get(`/semesters`);
+
+      dispatch({
+        type: actionTypes.GET_ALL_SEMESTER_WITHOUT_PAGINATION_SUCCESS,
+        payload: response.data,
+      });
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      dispatch({
+        type: actionTypes.GET_ALL_SEMESTER_WITHOUT_PAGINATION_FAILURE,
+        payload: errorMessage,
+      });
+    }
+  };
