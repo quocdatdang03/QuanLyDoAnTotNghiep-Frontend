@@ -33,7 +33,10 @@ import {
   getAllClassesByFacultyOfTeacherAction,
   getAllStudentsByInstructorAction,
 } from "../../../redux/Teacher/Action";
-import { getAllSemestersWithoutPaginationAction } from "../../../redux/Semester/Action";
+import {
+  getAllSemestersWithoutPaginationAction,
+  getCurrentSemesterAction,
+} from "../../../redux/Semester/Action";
 
 // Table header data:
 const tableHeaderDatas = [
@@ -77,8 +80,8 @@ const StudentManager = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [keyword, setKeyword] = useState("");
-  const [semesterId, setSemesterId] = useState("");
   const [classId, setClassId] = useState("");
+  const [semesterId, setSemesterId] = useState("");
   const [havingProject, setHavingProject] = useState("");
 
   const [currentPageNum, setCurrentPageNum] = useState(1);
@@ -111,6 +114,17 @@ const StudentManager = () => {
     dispatch(getAllClassesByFacultyOfTeacherAction());
     dispatch(getAllSemestersWithoutPaginationAction());
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getCurrentSemesterAction());
+  }, []);
+
+  // Khi lấy được học kỳ hiện tại từ store thì cập nhật semesterId
+  useEffect(() => {
+    if (semesterReducer.currentSemester?.semesterId) {
+      setSemesterId(semesterReducer.currentSemester.semesterId);
+    }
+  }, [semesterReducer.currentSemester]);
 
   // get all students have no instructor
   useEffect(() => {
@@ -174,7 +188,7 @@ const StudentManager = () => {
   const handleClearSearch = () => {
     setKeyword("");
     setClassId("");
-    setSemesterId("");
+    setSemesterId(semesterReducer.currentSemester?.semesterId);
     setHavingProject("");
     setCurrentPageNum(1);
     setSortDir("asc");
@@ -271,9 +285,6 @@ const StudentManager = () => {
                 label="Học kỳ"
                 onChange={(e) => setSemesterId(e.target.value)}
               >
-                <MenuItem value="">
-                  <em>Học kỳ</em> {/* Giá trị rỗng để hiển thị khi chưa chọn */}
-                </MenuItem>
                 {semesterReducer.semesters?.map((item) => {
                   return (
                     <MenuItem key={item.semesterId} value={item.semesterId}>
@@ -310,7 +321,7 @@ const StudentManager = () => {
               </Select>
             </FormControl>
 
-            {/* FILTER BY CLASS */}
+            {/* FILTER BY PROJECT */}
             <FormControl fullWidth size="small">
               <InputLabel id="demo-simple-select-label">
                 Đề tài tốt nghiệp

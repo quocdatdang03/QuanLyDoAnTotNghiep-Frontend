@@ -36,6 +36,26 @@ export const getAllSemestersAction = (requestData) => async (dispatch) => {
   }
 };
 
+export const getCurrentSemesterAction = () => async (dispatch) => {
+  dispatch({ type: actionTypes.GET_CURRENT_SEMESTER_REQUEST });
+
+  try {
+    const response = await axiosAPI.get(`/semesters/current`);
+
+    console.log(response.data);
+    dispatch({
+      type: actionTypes.GET_CURRENT_SEMESTER_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || error.message;
+    dispatch({
+      type: actionTypes.GET_CURRENT_SEMESTER_FAILURE,
+      payload: errorMessage,
+    });
+  }
+};
+
 export const createSemesterAction = (requestData) => async (dispatch) => {
   dispatch({ type: actionTypes.CREATE_SEMESTER_REQUEST });
 

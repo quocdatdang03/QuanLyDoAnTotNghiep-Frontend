@@ -4,6 +4,7 @@ const initialState = {
   semesterPagination: null,
   semesters: null,
   semester: null,
+  currentSemester: null,
   isLoading: false,
   error: null,
   success: null,
@@ -17,6 +18,7 @@ const semesterReducer = (state = initialState, action) => {
     case actionTypes.GET_SEMESTER_BY_ID_REQUEST:
     case actionTypes.UPDATE_SEMESTER_BY_ID_REQUEST:
     case actionTypes.GET_ALL_SEMESTER_WITHOUT_PAGINATION_REQUEST:
+    case actionTypes.GET_CURRENT_SEMESTER_REQUEST:
       return {
         ...state,
         isLoading: true,
@@ -29,6 +31,14 @@ const semesterReducer = (state = initialState, action) => {
         ...state,
         isLoading: false,
         semesterPagination: action.payload,
+        error: null,
+      };
+
+    case actionTypes.GET_CURRENT_SEMESTER_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        currentSemester: action.payload,
         error: null,
       };
 
@@ -92,6 +102,7 @@ const semesterReducer = (state = initialState, action) => {
     case actionTypes.GET_SEMESTER_BY_ID_FAILURE:
     case actionTypes.UPDATE_SEMESTER_BY_ID_FAILURE:
     case actionTypes.GET_ALL_SEMESTER_WITHOUT_PAGINATION_FAILURE:
+    case actionTypes.GET_CURRENT_SEMESTER_FAILURE:
       return {
         ...state,
         isLoading: false,
