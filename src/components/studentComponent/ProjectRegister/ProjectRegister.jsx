@@ -274,7 +274,7 @@ const ProjectRegister = () => {
                 >
                   {projectReducer.project?.projectStatus.projectStatusName}
                 </Badge>
-                {projectStatusId === 1 && (
+                {(projectStatusId === 1 || projectStatusId === 4) && (
                   <IconButton
                     title="Chỉnh sửa đề tài"
                     color="primary"

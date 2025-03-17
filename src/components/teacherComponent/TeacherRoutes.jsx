@@ -1,7 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import NotFound from "../errors/NotFound";
-import { ProjectManager } from "./ProjectManager/ProjectManager";
 import ProgressManager from "../studentComponent/ProgressManager/ProgressManager";
 import { TeacherDocument } from "./TeacherDocument/TeacherDocument";
 import { TeacherAnnouncement } from "./Announcement/TeacherAnnouncement";
@@ -10,6 +9,7 @@ import { useSelector } from "react-redux";
 import Forbidden from "../errors/Forbidden";
 import InstructorDivisionResult from "./InstructorDivision/InstructorDivisionResult";
 import StudentManager from "./StudentManager/StudentManager";
+import ProjectManager from "./ProjectManager/ProjectManager";
 
 const TeacherRoutes = () => {
   const { authReducer } = useSelector((store) => store);
