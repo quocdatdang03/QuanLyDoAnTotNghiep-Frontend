@@ -1,218 +1,246 @@
 import {
   Box,
   Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardMedia,
   Chip,
   Container,
   IconButton,
-  Skeleton,
+  Menu,
+  MenuItem,
+  Paper,
   Tab,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
-import defaultImage from "../../../assets/images/default-avatar.png";
-import SubtitlesIcon from "@mui/icons-material/Subtitles";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import SchoolIcon from "@mui/icons-material/School";
-import ClassIcon from "@mui/icons-material/Class";
-import DeleteIcon from "@mui/icons-material/Delete";
 
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { getTeamDetailsAction } from "../../../redux/Team/Action";
+import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
+import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
+import React, { useState } from "react";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import { getChatRoomByTeamIdAction } from "../../../redux/Chat/Action";
-
 import TabChatMessage from "./Tab/TabChatMessage";
+import ProgressReport from "./ProgressReport/ProgressReport";
 
-var client = null;
 const ProgressManager = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { teamReducer } = useSelector((store) => store);
-  const { authReducer } = useSelector((store) => store);
-  const [isDelayedLoading, setIsDelayedLoading] = useState(true);
-  const isTeamLoading = teamReducer.isLoading;
   const [tabValue, setTabValue] = useState("1");
-
-  // get Team details and get Chat room by teamId:
-  useEffect(() => {
-    const teamId =
-      authReducer.user?.userDetails?.team?.teamId || teamReducer?.teamId;
-
-    dispatch(getChatRoomByTeamIdAction({ teamId }));
-
-    console.log("TEAM_ID" + teamId);
-    dispatch(getTeamDetailsAction(teamId));
-  }, [dispatch]);
-
-  // handle loading :
-  useEffect(() => {
-    if (isTeamLoading) {
-      setIsDelayedLoading(true);
-    } else {
-      const timer = setTimeout(() => {
-        setIsDelayedLoading(false);
-      }, 800);
-
-      return () => clearTimeout(timer);
-    }
-  }, [isTeamLoading]);
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
 
   return (
-    <Container className="border border-red-400">
-      <div className="py-7">
-        {/* TEAM NAME */}
-        <div className="flex items-center justify-center gap-2">
-          <Typography
-            color="primary"
-            className="uppercase text-center"
-            component="h2"
-            sx={{ fontSize: 35 }}
-          >
-            Nhóm của bạn:
-          </Typography>
-          <h3 className="text-center text-3xl font-semibold">
-            {teamReducer.teamDetails?.teamName}
-          </h3>
+    <Container className="my-10 py-10" component={Paper}>
+      <Typography
+        color="primary"
+        className="uppercase text-center"
+        component="h2"
+        sx={{ fontSize: 30 }}
+      >
+        Quản lý tiến độ
+      </Typography>
+
+      <div className="bg-gray-100 p-5 rounded-md mt-10">
+        {/* PROJECT INFO */}
+        <div className="mt-5">
+          <h1 className="text-[#0355d2] font-bold uppercase pb-3 border-b-[2px] border-[#0355d2] mb-5">
+            Thông tin đề tài
+          </h1>
+          <div className="space-y-2">
+            <p>
+              <b>Tên đề tài:</b>
+              <span className="pl-3 text-justify">
+                Xây dựng hệ thống đăng ký, quản lý, theo dõi tiến độ đồ án tốt
+                nghiệp của trường đại học Sư phạm Kỹ thuật - Đại học Đà Nẵngaaa
+              </span>
+            </p>
+            <p>
+              <b>Mô tả:</b>
+              <span className="pl-3 text-justify">
+                Nooi dung cua Xây dựng hệ thống đăng ký, quản lý, theo dõi tiến
+                độ đồ án tốt nghiệp của trường đại học Sư phạm Kỹ thuật - Đại
+                học Đà Nẵng
+              </span>
+            </p>
+          </div>
         </div>
-        {/* TEAM NUMBERS */}
-        <p className="text-center text-xl mt-2 text-gray-600 mb-5">
-          Số lượng thành viên đã tham gia:
-          <b className="pl-1">
-            {teamReducer.teamDetails?.joinedMemberQuantity}/
-            {teamReducer.teamDetails?.memberQuantity}
-          </b>
-        </p>
 
-        {/* STUDENT LIST */}
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {teamReducer.teamDetails?.students.map((item, index) => (
-            <Card className="relative" key={index}>
-              {authReducer.user?.userDetails.leader && !item.leader && (
-                <div className="absolute top-1 right-1">
-                  <IconButton color="error">
-                    <DeleteIcon fontSize="large" />
-                  </IconButton>
-                </div>
-              )}
+        {/* INSTRUCTOR INFO */}
+        <div className="mt-10">
+          <h1 className="text-[#0355d2] font-bold uppercase pb-3 border-b-[2px] border-[#0355d2] mb-5">
+            Thông tin GVHD
+          </h1>
+          <div className="space-y-2">
+            <p>
+              <b>Mã GVHD:</b>
+              <span className="pl-3 text-justify">31111999999</span>
+            </p>
+            <p>
+              <b>Họ tên GVHD:</b>
+              <span className="pl-3 text-justify">Hoàng Quyên</span>
+            </p>
+          </div>
+        </div>
+      </div>
 
-              {!item.leader && (
-                <div className="absolute top-2 left-1">
-                  <Chip
-                    className="shadow-md font-medium"
-                    label={item.joinedTeam ? "Đã tham gia" : "Chưa tham gia"}
-                    sx={{
-                      color: item.joinedTeam ? "#408944" : "#d74141",
-                      backgroundColor: item.joinedTeam ? "#edf7ed" : "#fdeded",
-                    }}
-                  />
-                </div>
-              )}
-
-              {isDelayedLoading ? (
-                <Skeleton variant="rectangular" height={250} />
-              ) : (
-                <CardMedia
-                  sx={{ height: 250 }}
-                  image={item.image || defaultImage}
-                  title={item.fullName}
-                />
-              )}
-
-              <CardContent>
-                {isDelayedLoading ? (
-                  <Skeleton />
-                ) : (
-                  <h3 className="text-center text-xl font-medium text-[#1ca3aa] mb-3">
-                    {item.fullName}
-                  </h3>
-                )}
-
-                {isDelayedLoading ? (
-                  <Box sx={{ pt: 0.5 }}>
-                    <Skeleton />
-                    <Skeleton width="80%" />
-                    <Skeleton width="60%" />
-                    <Skeleton width="50%" />
-                  </Box>
-                ) : (
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <p className="flex items-center gap-1 text-gray-600">
-                        <SubtitlesIcon />
-                        <b>MSSV:</b>
+      {/* PROGRESS */}
+      <div className="mt-7">
+        <h1 className="text-[#0355d2] font-bold uppercase pb-3 mb-2 text-xl">
+          Tiến độ đồ án
+        </h1>
+        <div className="space-y-5 px-5">
+          {[1, 1, 1].map((item, index) => {
+            return (
+              <div
+                className="flex flex-col md:flex-row items-center gap-3 bg-blue-100 p-5 rounded-lg"
+                key={index}
+              >
+                <Button
+                  variant="contained"
+                  className="md:w-[50%] lg:w-[30%]"
+                  sx={{ borderRadius: "100px" }}
+                  size="large"
+                >
+                  Báo cáo Giai đoạn 1
+                </Button>
+                <div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex flex-col md:flex-row md:items-center">
+                      <p className="pr-2">
+                        <b>Giai đoạn 1</b>:
                       </p>
-                      <span>{item.studentCode}</span>
+                      <p>
+                        Từ{" "}
+                        <span className="font-bold italic text-gray-600">
+                          03-01-2024
+                        </span>
+                        <span className="px-2">đến</span>
+                        <span className="font-bold italic text-gray-600">
+                          03-01-2024
+                        </span>
+                      </p>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <p className="flex items-center gap-1 text-gray-600">
-                        <CalendarMonthIcon />
-                        <b>Ngày sinh:</b>
-                      </p>
-                      <span>
-                        {new Date(item.dateOfBirth).toLocaleDateString("en-GB")}
+                    <Chip label="Đang thực hiện" color="warning" size="small" />
+                  </div>
+                  <div className="mt-3 space-y-3 bg-gray-100 p-3 rounded-md">
+                    <p>
+                      <b>Tiêu đề: </b>{" "}
+                      <span>Tiến hành thực hiện giai đoạn 1</span>
+                    </p>
+                    <p>
+                      <b>Nội dung: </b>{" "}
+                      <span className="text-justify ">
+                        Tiến hành thực hiện giai đoạn 1 Lorem ipsum dolor sit
+                        amet consectetur adipisicing elit. Ad, aspernatur libero
+                        quisquam, error cumque veniam non veritatis ducimus
+                        expedita cum voluptatibus rerum esse dolorem vitae
+                        laboriosam nemo ut earum vel.
                       </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <p className="flex items-center gap-1 text-gray-600">
-                        <ClassIcon />
-                        <b>Lớp:</b>
-                      </p>
-                      <span>{item.studentClass.className}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <p className="flex items-center gap-1 text-gray-600">
-                        <SchoolIcon />
-                        <b>Khoa:</b>
-                      </p>
-                      <span>{item.studentClass.faculty.facultyName}</span>
+                    </p>
+                    <div className="bg-gray-50 p-3 rounded-lg border">
+                      <h4 className="font-medium text-gray-800 mb-2">
+                        📂 Danh sách file:
+                      </h4>
+                      {true ? (
+                        <ul className="space-y-2">
+                          {[1, 1].map((file, index) => (
+                            <div
+                              className="bg-blue-100 ml-5 p-1 flex items-center justify-between rounded-md border border-gray-300 lg:w-[70%] hover:bg-blue-200 transition-all cursor-pointer"
+                              // onClick={(e) => handleShowViewFile(e, file.pathFile)}
+                              // key={file.projectFileId}
+                              key={index}
+                            >
+                              <div className="flex items-center gap-3">
+                                <ArticleOutlinedIcon fontSize="medium" />
+                                <p className="text-sm">fielfilfoefl.docx</p>
+                              </div>
+                              <IconButton
+                              // onClick={(event) =>
+                              //   handleOpenMenuOptionFile(event, file)
+                              // }
+                              >
+                                <MoreVertOutlinedIcon fontSize="small" />
+                              </IconButton>
+
+                              {/* MENU OPTION FILE */}
+                              {/* <Menu
+                            id="basic-menu"
+                            anchorEl={anchorEl}
+                            open={Boolean(anchorEl)}
+                            onClose={(e) => handleCloseMenuOptionFile(e)}
+                            anchorOrigin={{
+                              vertical: "bottom",
+                              horizontal: "center",
+                            }}
+                          >
+                            <MenuItem
+                              onClick={(e) =>
+                                handleShowViewFile(e, selectedFile?.pathFile)
+                              }
+                              className="hover:text-blue-500 transition-all"
+                            >
+                              <RemoveRedEyeOutlinedIcon />
+                              <span className="pl-2">Xem chi tiết</span>
+                            </MenuItem>
+                            <MenuItem
+                              onClick={(e) =>
+                                handleDownloadFile(e, selectedFile?.pathFile)
+                              }
+                              className="hover:text-green-500 transition-all"
+                            >
+                              <FileDownloadOutlinedIcon />
+                              <span className="pl-2">Tải xuống</span>
+                            </MenuItem>
+                            {projectStatusId === 1 && (
+                              <MenuItem
+                                onClick={(e) =>
+                                  handleDeleteFile(e, selectedFile)
+                                }
+                                className="hover:text-red-500 transition-all"
+                              >
+                                <DeleteOutlineOutlinedIcon />
+                                <span className="pl-2">Xóa</span>
+                              </MenuItem>
+                            )}
+                          </Menu> */}
+                            </div>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="italic text-gray-500 text-center">
+                          Danh sách file trống
+                        </p>
+                      )}
                     </div>
                   </div>
-                )}
-              </CardContent>
-              <CardActions className="flex justify-center">
-                <Button
-                  sx={{ marginBottom: 2, borderRadius: 9999 }}
-                  variant="contained"
-                  color={item.leader ? "success" : "info"}
-                  // loading={isDelayedLoading}
-                >
-                  {item.leader ? "Nhóm trưởng" : "Thành viên"}
-                </Button>
-                {/* )} */}
-              </CardActions>
-            </Card>
-          ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
+        <div>
+          {/* TAB LIST */}
+          <div className="mt-10">
+            <TabContext value={tabValue}>
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <TabList onChange={handleTabChange}>
+                  <Tab label="Báo cáo của sinh viên" value="1" />
+                  <Tab label="Hỏi đáp với giáo viên" value="2" />
+                </TabList>
+              </Box>
+              <TabPanel value="1">
+                <ProgressReport />
+              </TabPanel>
 
-        {/* TAB LIST */}
-        <div className="mt-10">
-          <TabContext value={tabValue}>
-            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <TabList onChange={handleTabChange}>
-                <Tab label="Đánh giá của giáo viên" value="1" />
-                <Tab label="Báo cáo của sinh viên" value="2" />
-                <Tab label="Hỏi đáp với giáo viên" value="3" />
-              </TabList>
-            </Box>
-            <TabPanel value="1">Item One</TabPanel>
-            <TabPanel value="2">Item Two</TabPanel>
-
-            {/* Tab Chat */}
-            <TabPanel value="3">
-              <TabChatMessage />
-            </TabPanel>
-          </TabContext>
+              {/* Tab Chat */}
+              <TabPanel value="2">
+                <TabChatMessage />
+              </TabPanel>
+            </TabContext>
+          </div>
         </div>
       </div>
     </Container>
