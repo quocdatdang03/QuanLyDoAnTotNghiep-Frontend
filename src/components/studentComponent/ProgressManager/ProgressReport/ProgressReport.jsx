@@ -255,9 +255,9 @@ const ProgressReport = () => {
                           </div>
                           <Chip
                             sx={{ borderRadius: 1 }}
-                            label="Giai đoạn 1"
+                            label="Đánh giá giai đoạn 1"
                             size="small"
-                            color="primary"
+                            color="success"
                           />
                           <p>
                             <b className="pr-2">Tiêu đề:</b>

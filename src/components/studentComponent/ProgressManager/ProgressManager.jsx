@@ -24,8 +24,10 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import TabChatMessage from "./Tab/TabChatMessage";
 import ProgressReport from "./ProgressReport/ProgressReport";
+import { useNavigate } from "react-router-dom";
 
 const ProgressManager = () => {
+  const navigate = useNavigate();
   const [tabValue, setTabValue] = useState("1");
 
   const handleTabChange = (event, newValue) => {
@@ -103,6 +105,7 @@ const ProgressManager = () => {
                   className="md:w-[50%] lg:w-[30%]"
                   sx={{ borderRadius: "100px" }}
                   size="large"
+                  onClick={() => navigate("/student/progress/create")}
                 >
                   Báo cáo Giai đoạn 1
                 </Button>
