@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -10,24 +11,23 @@ import {
   Tab,
   Typography,
 } from "@mui/material";
-
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
-import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import TabChatMessage from "./Tab/TabChatMessage";
-import ProgressReport from "./ProgressReport/ProgressReport";
-import { useNavigate } from "react-router-dom";
+import TeacherProgressReport from "./ProgressReport/TeacherProgressReport";
 
-const ProgressManager = () => {
+const TeacherProgressManagerDetail = () => {
   const navigate = useNavigate();
+
   const [tabValue, setTabValue] = useState("1");
 
   const handleTabChange = (event, newValue) => {
@@ -36,13 +36,21 @@ const ProgressManager = () => {
 
   return (
     <Container className="my-10 py-10" component={Paper}>
+      <Button
+        variant="outlined"
+        color="info"
+        startIcon={<ArrowBackIcon />}
+        onClick={() => navigate("/teacher/progress/manage")}
+      >
+        Quay lại trang quản lý tiến độ
+      </Button>
       <Typography
         color="primary"
         className="uppercase text-center"
         component="h2"
         sx={{ fontSize: 30 }}
       >
-        Quản lý tiến độ
+        Quản lý tiến độ sinh viên
       </Typography>
 
       <div className="bg-gray-100 p-5 rounded-md mt-10">
@@ -70,19 +78,19 @@ const ProgressManager = () => {
           </div>
         </div>
 
-        {/* INSTRUCTOR INFO */}
+        {/* STUDENT INFO */}
         <div className="mt-10">
           <h1 className="text-[#0355d2] font-bold uppercase pb-3 border-b-[2px] border-[#0355d2] mb-5">
-            Thông tin GVHD
+            Thông tin sinh viên thực hiện
           </h1>
           <div className="space-y-2">
             <p>
-              <b>Mã GVHD:</b>
-              <span className="pl-3 text-justify">31111999999</span>
+              <b>Mã sinh viên:</b>
+              <span className="pl-3 text-justify">21115053120309</span>
             </p>
             <p>
-              <b>Họ tên GVHD:</b>
-              <span className="pl-3 text-justify">Hoàng Quyên</span>
+              <b>Họ tên sinh viên:</b>
+              <span className="pl-3 text-justify">Đặng Quốc Đạt</span>
             </p>
           </div>
         </div>
@@ -100,20 +108,25 @@ const ProgressManager = () => {
                 className="flex flex-col md:flex-row items-center gap-3 bg-blue-100 p-5 rounded-lg"
                 key={index}
               >
-                <Button
+                {/* <Button
                   variant="contained"
                   className="md:w-[50%] lg:w-[30%]"
                   sx={{ borderRadius: "100px" }}
                   size="large"
-                  onClick={() => navigate("/student/progress/create")}
                 >
                   Báo cáo Giai đoạn 1
-                </Button>
+                </Button> */}
                 <div>
                   <div className="flex items-center gap-3">
-                    <div className="flex flex-col md:flex-row md:items-center">
+                    <div className="flex flex-col md:flex-row md:items-center justify-center">
                       <p className="pr-2">
-                        <b>Giai đoạn 1</b>:
+                        <Chip
+                          className="font-bold"
+                          sx={{ borderRadius: 1 }}
+                          label="Giai đoạn 1"
+                          color="primary"
+                          size="small"
+                        />
                       </p>
                       <p>
                         Từ{" "}
@@ -235,13 +248,11 @@ const ProgressManager = () => {
                 </TabList>
               </Box>
               <TabPanel value="1">
-                <ProgressReport />
+                <TeacherProgressReport />
               </TabPanel>
 
               {/* Tab Chat */}
-              <TabPanel value="2">
-                <TabChatMessage />
-              </TabPanel>
+              <TabPanel value="2">{/* <TabChatMessage /> */}</TabPanel>
             </TabContext>
           </div>
         </div>
@@ -250,4 +261,4 @@ const ProgressManager = () => {
   );
 };
 
-export default ProgressManager;
+export default TeacherProgressManagerDetail;

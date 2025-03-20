@@ -41,6 +41,7 @@ import NotificationAddIcon from "@mui/icons-material/NotificationAdd";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import GroupsIcon from "@mui/icons-material/Groups";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import Filter1Icon from "@mui/icons-material/Filter1";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutAction } from "../../redux/Auth/Action";
@@ -108,9 +109,14 @@ const giangVienOptions = [
     path: "/teacher/projects",
   },
   {
+    icon: <Filter1Icon />,
+    title: "Quản lý giai đoạn",
+    path: "/teacher/stages",
+  },
+  {
     icon: <ManageHistoryIcon />,
     title: "Quản lý tiến độ",
-    path: "/teacher/progresses",
+    path: "/teacher/progress/manage",
   },
   {
     icon: <DescriptionIcon />,
