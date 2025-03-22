@@ -13,6 +13,7 @@ import FormCreateProgressReview from "./ProgressManager/ProgressReview/FormCreat
 import TeacherProgressManager from "./ProgressManager/TeacherProgressManager";
 import StageManager from "./StageManager/StageManager";
 import TeacherProgressManagerDetail from "./ProgressManager/TeacherProgressManagerDetail";
+import FormEditStage from "./StageManager/FormEditStage";
 
 const TeacherRoutes = () => {
   const { authReducer } = useSelector((store) => store);
@@ -32,6 +33,7 @@ const TeacherRoutes = () => {
         element={<FormCreateProgressReview />}
       />
       <Route path="/stages" element={<StageManager />} />
+      <Route path="/stages/edit" element={<FormEditStage />} />
       <Route path="/documents" element={<TeacherDocument />} />
       <Route
         path="/instructors"

@@ -9,33 +9,28 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
-
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import toast from "react-hot-toast";
-import { useFormik } from "formik";
-import dayjs from "dayjs";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { uploadFileToCloudinary } from "../../../util/UploadFileToCloudinary";
-import StageDetail from "./StageDetail";
-import {
-  createStageAction,
-  getAllStagesByTeacherAndSemesterAction,
-} from "../../../redux/InstructorStage/Action";
+import dayjs from "dayjs";
+import { useFormik } from "formik";
 import { createStageValidation } from "./validation/createStageValidation";
+import toast from "react-hot-toast";
+import { updateStageAction } from "../../../redux/InstructorStage/Action";
 
-const StageManager = () => {
+const FormEditStage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -102,32 +97,39 @@ const StageManager = () => {
     return dayjs(value).format("YYYY-MM-DDTHH:mm:ss");
   };
 
-  // handle create stage
+  // handle update stage
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      stageName: "",
-      stageTitle: "",
-      stageContent: "",
-      stageFiles: [],
-      startDate: dayjs(),
-      endDate: dayjs(),
+      stageName: instructorStageReducer.stage?.stageName || "",
+      stageTitle: instructorStageReducer.stage?.stageTitle || "",
+      stageContent: instructorStageReducer.stage?.stageContent || "",
+      stageFiles: instructorStageReducer.stage?.stageFiles || [],
+      startDate: instructorStageReducer.stage?.startDate
+        ? dayjs(instructorStageReducer.stage?.startDate)
+        : dayjs(),
+      endDate: instructorStageReducer.stage?.endDate
+        ? dayjs(instructorStageReducer.stage?.endDate)
+        : dayjs(),
     },
     validationSchema: createStageValidation,
     onSubmit: (values, { resetForm }) => {
       const requestData = {
+        stageId: instructorStageReducer.stage?.stageId,
         stageData: {
           ...values,
           startDate: formatDateTime(values.startDate),
           endDate: formatDateTime(values.endDate),
         },
         toast,
+        navigate,
       };
 
       console.log(requestData);
 
-      dispatch(createStageAction(requestData));
+      dispatch(updateStageAction(requestData));
 
-      resetForm();
+      // resetForm();
     },
   });
 
@@ -145,29 +147,30 @@ const StageManager = () => {
     handleCloseMenuOptionFile(e);
   };
 
-  // handle get all stages of instructor:
-  useEffect(() => {
-    const requestData = {};
-
-    dispatch(getAllStagesByTeacherAndSemesterAction(requestData));
-  }, []);
-
   return (
     <>
       <Container className="my-10 py-10" component={Paper}>
+        <Button
+          variant="outlined"
+          color="info"
+          startIcon={<ArrowBackIcon />}
+          onClick={() => navigate("/teacher/stages")}
+        >
+          Quay lại trang quản lý giai đoạn
+        </Button>
         <Typography
           color="primary"
           className="text-center uppercase"
           component="h2"
           sx={{ fontSize: 35 }}
         >
-          QUẢN LÝ GIAI ĐOẠN
+          CHỈNH SỬA GIAI ĐOẠN
         </Typography>
 
-        {/* FORM CREATE STAGE */}
+        {/* FORM EDIT STAGE */}
         <div>
           <h1 className="border-[#0355d2] border-b-[2px] text-[#0355d2] font-bold mb-5 mt-6 pb-3 uppercase">
-            Khởi tạo giai đoạn cho đồ án
+            Chỉnh sửa giai đoạn đồ án
           </h1>
           <form
             className="md:space-y-6 space-y-4"
@@ -250,38 +253,6 @@ const StageManager = () => {
                   }
                 />
               </div>
-              {/* <div className="grid grid-cols-2 gap-5">
-                <div>
-                  <label
-                    htmlFor="startTime"
-                    className="text-sm block font-medium mb-2"
-                  >
-                    Thời gian bắt đầu <b className="text-red-600">(*)</b>
-                  </label>
-                  <input
-                    type="datetime-local"
-                    id="startTime"
-                    name="startTime"
-                    className="border border-gray-300 p-2 rounded-lg w-full"
-                    required
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="endTime"
-                    className="text-sm block font-medium mb-2"
-                  >
-                    Thời gian kết thúc <b className="text-red-600">(*)</b>
-                  </label>
-                  <input
-                    type="datetime-local"
-                    id="endTime"
-                    name="endTime"
-                    className="border border-gray-300 p-2 rounded-lg w-full"
-                    required
-                  />
-                </div>
-              </div> */}
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <div className="grid grid-cols-2 gap-5">
                   {/* start time */}
@@ -431,26 +402,14 @@ const StageManager = () => {
                 type="submit"
                 // loading={isDelayedLoading}
               >
-                Tạo giai đoạn
+                Cập nhật giai đoạn
               </Button>
             </div>
           </form>
-        </div>
-
-        {/* LIST STAGE */}
-        <div className="mt-10">
-          <h1 className="border-[#0355d2] border-b-[2px] text-[#0355d2] font-bold mb-5 mt-6 pb-3 uppercase">
-            Danh sách giai đoạn
-          </h1>
-          <div className="space-y-5">
-            {instructorStageReducer.stages?.map((item, index) => (
-              <StageDetail key={index} stage={item} />
-            ))}
-          </div>
         </div>
       </Container>
     </>
   );
 };
 
-export default StageManager;
+export default FormEditStage;
