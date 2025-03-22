@@ -234,3 +234,34 @@ export const deleteStageAction = (requestData) => async (dispatch) => {
     });
   }
 };
+
+export const updateStageOrderAction = (requestData) => async (dispatch) => {
+  dispatch({
+    type: actionTypes.UPDATE_STAGEORDER_REQUEST,
+  });
+
+  try {
+    const response = await axiosAPI.patch(
+      `/instructor/stages/stageOrder`,
+      requestData.updateStageOrderData
+    );
+
+    console.log(response.data);
+
+    dispatch({
+      type: actionTypes.UPDATE_STAGEORDER_SUCCESS,
+      payload: response.data,
+    });
+
+    if (response.data) {
+      requestData.toast.success("Cập nhật thứ tự giai đoạn thành công");
+    }
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || error.message;
+
+    dispatch({
+      type: actionTypes.UPDATE_STAGEORDER_FAILURE,
+      payload: errorMessage,
+    });
+  }
+};

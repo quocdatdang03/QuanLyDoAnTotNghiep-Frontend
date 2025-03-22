@@ -19,6 +19,7 @@ const instructorStageReducer = (state = initialState, action) => {
     case actionTypes.UPDATE_STAGESTATUS_REQUEST:
     case actionTypes.UPDATE_STAGE_REQUEST:
     case actionTypes.DELETE_STAGE_REQUEST:
+    case actionTypes.UPDATE_STAGEORDER_REQUEST:
       return {
         ...state,
         isLoading: false,
@@ -27,6 +28,7 @@ const instructorStageReducer = (state = initialState, action) => {
       };
 
     case actionTypes.GET_ALL_STAGES_BY_INSTRUCTOR_AND_SEMESTER_SUCCESS:
+    case actionTypes.UPDATE_STAGEORDER_SUCCESS:
       return {
         ...state,
         isLoading: false,
@@ -99,6 +101,7 @@ const instructorStageReducer = (state = initialState, action) => {
     case actionTypes.UPDATE_STAGESTATUS_FAILURE:
     case actionTypes.UPDATE_STAGE_FAILURE:
     case actionTypes.DELETE_STAGE_FAILURE:
+    case actionTypes.UPDATE_STAGEORDER_FAILURE:
       return {
         ...state,
         isLoading: false,

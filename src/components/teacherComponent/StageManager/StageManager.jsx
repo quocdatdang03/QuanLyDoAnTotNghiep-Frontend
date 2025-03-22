@@ -444,7 +444,12 @@ const StageManager = () => {
           </h1>
           <div className="space-y-5">
             {instructorStageReducer.stages?.map((item, index) => (
-              <StageDetail key={index} stage={item} />
+              <StageDetail
+                key={index}
+                stage={item}
+                offset={index}
+                stages={instructorStageReducer.stages}
+              />
             ))}
           </div>
         </div>
