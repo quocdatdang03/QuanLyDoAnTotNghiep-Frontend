@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import { formSemesterValidation } from "./validation/formSemesterValidation";
 import { updateSemesterAction } from "../../../redux/Semester/Action";
+import toast from "react-hot-toast";
 
 const FormEditSemester = () => {
   const navigate = useNavigate();
@@ -41,6 +42,7 @@ const FormEditSemester = () => {
         },
         navigate,
         isSemesterLoading,
+        toast,
       };
 
       console.log(values);
@@ -115,21 +117,21 @@ const FormEditSemester = () => {
                   name="schoolYearId"
                   onChange={formik.handleChange}
                 >
-                  {schoolYearReducer.schoolYearPagination?.content.map(
-                    (item) => {
-                      return (
-                        <MenuItem
-                          key={item.schoolYearId}
-                          value={item.schoolYearId}
-                        >
-                          {item.schoolYearName}
-                        </MenuItem>
-                      );
-                    }
-                  )}
+                  {schoolYearReducer.schoolYears?.map((item) => {
+                    return (
+                      <MenuItem
+                        key={item.schoolYearId}
+                        value={item.schoolYearId}
+                      >
+                        {item.schoolYearName}
+                      </MenuItem>
+                    );
+                  })}
                 </Select>
                 {formik.errors.schoolYearId && (
-                  <FormHelperText>{formik.errors.schoolYearId}</FormHelperText>
+                  <FormHelperText sx={{ color: "red" }}>
+                    {formik.errors.schoolYearId}
+                  </FormHelperText>
                 )}
               </FormControl>
             </div>

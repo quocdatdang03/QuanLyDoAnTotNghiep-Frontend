@@ -18,21 +18,40 @@ import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import TabChatMessage from "./Tab/TabChatMessage";
 import { useNavigate } from "react-router-dom";
 import StudentProgressReport from "./ProgressReport/StudentProgressReport";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getInstructorOfProjectByStudentCodeAction,
+  getProjectByStudentCodeAction,
+} from "../../../redux/Project/Action";
 
 const StudentProgressManager = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const { authReducer, projectReducer } = useSelector((store) => store);
+
   const [tabValue, setTabValue] = useState("1");
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
+
+  // get instructor of project and get project
+  useEffect(() => {
+    const requestData = {
+      studentCode: authReducer.user?.code,
+    };
+
+    dispatch(getInstructorOfProjectByStudentCodeAction(requestData));
+    dispatch(getProjectByStudentCodeAction(requestData));
+  }, []);
 
   return (
     <Container className="my-10 py-10" component={Paper}>
@@ -55,16 +74,13 @@ const StudentProgressManager = () => {
             <p>
               <b>Tên đề tài:</b>
               <span className="pl-3 text-justify">
-                Xây dựng hệ thống đăng ký, quản lý, theo dõi tiến độ đồ án tốt
-                nghiệp của trường đại học Sư phạm Kỹ thuật - Đại học Đà Nẵngaaa
+                {projectReducer.project?.projectName}
               </span>
             </p>
             <p>
               <b>Mô tả:</b>
               <span className="pl-3 text-justify">
-                Nooi dung cua Xây dựng hệ thống đăng ký, quản lý, theo dõi tiến
-                độ đồ án tốt nghiệp của trường đại học Sư phạm Kỹ thuật - Đại
-                học Đà Nẵng
+                {projectReducer.project?.projectContent}
               </span>
             </p>
           </div>
@@ -78,11 +94,15 @@ const StudentProgressManager = () => {
           <div className="space-y-2">
             <p>
               <b>Mã GVHD:</b>
-              <span className="pl-3 text-justify">31111999999</span>
+              <span className="pl-3 text-justify">
+                {projectReducer.instructor?.teacherCode}
+              </span>
             </p>
             <p>
               <b>Họ tên GVHD:</b>
-              <span className="pl-3 text-justify">Hoàng Quyên</span>
+              <span className="pl-3 text-justify">
+                {projectReducer.instructor?.fullName}
+              </span>
             </p>
           </div>
         </div>

@@ -25,7 +25,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   createSchoolYearAction,
   deleteSchoolYearAction,
-  getAllSchoolYearsAction,
+  getAllSchoolYearAction,
+  getAllSchoolYearsByPaginationAction,
   getSchoolYearByIdAction,
 } from "../../../redux/SchoolYear/Action";
 import { useFormik } from "formik";
@@ -83,7 +84,15 @@ const ManageSemester = () => {
       endYear: "",
     },
     onSubmit: (values, { resetForm }) => {
-      dispatch(createSchoolYearAction(values));
+      const requestData = {
+        schoolYearData: {
+          ...values,
+        },
+        toast,
+        dispatch,
+      };
+
+      dispatch(createSchoolYearAction(requestData));
 
       resetForm();
     },
@@ -98,7 +107,15 @@ const ManageSemester = () => {
     },
 
     onSubmit: (values, { resetForm }) => {
-      dispatch(createSemesterAction(values));
+      const requestDataCreateSemester = {
+        semesterData: {
+          ...values,
+        },
+        toast,
+        dispatch,
+      };
+
+      dispatch(createSemesterAction(requestDataCreateSemester));
 
       const requestDataSemester = {
         semesterPagination: {},
@@ -119,10 +136,21 @@ const ManageSemester = () => {
       semesterPagination: {},
     };
 
-    dispatch(getAllSchoolYearsAction(requestDataSchoolYear));
+    // get all school years by pagination
+    dispatch(getAllSchoolYearsByPaginationAction(requestDataSchoolYear));
 
+    // get all semesters:
     dispatch(getAllSemestersAction(requestDataSemester));
+
+    // get all school years
+    dispatch(getAllSchoolYearAction());
   }, [dispatch]);
+
+  // handle load schoolYear list when schoolYearPagination change
+  useEffect(() => {
+    // get all school years
+    dispatch(getAllSchoolYearAction());
+  }, [schoolYearReducer.schoolYearPagination]);
 
   // handle change school year page:
   const handleChangePageSchoolYear = (e, value) => {
@@ -132,7 +160,7 @@ const ManageSemester = () => {
       },
     };
 
-    dispatch(getAllSchoolYearsAction(requestData));
+    dispatch(getAllSchoolYearsByPaginationAction(requestData));
   };
 
   // handle change semester page:
@@ -169,6 +197,8 @@ const ManageSemester = () => {
   const handleDeleteSchoolYear = () => {
     const requestData = {
       schoolYearId: selectedSchoolYear?.schoolYearId,
+      toast,
+      dispatch,
     };
     dispatch(deleteSchoolYearAction(requestData));
     setOpenDeleteSchoolYearModal(false);
@@ -179,6 +209,8 @@ const ManageSemester = () => {
   const handleDeleteSemester = () => {
     const requestData = {
       semesterId: selectedSemester?.semesterId,
+      toast,
+      dispatch,
     };
     dispatch(deleteSemesterAction(requestData));
     setOpenDeleteSemesterModal(false);
@@ -352,21 +384,19 @@ const ManageSemester = () => {
                       name="schoolYearId"
                       onChange={formikSemester.handleChange}
                     >
-                      {schoolYearReducer.schoolYearPagination?.content.map(
-                        (item) => {
-                          return (
-                            <MenuItem
-                              key={item.schoolYearId}
-                              value={item.schoolYearId}
-                            >
-                              {item.schoolYearName}
-                            </MenuItem>
-                          );
-                        }
-                      )}
+                      {schoolYearReducer.schoolYears?.map((item) => {
+                        return (
+                          <MenuItem
+                            key={item.schoolYearId}
+                            value={item.schoolYearId}
+                          >
+                            {item.schoolYearName}
+                          </MenuItem>
+                        );
+                      })}
                     </Select>
                     {formikSemester.errors.schoolYearId && (
-                      <FormHelperText>
+                      <FormHelperText sx={{ color: "red" }}>
                         {formikSemester.errors.schoolYearId}
                       </FormHelperText>
                     )}

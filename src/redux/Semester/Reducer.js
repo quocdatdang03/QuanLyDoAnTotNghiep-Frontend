@@ -42,29 +42,29 @@ const semesterReducer = (state = initialState, action) => {
         error: null,
       };
 
-    case actionTypes.CREATE_SEMESTER_SUCCESS:
-      return {
-        ...state,
-        isLoading: false,
-        semesterPagination: {
-          ...state.semesterPagination,
-          content: [...state.semesterPagination.content, action.payload],
-        },
-        error: null,
-      };
+    // case actionTypes.CREATE_SEMESTER_SUCCESS:
+    //   return {
+    //     ...state,
+    //     isLoading: false,
+    //     semesterPagination: {
+    //       ...state.semesterPagination,
+    //       content: [...state.semesterPagination.content, action.payload],
+    //     },
+    //     error: null,
+    //   };
 
-    case actionTypes.DELETE_SEMESTER_SUCCESS:
-      return {
-        ...state,
-        isLoading: false,
-        semesterPagination: {
-          ...state.semesterPagination,
-          content: state.semesterPagination.content.filter(
-            (item) => item.semesterId !== action.payload
-          ),
-        },
-        error: null,
-      };
+    // case actionTypes.DELETE_SEMESTER_SUCCESS:
+    //   return {
+    //     ...state,
+    //     isLoading: false,
+    //     semesterPagination: {
+    //       ...state.semesterPagination,
+    //       content: state.semesterPagination.content.filter(
+    //         (item) => item.semesterId !== action.payload
+    //       ),
+    //     },
+    //     error: null,
+    //   };
 
     case actionTypes.GET_SEMESTER_BY_ID_SUCCESS:
       return {

@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
 import { updateSchoolYearAction } from "../../../redux/SchoolYear/Action";
+import toast from "react-hot-toast";
 
 const FormEditSchoolYear = () => {
   const navigate = useNavigate();
@@ -30,6 +31,7 @@ const FormEditSchoolYear = () => {
           endYear: values.endYear,
         },
         navigate,
+        toast,
       };
       dispatch(updateSchoolYearAction(requestData));
     },

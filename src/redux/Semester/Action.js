@@ -60,18 +60,38 @@ export const createSemesterAction = (requestData) => async (dispatch) => {
   dispatch({ type: actionTypes.CREATE_SEMESTER_REQUEST });
 
   try {
-    const response = await axiosAPI.post(`/admin/semesters`, requestData);
+    const response = await axiosAPI.post(
+      `/admin/semesters`,
+      requestData.semesterData
+    );
 
     dispatch({
       type: actionTypes.CREATE_SEMESTER_SUCCESS,
       payload: response.data,
     });
+
+    if (response.data) {
+      // load lại semesterPagination:
+      const requestDataSemester = {
+        semesterPagination: {},
+      };
+      dispatch(getAllSemestersAction(requestDataSemester));
+
+      // success notification
+      requestData.toast.success("Tạo học kỳ mới thành công");
+    }
   } catch (error) {
     const errorMessage = error.response?.data?.message || error.message;
     dispatch({
       type: actionTypes.CREATE_SEMESTER_FAILURE,
       payload: errorMessage,
     });
+
+    if (errorMessage === "SemesterName should be unique") {
+      requestData.toast.error(
+        "Tên học kỳ " + requestData.semesterData.semesterName + " đã tồn tại"
+      );
+    }
   }
 };
 
@@ -89,6 +109,17 @@ export const deleteSemesterAction = (requestData) => async (dispatch) => {
       type: actionTypes.DELETE_SEMESTER_SUCCESS,
       payload: requestData.semesterId,
     });
+
+    if (response.data) {
+      // load lại semesterPagination:
+      const requestDataSemester = {
+        semesterPagination: {},
+      };
+      dispatch(getAllSemestersAction(requestDataSemester));
+
+      // notification success
+      requestData.toast.success("Xóa học kỳ thành công");
+    }
   } catch (error) {
     const errorMessage = error.response?.data?.message || error.message;
 
@@ -141,6 +172,8 @@ export const updateSemesterAction = (requestData) => async (dispatch) => {
       payload: response.data,
     });
 
+    if (response.data) requestData.toast.success("Cập nhật học kỳ thành công");
+
     if (response.data && !requestData.isSemesterLoading)
       requestData.navigate("/admin/manage-semester");
   } catch (error) {
@@ -149,6 +182,11 @@ export const updateSemesterAction = (requestData) => async (dispatch) => {
       type: actionTypes.UPDATE_SEMESTER_BY_ID_FAILURE,
       payload: errorMessage,
     });
+    if (errorMessage === "SemesterName should be unique") {
+      requestData.toast.error(
+        "Tên học kỳ " + requestData.semesterData.semesterName + " đã tồn tại"
+      );
+    }
   }
 };
 
