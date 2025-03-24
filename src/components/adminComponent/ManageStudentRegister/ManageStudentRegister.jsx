@@ -24,7 +24,11 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getAllSemestersAction } from "../../../redux/Semester/Action";
+import {
+  getAllSemestersAction,
+  getAllSemestersWithoutPaginationAction,
+  getCurrentSemesterAction,
+} from "../../../redux/Semester/Action";
 import { getAllFacultiesAction } from "../../../redux/Faculty/Action";
 import { getAllClassesAction } from "../../../redux/Class/Action";
 import { filterAllStudentsAction } from "../../../redux/Student/Action";
@@ -101,7 +105,7 @@ const ManageStudentRegister = () => {
   useEffect(() => {
     const requestSemesterData = {};
 
-    dispatch(getAllSemestersAction(requestSemesterData));
+    dispatch(getAllSemestersWithoutPaginationAction());
     dispatch(getAllFacultiesAction());
     dispatch(getAllClassesAction());
   }, [dispatch]);
@@ -112,6 +116,17 @@ const ManageStudentRegister = () => {
 
     dispatch(filterAllStudentsAction(requestData));
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getCurrentSemesterAction());
+  }, []);
+
+  // Khi lấy được học kỳ hiện tại từ store thì cập nhật semesterId
+  useEffect(() => {
+    if (semesterReducer.currentSemester?.semesterId) {
+      setSemesterId(semesterReducer.currentSemester.semesterId);
+    }
+  }, [semesterReducer.currentSemester]);
 
   // handle change page:
   const handleChangePage = (e, value) => {
@@ -167,7 +182,7 @@ const ManageStudentRegister = () => {
   // handle clear search
   const handleClearSearch = () => {
     setKeyword("");
-    setSemesterId("");
+    setSemesterId(semesterReducer.currentSemester?.semesterId);
     setClassId("");
     setFacultyId("");
     setCurrentPageNum(1);
@@ -245,7 +260,7 @@ const ManageStudentRegister = () => {
               <MenuItem value="">
                 <em>Học kỳ</em> {/* Giá trị rỗng để hiển thị khi chưa chọn */}
               </MenuItem>
-              {semesterReducer.semesterPagination?.content?.map((item) => {
+              {semesterReducer.semesters?.map((item) => {
                 return (
                   <MenuItem key={item.semesterId} value={item.semesterId}>
                     {item.semesterName}
@@ -372,22 +387,12 @@ const ManageStudentRegister = () => {
                       {item.studentClass.faculty.facultyName}
                     </StyledTableCell>
                     <StyledTableCell align="left">
-                      <div className="flex items-center gap-3">
-                        {item.semesters?.map((semesterItem, i) => {
-                          return (
-                            <p
-                              className="flex items-center"
-                              key={semesterItem.semesterId}
-                            >
-                              {semesterItem.semesterName}
-
-                              {i !== item.semesters.length - 1 && (
-                                <span className="ml-3">|</span>
-                              )}
-                            </p>
-                          );
-                        })}
-                      </div>
+                      <p
+                        className="flex items-center"
+                        key={item.semester.semesterId}
+                      >
+                        {item.semester.semesterName}
+                      </p>
                     </StyledTableCell>
                   </StyledTableRow>
                 );
