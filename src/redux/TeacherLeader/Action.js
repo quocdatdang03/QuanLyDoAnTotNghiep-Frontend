@@ -257,12 +257,23 @@ export const removeInstructorFromStudentAction =
         requestData.removeInstructorData
       );
 
-      dispatch({
-        type: actionTypes.REMOVE_INSTRUCTOR_FROM_STUDENT_SUCCESS,
-        payload: response.data,
-      });
+      // ++++++ Bỏ dispatch này không cần nữa
+      // dispatch({
+      //   type: actionTypes.REMOVE_INSTRUCTOR_FROM_STUDENT_SUCCESS,
+      //   payload: response.data,
+      // });
 
-      if (response.data) requestData.toast.success("Hủy bỏ GVHD thành công");
+      console.log(response.data);
+
+      if (response.data) {
+        const requestGetAllStudentsData = {};
+
+        requestData.dispatch(
+          getAllStudentsHavingInstructorAction(requestGetAllStudentsData)
+        );
+
+        requestData.toast.success("Hủy bỏ GVHD thành công");
+      }
     } catch (error) {
       const errorMessage = error.response?.data?.message || error.message;
       dispatch({

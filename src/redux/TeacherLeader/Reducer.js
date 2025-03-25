@@ -112,20 +112,20 @@ const teacherLeaderReducer = (state = initialState, action) => {
         error: null,
       };
 
-    case actionTypes.REMOVE_INSTRUCTOR_FROM_STUDENT_SUCCESS:
-      return {
-        ...state,
-        isLoading: false,
+    // case actionTypes.REMOVE_INSTRUCTOR_FROM_STUDENT_SUCCESS:
+    //   return {
+    //     ...state,
+    //     isLoading: false,
 
-        studentHavingInstructorPagination: {
-          ...state.studentHavingInstructorPagination,
-          content: state.studentHavingInstructorPagination.content.filter(
-            (item) => item.studentCode !== action.payload.studentCode
-          ),
-        },
+    //     studentHavingInstructorPagination: {
+    //       ...state.studentHavingInstructorPagination,
+    //       content: state.studentHavingInstructorPagination.content.filter(
+    //         (item) => item.studentCode !== action.payload.studentCode
+    //       ),
+    //     },
 
-        error: null,
-      };
+    //     error: null,
+    //   };
 
     case actionTypes.CHANGE_INSTRUCTOR_OF_STUDENT_SUCCESS:
       return {

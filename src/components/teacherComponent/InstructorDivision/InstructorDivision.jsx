@@ -349,6 +349,7 @@ const InstructorDivision = () => {
         navigate,
       };
 
+      console.log(requestData);
       dispatch(assignInstructorAction(requestData));
     }
   };
@@ -518,22 +519,12 @@ const InstructorDivision = () => {
                             {item.studentClass.faculty.facultyName}
                           </TableCell>
                           <TableCell align="left">
-                            <div className="flex items-center gap-3">
-                              {item.semesters?.map((semesterItem, i) => {
-                                return (
-                                  <p
-                                    className="flex items-center"
-                                    key={semesterItem.semesterId}
-                                  >
-                                    {semesterItem.semesterName}
-
-                                    {i !== item.semesters.length - 1 && (
-                                      <span className="ml-3">|</span>
-                                    )}
-                                  </p>
-                                );
-                              })}
-                            </div>
+                            <p
+                              className="flex items-center"
+                              key={item.semester.semesterId}
+                            >
+                              {item.semester.semesterName}
+                            </p>
                           </TableCell>
                           <TableCell align="left">
                             <div className="flex flex-wrap items-center gap-3">
