@@ -78,15 +78,15 @@ const tableHeaderDatas = [
   },
   {
     title: "Mã sinh viên",
-    sortByField: "student.account.code",
+    sortByField: "studentSemester.student.account.code",
   },
   {
     title: "Họ tên",
-    sortByField: "student.account.fullName",
+    sortByField: "studentSemester.student.account.fullName",
   },
   {
     title: "Lớp",
-    sortByField: "student.clazz.className",
+    sortByField: "studentSemester.student.clazz.className",
   },
   {
     title: "Học kỳ",
@@ -119,7 +119,9 @@ const ProjectManager = () => {
   const [currentPageNum, setCurrentPageNum] = useState(1);
 
   const [sortDir, setSortDir] = useState("asc");
-  const [sortBy, setSortBy] = useState("student.account.fullName");
+  const [sortBy, setSortBy] = useState(
+    "studentSemester.student.account.fullName"
+  );
   const [isDelayedLoading, setIsDelayedLoading] = useState(true);
 
   const { instructorProjectReducer, teacherReducer, semesterReducer } =
@@ -214,7 +216,7 @@ const ProjectManager = () => {
     setSemesterId(semesterReducer.currentSemester?.semesterId);
     setCurrentPageNum(1);
     setSortDir("asc");
-    setSortBy("student.account.fullName");
+    setSortBy("studentSemester.student.account.fullName");
   };
 
   // handle sort dir:
@@ -245,9 +247,10 @@ const ProjectManager = () => {
   };
 
   // handle open MODAL Project Details:
-  const handleOpenModalProjectDetails = (studentCode) => {
+  const handleOpenModalProjectDetails = (studentCode, semesterIdOfProject) => {
     const requestData = {
       studentCode,
+      semesterIdOfProject,
     };
     dispatch(getProjectByStudentCodeAction(requestData));
 
@@ -516,7 +519,8 @@ const ProjectManager = () => {
                               color="success"
                               onClick={() =>
                                 handleOpenModalProjectDetails(
-                                  item.student.studentCode
+                                  item.student.studentCode,
+                                  item.semester.semesterId
                                 )
                               }
                             >

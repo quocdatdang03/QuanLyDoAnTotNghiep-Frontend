@@ -417,20 +417,12 @@ const StudentManager = () => {
                         </TableCell>
                         <TableCell align="left">
                           <div className="flex items-center gap-3">
-                            {item.semesters?.map((semesterItem, i) => {
-                              return (
-                                <p
-                                  className="flex items-center"
-                                  key={semesterItem.semesterId}
-                                >
-                                  {semesterItem.semesterName}
-
-                                  {i !== item.semesters.length - 1 && (
-                                    <span className="ml-3">|</span>
-                                  )}
-                                </p>
-                              );
-                            })}
+                            <p
+                              className="flex items-center"
+                              key={item.semester.semesterId}
+                            >
+                              {item.semester.semesterName}
+                            </p>
                           </div>
                         </TableCell>
                         <TableCell align="left">

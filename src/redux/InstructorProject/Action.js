@@ -54,7 +54,7 @@ export const getProjectByStudentCodeAction =
 
     try {
       const response = await axiosAPI.get(
-        `/instructor/projects/student/${requestData.studentCode}`
+        `/instructor/projects/student/${requestData.studentCode}?semesterId=${requestData.semesterIdOfProject}`
       );
 
       console.log(response.data);
