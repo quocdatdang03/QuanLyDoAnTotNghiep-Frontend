@@ -38,22 +38,12 @@ import noResultImage from "../../../assets/images/no-result-img.png";
 import SearchIcon from "@mui/icons-material/Search";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
-import CloseIcon from "@mui/icons-material/Close";
-import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
-import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
-import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
-import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { getAllClassesByFacultyOfTeacherAction } from "../../../redux/Teacher/Action";
 import {
   getAllSemestersWithoutPaginationAction,
   getCurrentSemesterAction,
 } from "../../../redux/Semester/Action";
-import {
-  approveProjectAction,
-  declineProjectAction,
-  getAllProjectsByInstructorAction,
-  getProjectByStudentCodeAction,
-} from "../../../redux/InstructorProject/Action";
+import { getAllProjectsByInstructorAction } from "../../../redux/InstructorProject/Action";
 
 // Style for MODAL Project Details:
 const style = {
@@ -79,15 +69,15 @@ const tableHeaderDatas = [
   },
   {
     title: "Mã sinh viên",
-    sortByField: "student.account.code",
+    sortByField: "studentSemester.student.account.code",
   },
   {
     title: "Họ tên",
-    sortByField: "student.account.fullName",
+    sortByField: "studentSemester.student.account.fullName",
   },
   {
     title: "Lớp",
-    sortByField: "student.clazz.className",
+    sortByField: "studentSemester.student.clazz.className",
   },
   {
     title: "Học kỳ",
@@ -113,21 +103,19 @@ const TeacherProgressManager = () => {
   const [keyword, setKeyword] = useState("");
   const [semesterId, setSemesterId] = useState("");
   const [classId, setClassId] = useState("");
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [selectedFile, setSelectedFile] = useState(null);
 
   const [currentPageNum, setCurrentPageNum] = useState(1);
 
   const [sortDir, setSortDir] = useState("asc");
-  const [sortBy, setSortBy] = useState("student.account.fullName");
+  const [sortBy, setSortBy] = useState(
+    "studentSemester.student.account.fullName"
+  );
   const [isDelayedLoading, setIsDelayedLoading] = useState(true);
 
   const { instructorProjectReducer, teacherReducer, semesterReducer } =
     useSelector((store) => store);
 
   const isInstructorLoading = teacherReducer.isLoading;
-  const projectStatusId =
-    instructorProjectReducer.project?.projectStatus.projectStatusId;
 
   // get all info for pagination:
   const totalElements =
@@ -214,7 +202,7 @@ const TeacherProgressManager = () => {
     setSemesterId(semesterReducer.currentSemester?.semesterId);
     setCurrentPageNum(1);
     setSortDir("asc");
-    setSortBy("student.account.fullName");
+    setSortBy("studentSemester.student.account.fullName");
   };
 
   // handle sort dir:
@@ -227,30 +215,6 @@ const TeacherProgressManager = () => {
   const handleSortBy = (fieldName) => {
     console.log("SET:" + fieldName);
     setSortBy(fieldName);
-  };
-
-  const handleOpenMenuOptionFile = (event, currentFile) => {
-    event.stopPropagation();
-    setAnchorEl(event.currentTarget);
-    setSelectedFile(currentFile);
-  };
-  const handleCloseMenuOptionFile = (e) => {
-    e.stopPropagation();
-    setAnchorEl(null);
-  };
-
-  // handle show view file:
-  const handleShowViewFile = (e, pathFile) => {
-    e.stopPropagation();
-    window.open(`https://docs.google.com/gview?url=${pathFile}`, "_blank");
-    handleCloseMenuOptionFile(e);
-  };
-
-  // handle download file:
-  const handleDownloadFile = (e, pathFile) => {
-    e.stopPropagation();
-    window.location.href = pathFile;
-    handleCloseMenuOptionFile(e);
   };
 
   // handle loading :

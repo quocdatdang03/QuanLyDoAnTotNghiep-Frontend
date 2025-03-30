@@ -8,6 +8,7 @@ import ProjectRegister from "./ProjectRegister/ProjectRegister";
 import FormEditProject from "./ProjectRegister/FormEditProject";
 import FormCreateProgressReport from "./ProgressManager/ProgressReport/FormCreateProgressReport";
 import StudentProgressManager from "./ProgressManager/StudentProgressManager";
+import FormUpdateProgressReport from "./ProgressManager/ProgressReport/FormUpdateProgressReport";
 
 const StudentRoutes = () => {
   return (
@@ -18,6 +19,7 @@ const StudentRoutes = () => {
       <Route path="/teams/details" element={<TeamDetails />} />
       <Route path="/progress/manage" element={<StudentProgressManager />} />
       <Route path="/progress/create" element={<FormCreateProgressReport />} />
+      <Route path="/progress/edit" element={<FormUpdateProgressReport />} />
       <Route path="/documents" element={<StudentDocument />} />
 
       <Route path="*" element={<NotFound />} />

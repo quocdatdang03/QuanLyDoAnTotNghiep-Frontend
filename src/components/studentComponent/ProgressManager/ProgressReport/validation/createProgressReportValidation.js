@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 
 export const createProgressReportValidation = Yup.object({
-  progressReportName: Yup.string().required(
+  progressReportTitle: Yup.string().required(
     "Tên tiêu đề báo cáo không được bỏ trống"
   ),
   progressReportContent: Yup.string().required(

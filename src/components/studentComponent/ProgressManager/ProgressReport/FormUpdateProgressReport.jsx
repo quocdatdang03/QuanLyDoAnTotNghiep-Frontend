@@ -25,9 +25,12 @@ import { uploadFileToCloudinary } from "../../../../util/UploadFileToCloudinary"
 import toast from "react-hot-toast";
 import { useFormik } from "formik";
 import { createProgressReportValidation } from "./validation/createProgressReportValidation";
-import { createProgressReportAction } from "../../../../redux/ProgressReport/Action";
+import {
+  createProgressReportAction,
+  updateProgressReportAction,
+} from "../../../../redux/ProgressReport/Action";
 
-const FormCreateProgressReport = () => {
+const FormUpdateProgressReport = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -71,26 +74,16 @@ const FormCreateProgressReport = () => {
     }
   };
 
-  // handle delete current uploaded file:
-  const handleDeleteCurrentUploadedFile = (e, currentFile) => {
-    const progressReportFilesAfterDelete =
-      formik.values.progressReportFiles.filter(
-        (item) => item.pathFile !== currentFile.pathFile
-      );
-
-    formik.setFieldValue("progressReportFiles", progressReportFilesAfterDelete);
-
-    handleCloseMenuOptionFile(e);
-  };
-
-  // handle register progressReport
+  // handle update progressReport
   const formik = useFormik({
     initialValues: {
-      progressReportTitle: "",
-      progressReportContent: "",
-      progressReportFiles: [],
-      stageId: progressReportReducer.stage?.stageId,
-      projectId: projectReducer.project?.projectId,
+      progressReportId: progressReportReducer.progressReport?.progressReportId,
+      progressReportTitle:
+        progressReportReducer.progressReport?.progressReportTitle || "",
+      progressReportContent:
+        progressReportReducer.progressReport?.progressReportContent || "",
+      progressReportFiles:
+        progressReportReducer.progressReport?.progressReportFiles || [],
     },
     validationSchema: createProgressReportValidation,
     onSubmit: (values, { resetForm }) => {
@@ -98,15 +91,14 @@ const FormCreateProgressReport = () => {
         progressReportData: {
           ...values,
         },
+        projectId: projectReducer.project?.projectId,
         toast,
         navigate,
       };
 
       console.log(requestData);
 
-      dispatch(createProgressReportAction(requestData));
-
-      resetForm();
+      dispatch(updateProgressReportAction(requestData));
     },
   });
 
@@ -138,6 +130,18 @@ const FormCreateProgressReport = () => {
     handleCloseMenuOptionFile(e);
   };
 
+  // handle delete current uploaded file:
+  const handleDeleteCurrentUploadedFile = (e, currentFile) => {
+    const progressReportFilesAfterDelete =
+      formik.values.progressReportFiles.filter(
+        (item) => item.pathFile !== currentFile.pathFile
+      );
+
+    formik.setFieldValue("progressReportFiles", progressReportFilesAfterDelete);
+
+    handleCloseMenuOptionFile(e);
+  };
+
   // ++++++++++++++++++++++++++++++ END LOGIC CODE RELATED FILE:
 
   return (
@@ -156,13 +160,13 @@ const FormCreateProgressReport = () => {
         component="h2"
         sx={{ fontSize: 30 }}
       >
-        Tạo Báo cáo tiến độ
+        Cập nhật Báo cáo tiến độ
       </Typography>
       <>
         <h1 className="text-[#0355d2] font-bold uppercase pb-3 border-b-[2px] border-[#0355d2] mt-6 mb-5 flex items-center">
           <span className="pr-2">Báo cáo tiến độ</span>
           <Chip
-            label={progressReportReducer.stage?.stageName}
+            label={progressReportReducer.progressReport?.stage.stageName}
             color="primary"
             size="small"
           />
@@ -322,7 +326,7 @@ const FormCreateProgressReport = () => {
               type="submit"
               // loading={isDelayedLoading}
             >
-              Gửi báo cáo
+              Cập nhật báo cáo
             </Button>
           </div>
         </form>
@@ -331,4 +335,4 @@ const FormCreateProgressReport = () => {
   );
 };
 
-export default FormCreateProgressReport;
+export default FormUpdateProgressReport;

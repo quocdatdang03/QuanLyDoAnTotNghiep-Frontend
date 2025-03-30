@@ -13,6 +13,7 @@ import projectReducer from "./Project/Reducer";
 import teacherReducer from "./Teacher/Reducer";
 import instructorProjectReducer from "./InstructorProject/Reducer";
 import instructorStageReducer from "./InstructorStage/Reducer";
+import progressReportReducer from "./ProgressReport/Reducer";
 
 const rootReducer = combineReducers({
   authReducer: authReducer,
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
   teacherReducer: teacherReducer,
   instructorProjectReducer: instructorProjectReducer,
   instructorStageReducer: instructorStageReducer,
+  progressReportReducer: progressReportReducer,
 });
 
 export const store = legacy_createStore(rootReducer, applyMiddleware(thunk));
