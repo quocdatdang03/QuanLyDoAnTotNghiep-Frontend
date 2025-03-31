@@ -64,6 +64,8 @@ const StudentProgressReport = ({ projectId }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [openId, setOpenId] = useState(null);
+  const [sortOrder, setSortOrder] = useState("desc");
+  const [stageId, setStageId] = useState("");
 
   const [selectedProgressReport, setSelectedProgressReport] = useState(null);
   const [openDeleteProgressReportModal, setOpenDeleteProgressReportModal] =
@@ -150,14 +152,16 @@ const StudentProgressReport = ({ projectId }) => {
     setOpenDeleteProgressReportModal(false);
   };
 
-  // get all stages of project
+  // get all progressReports of project
   useEffect(() => {
     dispatch(
       getAllProgressReportsByProjectAction({
         projectId: projectId,
+        sortOrder: sortOrder,
+        stageId: stageId,
       })
     );
-  }, [projectId]);
+  }, [projectId, sortOrder, stageId]);
 
   return (
     <>
@@ -173,13 +177,33 @@ const StudentProgressReport = ({ projectId }) => {
         >
           Báo cáo tiến độ của sinh viên
         </Typography>
-        {/* Dropdown chọn sắp xếp */}
-        <div className="flex justify-end mt-3">
+
+        <div className="flex justify-end mt-3 gap-3">
+          {/* Dropdown lọc theo giai đoạn (stage) */}
+          <FormControl size="small" className="w-60 bg-white rounded-md">
+            <InputLabel>Tất cả giai đoạn</InputLabel>
+            <Select
+              value={stageId}
+              onChange={(e) => setStageId(e.target.value)}
+              label="Tất cả giai đoạn"
+            >
+              <MenuItem value="">Tất cả giai đoạn</MenuItem>
+              {progressReportReducer.stages?.map((item) => {
+                return (
+                  <MenuItem value={item.stageId} key={item.stageId}>
+                    {item.stageName}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+
+          {/* Dropdown sắp xếp theo createdDate */}
           <FormControl size="small" className="w-60 bg-white rounded-md">
             <InputLabel>Sắp xếp theo</InputLabel>
             <Select
-              // value={sortOrder}
-              // onChange={(e) => setSortOrder(e.target.value)}
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
               label="Sắp xếp theo"
             >
               <MenuItem value="desc">
@@ -195,205 +219,213 @@ const StudentProgressReport = ({ projectId }) => {
         </div>
         <div className="mt-5">
           <div className=" space-y-5">
-            {progressReportReducer.progressReports?.map((item) => (
-              <Accordion
-                key={item.progressReportId}
-                expanded={openId === item.progressReportId}
-                className="border border-gray-300 rounded-md"
-              >
-                {/* PROGRESS REPORT OF STUDENT */}
-                <AccordionSummary id={`panel-${item.id}-header`}>
-                  <div className="flex gap-5 w-full">
-                    <img
-                      src={authReducer.user?.image || defaultAvatar}
-                      className="w-10 h-10 rounded-full object-cover object-center"
-                    />
-                    <div className="space-y-2 w-full">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <p className="font-semibold text-gray-600">
-                            {authReducer.user?.fullName}
-                          </p>
-                          <Chip
-                            label={item.approved ? "Đã duyệt" : "Chưa duyệt"}
-                            size="small"
-                            color={item.approved ? "success" : "error"}
-                          />
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <IconButton
-                            color="primary"
-                            onClick={() =>
-                              handleNavigateToFormUpdateProgressReport(
-                                item.progressReportId
-                              )
-                            }
-                          >
-                            <EditIcon />
-                          </IconButton>
-                          {(!item.approved ||
-                            item.progressReviews.length <= 0) && (
+            {progressReportReducer.progressReports.length > 0 ? (
+              progressReportReducer.progressReports?.map((item) => (
+                <Accordion
+                  key={item.progressReportId}
+                  expanded={openId === item.progressReportId}
+                  className="border border-gray-300 rounded-md"
+                >
+                  {/* PROGRESS REPORT OF STUDENT */}
+                  <AccordionSummary id={`panel-${item.id}-header`}>
+                    <div className="flex gap-5 w-full">
+                      <img
+                        src={authReducer.user?.image || defaultAvatar}
+                        className="w-10 h-10 rounded-full object-cover object-center"
+                      />
+                      <div className="space-y-2 w-full">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <p className="font-semibold text-gray-600">
+                              {authReducer.user?.fullName}
+                            </p>
+                            <Chip
+                              label={item.approved ? "Đã duyệt" : "Chưa duyệt"}
+                              size="small"
+                              color={item.approved ? "success" : "error"}
+                            />
+                          </div>
+                          <div className="flex items-center gap-3">
                             <IconButton
-                              color="error"
+                              color="primary"
                               onClick={() =>
-                                handleOpenModalDeleteProgressReport(item)
+                                handleNavigateToFormUpdateProgressReport(
+                                  item.progressReportId
+                                )
                               }
                             >
-                              <DeleteIcon />
+                              <EditIcon />
                             </IconButton>
+                            {(!item.approved ||
+                              item.progressReviews.length <= 0) && (
+                              <IconButton
+                                color="error"
+                                onClick={() =>
+                                  handleOpenModalDeleteProgressReport(item)
+                                }
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            )}
+                          </div>
+                        </div>
+                        <Chip
+                          sx={{ borderRadius: 1 }}
+                          label={item.stage.stageName}
+                          size="small"
+                          color="primary"
+                        />
+                        <p>
+                          <b className="pr-2">Tiêu đề:</b>
+                          <span>{item.progressReportTitle}</span>
+                        </p>
+                        <p>
+                          <b className="pr-2">Nội dung:</b>
+                          <span className="text-justify">
+                            {item.progressReportContent}
+                          </span>
+                        </p>
+
+                        {/* Progress Report File */}
+                        <div className="bg-gray-50 p-3 rounded-lg border">
+                          <h4 className="font-medium text-gray-800 mb-2">
+                            📂 Danh sách file:
+                          </h4>
+                          {item.progressReportFiles.length > 0 ? (
+                            <ul className="space-y-2">
+                              {item.progressReportFiles?.map((file, index) => (
+                                <div
+                                  className="bg-blue-100 ml-5 p-1 flex items-center justify-between rounded-md border border-gray-300 lg:w-[70%] hover:bg-blue-200 transition-all cursor-pointer"
+                                  onClick={(e) =>
+                                    handleShowViewFile(e, file.pathFile)
+                                  }
+                                  key={file.progressReportFileId}
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <ArticleOutlinedIcon fontSize="medium" />
+                                    <p className="text-sm">{file.nameFile}</p>
+                                  </div>
+                                  <IconButton
+                                    onClick={(event) =>
+                                      handleOpenMenuOptionFile(event, file)
+                                    }
+                                  >
+                                    <MoreVertOutlinedIcon fontSize="small" />
+                                  </IconButton>
+
+                                  {/* MENU OPTION FILE */}
+                                  <Menu
+                                    id="basic-menu"
+                                    anchorEl={anchorEl}
+                                    open={Boolean(anchorEl)}
+                                    onClose={(e) =>
+                                      handleCloseMenuOptionFile(e)
+                                    }
+                                    anchorOrigin={{
+                                      vertical: "bottom",
+                                      horizontal: "center",
+                                    }}
+                                  >
+                                    <MenuItem
+                                      onClick={(e) =>
+                                        handleShowViewFile(
+                                          e,
+                                          selectedFile?.pathFile
+                                        )
+                                      }
+                                      className="hover:text-blue-500 transition-all"
+                                    >
+                                      <RemoveRedEyeOutlinedIcon />
+                                      <span className="pl-2">Xem chi tiết</span>
+                                    </MenuItem>
+                                    <MenuItem
+                                      onClick={(e) =>
+                                        handleDownloadFile(
+                                          e,
+                                          selectedFile?.pathFile
+                                        )
+                                      }
+                                      className="hover:text-green-500 transition-all"
+                                    >
+                                      <FileDownloadOutlinedIcon />
+                                      <span className="pl-2">Tải xuống</span>
+                                    </MenuItem>
+                                    <MenuItem
+                                      onClick={(e) =>
+                                        handleDeleteFile(e, selectedFile)
+                                      }
+                                      className="hover:text-red-500 transition-all"
+                                    >
+                                      <DeleteOutlineOutlinedIcon />
+                                      <span className="pl-2">Xóa</span>
+                                    </MenuItem>
+                                  </Menu>
+                                </div>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p className="italic text-gray-500 text-center">
+                              Danh sách file trống
+                            </p>
                           )}
                         </div>
-                      </div>
-                      <Chip
-                        sx={{ borderRadius: 1 }}
-                        label={item.stage.stageName}
-                        size="small"
-                        color="primary"
-                      />
-                      <p>
-                        <b className="pr-2">Tiêu đề:</b>
-                        <span>{item.progressReportTitle}</span>
-                      </p>
-                      <p>
-                        <b className="pr-2">Nội dung:</b>
-                        <span className="text-justify">
-                          {item.progressReportContent}
-                        </span>
-                      </p>
 
-                      {/* Progress Report File */}
-                      <div className="bg-gray-50 p-3 rounded-lg border">
-                        <h4 className="font-medium text-gray-800 mb-2">
-                          📂 Danh sách file:
-                        </h4>
-                        {item.progressReportFiles.length > 0 ? (
-                          <ul className="space-y-2">
-                            {item.progressReportFiles?.map((file, index) => (
-                              <div
-                                className="bg-blue-100 ml-5 p-1 flex items-center justify-between rounded-md border border-gray-300 lg:w-[70%] hover:bg-blue-200 transition-all cursor-pointer"
-                                onClick={(e) =>
-                                  handleShowViewFile(e, file.pathFile)
-                                }
-                                key={file.progressReportFileId}
-                              >
-                                <div className="flex items-center gap-3">
-                                  <ArticleOutlinedIcon fontSize="medium" />
-                                  <p className="text-sm">{file.nameFile}</p>
-                                </div>
-                                <IconButton
-                                  onClick={(event) =>
-                                    handleOpenMenuOptionFile(event, file)
-                                  }
-                                >
-                                  <MoreVertOutlinedIcon fontSize="small" />
-                                </IconButton>
+                        <p className="text-gray-500 italic text-right">
+                          {new Date(item.createdDate).toLocaleString("vi-VN", {
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </p>
 
-                                {/* MENU OPTION FILE */}
-                                <Menu
-                                  id="basic-menu"
-                                  anchorEl={anchorEl}
-                                  open={Boolean(anchorEl)}
-                                  onClose={(e) => handleCloseMenuOptionFile(e)}
-                                  anchorOrigin={{
-                                    vertical: "bottom",
-                                    horizontal: "center",
-                                  }}
-                                >
-                                  <MenuItem
-                                    onClick={(e) =>
-                                      handleShowViewFile(
-                                        e,
-                                        selectedFile?.pathFile
-                                      )
-                                    }
-                                    className="hover:text-blue-500 transition-all"
-                                  >
-                                    <RemoveRedEyeOutlinedIcon />
-                                    <span className="pl-2">Xem chi tiết</span>
-                                  </MenuItem>
-                                  <MenuItem
-                                    onClick={(e) =>
-                                      handleDownloadFile(
-                                        e,
-                                        selectedFile?.pathFile
-                                      )
-                                    }
-                                    className="hover:text-green-500 transition-all"
-                                  >
-                                    <FileDownloadOutlinedIcon />
-                                    <span className="pl-2">Tải xuống</span>
-                                  </MenuItem>
-                                  <MenuItem
-                                    onClick={(e) =>
-                                      handleDeleteFile(e, selectedFile)
-                                    }
-                                    className="hover:text-red-500 transition-all"
-                                  >
-                                    <DeleteOutlineOutlinedIcon />
-                                    <span className="pl-2">Xóa</span>
-                                  </MenuItem>
-                                </Menu>
-                              </div>
-                            ))}
-                          </ul>
-                        ) : (
-                          <p className="italic text-gray-500 text-center">
-                            Danh sách file trống
-                          </p>
-                        )}
-                      </div>
-
-                      <p className="text-gray-500 italic text-right">
-                        {new Date(item.createdDate).toLocaleString("vi-VN", {
-                          year: "numeric",
-                          month: "2-digit",
-                          day: "2-digit",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </p>
-
-                      <div className="text-right">
-                        <Button
-                          variant="outlined"
-                          onClick={() =>
-                            showAnswerOfProgressReport(item.progressReportId)
-                          }
-                        >
-                          <span className="pr-2">Xem phản hồi</span>
-                          <Badge
-                            badgeContent={item.progressReviews.length}
-                            color="error"
+                        <div className="text-right">
+                          <Button
+                            variant="outlined"
+                            onClick={() =>
+                              showAnswerOfProgressReport(item.progressReportId)
+                            }
                           >
-                            <ForumIcon color="primary" />
-                          </Badge>
-                        </Button>
+                            <span className="pr-2">Xem phản hồi</span>
+                            <Badge
+                              badgeContent={item.progressReviews.length}
+                              color="error"
+                            >
+                              <ForumIcon color="primary" />
+                            </Badge>
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </AccordionSummary>
-                {/* PROGRESS REVIEW OF INSTRUCTOR*/}
-                <AccordionDetails>
-                  <div className="ml-12 border-t border-gray-500 py-5 space-y-5">
-                    {item.progressReviews.length > 0 ? (
-                      item.progressReviews?.map((progressReview, index) => {
-                        return (
-                          <StudentProgressReview
-                            key={index}
-                            progressReview={progressReview}
-                            progressReport={item}
-                          />
-                        );
-                      })
-                    ) : (
-                      <p className="text-gray-500 italic text-center">
-                        Danh sách phản hồi trống
-                      </p>
-                    )}
-                  </div>
-                </AccordionDetails>
-              </Accordion>
-            ))}
+                  </AccordionSummary>
+                  {/* PROGRESS REVIEW OF INSTRUCTOR*/}
+                  <AccordionDetails>
+                    <div className="ml-12 border-t border-gray-500 py-5 space-y-5">
+                      {item.progressReviews.length > 0 ? (
+                        item.progressReviews?.map((progressReview, index) => {
+                          return (
+                            <StudentProgressReview
+                              key={index}
+                              progressReview={progressReview}
+                              progressReport={item}
+                            />
+                          );
+                        })
+                      ) : (
+                        <p className="text-gray-500 italic text-center">
+                          Danh sách phản hồi trống
+                        </p>
+                      )}
+                    </div>
+                  </AccordionDetails>
+                </Accordion>
+              ))
+            ) : (
+              <p className="text-gray-500 italic text-center py-5 text-lg">
+                Chưa có báo cáo tiến độ nào
+              </p>
+            )}
           </div>
         </div>
       </Box>

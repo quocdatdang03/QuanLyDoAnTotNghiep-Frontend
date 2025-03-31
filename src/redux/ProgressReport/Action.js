@@ -192,8 +192,20 @@ export const getAllProgressReportsByProjectAction =
     dispatch({ type: actionTypes.GET_ALL_PROGRESSREPORTS_BY_PROJECT_REQUEST });
 
     try {
+      const params = new URLSearchParams();
+
+      params.append("projectId", requestData.projectId);
+
+      if (requestData.sortOrder) {
+        params.append("sortDir", requestData.sortOrder);
+      }
+
+      if (requestData.stageId) {
+        params.append("stageId", requestData.stageId);
+      }
+
       const response = await axiosAPI.get(
-        `/student/progressReports?projectId=${requestData.projectId}`
+        `/student/progressReports?${params.toString()}`
       );
 
       console.log(response.data);
