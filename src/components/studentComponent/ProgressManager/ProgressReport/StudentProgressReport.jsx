@@ -71,7 +71,7 @@ const StudentProgressReport = ({ projectId }) => {
   const [openDeleteProgressReportModal, setOpenDeleteProgressReportModal] =
     useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorElProgressReport, setAnchorElProgressReport] = useState(null);
 
   const showAnswerOfProgressReport = (id) => {
     setOpenId(openId === id ? null : id);
@@ -81,30 +81,31 @@ const StudentProgressReport = ({ projectId }) => {
 
   // ++++++++++++++++++++++++++++++ START LOGIC CODE RELATED FILE:
   // handle Open Menu Option File:
-  const handleOpenMenuOptionFile = (event, currentFile) => {
+  const handleOpenMenuOptionProgressReportFile = (event, currentFile) => {
     event.stopPropagation();
-    setAnchorEl(event.currentTarget);
+    setAnchorElProgressReport(event.currentTarget);
     setSelectedFile(currentFile);
   };
 
   // handle Close Menu Option File:
-  const handleCloseMenuOptionFile = (e) => {
+  const handleCloseMenuOptionProgressReportFile = (e) => {
     e.stopPropagation();
-    setAnchorEl(null);
+    setAnchorElProgressReport(null);
+    setSelectedFile(null);
   };
 
   // handle show view file:
   const handleShowViewFile = (e, pathFile) => {
     e.stopPropagation();
     window.open(`https://docs.google.com/gview?url=${pathFile}`, "_blank");
-    handleCloseMenuOptionFile(e);
+    handleCloseMenuOptionProgressReportFile(e);
   };
 
   // handle download file:
   const handleDownloadFile = (e, pathFile) => {
     e.stopPropagation();
     window.location.href = pathFile;
-    handleCloseMenuOptionFile(e);
+    handleCloseMenuOptionProgressReportFile(e);
   };
 
   // handle delete file :
@@ -118,7 +119,7 @@ const StudentProgressReport = ({ projectId }) => {
 
     dispatch(deleteProgressReportFileByIdAction(requestData));
 
-    handleCloseMenuOptionFile(e);
+    handleCloseMenuOptionProgressReportFile(e);
   };
 
   // ++++++++++++++++++++++++++++++ END LOGIC CODE RELATED FILE:
@@ -219,7 +220,7 @@ const StudentProgressReport = ({ projectId }) => {
         </div>
         <div className="mt-5">
           <div className=" space-y-5">
-            {progressReportReducer.progressReports.length > 0 ? (
+            {progressReportReducer.progressReports?.length > 0 ? (
               progressReportReducer.progressReports?.map((item) => (
                 <Accordion
                   key={item.progressReportId}
@@ -307,7 +308,10 @@ const StudentProgressReport = ({ projectId }) => {
                                   </div>
                                   <IconButton
                                     onClick={(event) =>
-                                      handleOpenMenuOptionFile(event, file)
+                                      handleOpenMenuOptionProgressReportFile(
+                                        event,
+                                        file
+                                      )
                                     }
                                   >
                                     <MoreVertOutlinedIcon fontSize="small" />
@@ -315,11 +319,15 @@ const StudentProgressReport = ({ projectId }) => {
 
                                   {/* MENU OPTION FILE */}
                                   <Menu
-                                    id="basic-menu"
-                                    anchorEl={anchorEl}
-                                    open={Boolean(anchorEl)}
+                                    id={`menu-progress-report-file-${file.progressReportFileId}`}
+                                    anchorEl={anchorElProgressReport}
+                                    open={
+                                      Boolean(anchorElProgressReport) &&
+                                      selectedFile?.progressReportFileId ===
+                                        file.progressReportFileId
+                                    }
                                     onClose={(e) =>
-                                      handleCloseMenuOptionFile(e)
+                                      handleCloseMenuOptionProgressReportFile(e)
                                     }
                                     anchorOrigin={{
                                       vertical: "bottom",
@@ -328,10 +336,7 @@ const StudentProgressReport = ({ projectId }) => {
                                   >
                                     <MenuItem
                                       onClick={(e) =>
-                                        handleShowViewFile(
-                                          e,
-                                          selectedFile?.pathFile
-                                        )
+                                        handleShowViewFile(e, file.pathFile)
                                       }
                                       className="hover:text-blue-500 transition-all"
                                     >
@@ -340,25 +345,24 @@ const StudentProgressReport = ({ projectId }) => {
                                     </MenuItem>
                                     <MenuItem
                                       onClick={(e) =>
-                                        handleDownloadFile(
-                                          e,
-                                          selectedFile?.pathFile
-                                        )
+                                        handleDownloadFile(e, file.pathFile)
                                       }
                                       className="hover:text-green-500 transition-all"
                                     >
                                       <FileDownloadOutlinedIcon />
                                       <span className="pl-2">Tải xuống</span>
                                     </MenuItem>
-                                    <MenuItem
-                                      onClick={(e) =>
-                                        handleDeleteFile(e, selectedFile)
-                                      }
-                                      className="hover:text-red-500 transition-all"
-                                    >
-                                      <DeleteOutlineOutlinedIcon />
-                                      <span className="pl-2">Xóa</span>
-                                    </MenuItem>
+                                    {!item.approved && (
+                                      <MenuItem
+                                        onClick={(e) =>
+                                          handleDeleteFile(e, file)
+                                        }
+                                        className="hover:text-red-500 transition-all"
+                                      >
+                                        <DeleteOutlineOutlinedIcon />
+                                        <span className="pl-2">Xóa</span>
+                                      </MenuItem>
+                                    )}
                                   </Menu>
                                 </div>
                               ))}

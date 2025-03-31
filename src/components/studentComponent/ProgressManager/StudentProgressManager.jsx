@@ -64,6 +64,7 @@ const StudentProgressManager = () => {
   const handleCloseMenuOptionFile = (e) => {
     e.stopPropagation();
     setAnchorEl(null);
+    setSelectedFile(null);
   };
 
   // handle show view file:
@@ -259,7 +260,7 @@ const StudentProgressManager = () => {
                                   onClick={(e) =>
                                     handleShowViewFile(e, file.pathFile)
                                   }
-                                  key={file.projectFileId}
+                                  key={file.stageFileId}
                                 >
                                   <div className="flex items-center gap-3">
                                     <ArticleOutlinedIcon fontSize="medium" />
@@ -277,7 +278,11 @@ const StudentProgressManager = () => {
                                   <Menu
                                     id="basic-menu"
                                     anchorEl={anchorEl}
-                                    open={Boolean(anchorEl)}
+                                    open={
+                                      Boolean(anchorEl) &&
+                                      selectedFile?.stageFileId ===
+                                        file.stageFileId
+                                    }
                                     onClose={(e) =>
                                       handleCloseMenuOptionFile(e)
                                     }
@@ -288,10 +293,7 @@ const StudentProgressManager = () => {
                                   >
                                     <MenuItem
                                       onClick={(e) =>
-                                        handleShowViewFile(
-                                          e,
-                                          selectedFile?.pathFile
-                                        )
+                                        handleShowViewFile(e, file?.pathFile)
                                       }
                                       className="hover:text-blue-500 transition-all"
                                     >
@@ -300,10 +302,7 @@ const StudentProgressManager = () => {
                                     </MenuItem>
                                     <MenuItem
                                       onClick={(e) =>
-                                        handleDownloadFile(
-                                          e,
-                                          selectedFile?.pathFile
-                                        )
+                                        handleDownloadFile(e, file?.pathFile)
                                       }
                                       className="hover:text-green-500 transition-all"
                                     >

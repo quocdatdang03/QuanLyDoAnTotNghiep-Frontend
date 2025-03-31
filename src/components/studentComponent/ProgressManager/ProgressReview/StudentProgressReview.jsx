@@ -29,6 +29,7 @@ const StudentProgressReview = ({ progressReview, progressReport }) => {
   const handleCloseMenuOptionFile = (e) => {
     e.stopPropagation();
     setAnchorEl(null);
+    setSelectedFile(null);
   };
 
   // handle show view file:
@@ -121,7 +122,11 @@ const StudentProgressReview = ({ progressReview, progressReport }) => {
                   <Menu
                     id="basic-menu"
                     anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
+                    open={
+                      Boolean(anchorEl) &&
+                      selectedFile?.progressReviewFileId ===
+                        file.progressReviewFileId
+                    }
                     onClose={(e) => handleCloseMenuOptionFile(e)}
                     anchorOrigin={{
                       vertical: "bottom",
@@ -129,25 +134,21 @@ const StudentProgressReview = ({ progressReview, progressReport }) => {
                     }}
                   >
                     <MenuItem
-                      onClick={(e) =>
-                        handleShowViewFile(e, selectedFile?.pathFile)
-                      }
+                      onClick={(e) => handleShowViewFile(e, file?.pathFile)}
                       className="hover:text-blue-500 transition-all"
                     >
                       <RemoveRedEyeOutlinedIcon />
                       <span className="pl-2">Xem chi tiết</span>
                     </MenuItem>
                     <MenuItem
-                      onClick={(e) =>
-                        handleDownloadFile(e, selectedFile?.pathFile)
-                      }
+                      onClick={(e) => handleDownloadFile(e, file?.pathFile)}
                       className="hover:text-green-500 transition-all"
                     >
                       <FileDownloadOutlinedIcon />
                       <span className="pl-2">Tải xuống</span>
                     </MenuItem>
                     <MenuItem
-                      onClick={(e) => handleDeleteFile(e, selectedFile)}
+                      onClick={(e) => handleDeleteFile(e, file)}
                       className="hover:text-red-500 transition-all"
                     >
                       <DeleteOutlineOutlinedIcon />
