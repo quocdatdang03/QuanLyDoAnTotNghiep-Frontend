@@ -33,13 +33,14 @@ import { useFormik } from "formik";
 import defaultAvatar from "../../../../assets/images/default-avatar.png";
 import { createProgressReviewValidation } from "./validation/createProgressReviewValidation";
 import {
-  createProgressReviewAction,
   getProgressReportByIdAction,
+  getProgressReviewByIdAction,
   getProjectByIdAction,
+  updateProgressReviewAction,
 } from "../../../../redux/InstructorProgress/Action";
 
-const FormCreateProgressReview = () => {
-  const { progressReportId, projectId } = useParams();
+const FormUpdateProgressReview = () => {
+  const { progressReportId, projectId, progressReviewId } = useParams();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -89,20 +90,24 @@ const FormCreateProgressReview = () => {
     }
   };
 
-  // handle create progressReview
+  // handle update progressReview
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      progressReviewTitle: "",
-      progressReviewContent: "",
-      progressReviewFiles: [],
-      isApproved: false,
+      progressReviewId:
+        instructorProgressReducer.progressReview?.progressReviewId,
+      progressReviewTitle:
+        instructorProgressReducer.progressReview?.progressReviewTitle || "",
+      progressReviewContent:
+        instructorProgressReducer.progressReview?.progressReviewContent || "",
+      progressReviewFiles:
+        instructorProgressReducer.progressReview?.progressReviewFiles || [],
+      isApproved: instructorProgressReducer.progressReview?.approved || false,
     },
     validationSchema: createProgressReviewValidation,
     onSubmit: (values, { resetForm }) => {
       const requestData = {
         progressReviewData: {
-          progressReportId:
-            instructorProgressReducer.progressReport?.progressReportId,
           ...values,
         },
         projectId: instructorProgressReducer.project?.projectId,
@@ -112,7 +117,7 @@ const FormCreateProgressReview = () => {
 
       console.log(requestData);
 
-      dispatch(createProgressReviewAction(requestData));
+      dispatch(updateProgressReviewAction(requestData));
 
       resetForm();
     },
@@ -135,6 +140,15 @@ const FormCreateProgressReview = () => {
 
     dispatch(getProgressReportByIdAction(requestData));
   }, [progressReportId]);
+
+  // get progressReview info:
+  useEffect(() => {
+    const requestData = {
+      progressReviewId,
+    };
+
+    dispatch(getProgressReviewByIdAction(requestData));
+  }, [progressReviewId]);
 
   // ++++++++++++++++++++++++++++++ START LOGIC CODE RELATED FILE:
 
@@ -562,4 +576,4 @@ const FormCreateProgressReview = () => {
   );
 };
 
-export default FormCreateProgressReview;
+export default FormUpdateProgressReview;

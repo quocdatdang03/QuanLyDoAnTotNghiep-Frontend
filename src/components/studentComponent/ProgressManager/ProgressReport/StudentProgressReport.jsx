@@ -257,17 +257,24 @@ const StudentProgressReport = ({ projectId }) => {
                             >
                               <EditIcon />
                             </IconButton>
-                            {(!item.approved ||
-                              item.progressReviews.length <= 0) && (
-                              <IconButton
-                                color="error"
-                                onClick={() =>
-                                  handleOpenModalDeleteProgressReport(item)
-                                }
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            )}
+
+                            {/* Chỉ show btn delete khi progressReport: 
+                                  + Chưa được duyệt 
+                                  + Và Chưa có progressReviews 
+                                  + Và Không thuộc completed stage 
+                            */}
+                            {!item.approved &&
+                              item.progressReviews.length <= 0 &&
+                              item.stage.stageStatus.stageStatusId != 3 && (
+                                <IconButton
+                                  color="error"
+                                  onClick={() =>
+                                    handleOpenModalDeleteProgressReport(item)
+                                  }
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              )}
                           </div>
                         </div>
                         <Chip

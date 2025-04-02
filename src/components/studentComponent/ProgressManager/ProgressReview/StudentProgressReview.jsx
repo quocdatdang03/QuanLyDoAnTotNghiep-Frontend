@@ -46,20 +46,6 @@ const StudentProgressReview = ({ progressReview, progressReport }) => {
     handleCloseMenuOptionFile(e);
   };
 
-  // handle delete file :
-  const handleDeleteFile = (e, currentFile) => {
-    e.stopPropagation();
-
-    const requestData = {
-      progressReportFileId: currentFile.progressReportFileId,
-      toast,
-    };
-
-    //   dispatch(deleteProjectFileByIdAction(requestData));
-
-    handleCloseMenuOptionFile(e);
-  };
-
   // ++++++++++++++++++++++++++++++ END LOGIC CODE RELATED FILE:
 
   return (
@@ -146,13 +132,6 @@ const StudentProgressReview = ({ progressReview, progressReport }) => {
                     >
                       <FileDownloadOutlinedIcon />
                       <span className="pl-2">Tải xuống</span>
-                    </MenuItem>
-                    <MenuItem
-                      onClick={(e) => handleDeleteFile(e, file)}
-                      className="hover:text-red-500 transition-all"
-                    >
-                      <DeleteOutlineOutlinedIcon />
-                      <span className="pl-2">Xóa</span>
                     </MenuItem>
                   </Menu>
                 </div>

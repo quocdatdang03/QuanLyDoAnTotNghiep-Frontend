@@ -44,6 +44,7 @@ import {
   getCurrentSemesterAction,
 } from "../../../redux/Semester/Action";
 import { getAllProjectsByInstructorAction } from "../../../redux/InstructorProject/Action";
+import { getProjectByIdAction } from "../../../redux/InstructorProgress/Action";
 
 // Style for MODAL Project Details:
 const style = {
@@ -215,6 +216,13 @@ const TeacherProgressManager = () => {
   const handleSortBy = (fieldName) => {
     console.log("SET:" + fieldName);
     setSortBy(fieldName);
+  };
+
+  // handle navigate to progress manager detail:
+  const handleNavigateToProgressManagerDetail = (projectId) => {
+    navigate(`/teacher/progress/detail/project/${projectId}`);
+
+    // dispatch(getProjectByIdAction(requestData));
   };
 
   // handle loading :
@@ -440,7 +448,9 @@ const TeacherProgressManager = () => {
                               variant="contained"
                               color="success"
                               onClick={() =>
-                                navigate("/teacher/progress/detail")
+                                handleNavigateToProgressManagerDetail(
+                                  item.projectId
+                                )
                               }
                             >
                               Quản lý tiến độ

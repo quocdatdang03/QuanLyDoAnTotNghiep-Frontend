@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -13,37 +13,96 @@ import {
 } from "@mui/material";
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import TeacherProgressReport from "./ProgressReport/TeacherProgressReport";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getAllStagesOfProjectAction,
+  getProjectByIdAction,
+} from "../../../redux/InstructorProgress/Action";
 
 const TeacherProgressManagerDetail = () => {
+  const { projectId } = useParams();
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { instructorProgressReducer } = useSelector((store) => store);
 
   const [tabValue, setTabValue] = useState("1");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
 
+  // get info of project
+  useEffect(() => {
+    const requestData = {
+      projectId: projectId,
+    };
+
+    dispatch(getProjectByIdAction(requestData));
+  }, [projectId]);
+
+  // get all stages of project
+  useEffect(() => {
+    const requestData = {
+      projectId: instructorProgressReducer.project?.projectId,
+    };
+
+    dispatch(getAllStagesOfProjectAction(requestData));
+  }, [instructorProgressReducer.project]);
+
+  // ++++++++++++++++++++++++++++++ START LOGIC CODE RELATED FILE:
+  // handle Open Menu Option File:
+  const handleOpenMenuOptionFile = (event, currentFile) => {
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
+    setSelectedFile(currentFile);
+  };
+
+  // handle Close Menu Option File:
+  const handleCloseMenuOptionFile = (e) => {
+    e.stopPropagation();
+    setAnchorEl(null);
+    setSelectedFile(null);
+  };
+
+  // handle show view file:
+  const handleShowViewFile = (e, pathFile) => {
+    e.stopPropagation();
+    window.open(`https://docs.google.com/gview?url=${pathFile}`, "_blank");
+    handleCloseMenuOptionFile(e);
+  };
+
+  // handle download file:
+  const handleDownloadFile = (e, pathFile) => {
+    e.stopPropagation();
+    window.location.href = pathFile;
+    handleCloseMenuOptionFile(e);
+  };
+
+  // ++++++++++++++++++++++++++++++ END LOGIC CODE RELATED FILE:
+
   return (
     <Container className="my-10 py-10" component={Paper}>
-      <Button
-        variant="outlined"
-        color="info"
-        startIcon={<ArrowBackIcon />}
-        onClick={() => navigate("/teacher/progress/manage")}
-      >
-        Quay lại trang quản lý tiến độ
-      </Button>
+      <div className="mb-10">
+        <Button
+          variant="outlined"
+          color="info"
+          startIcon={<ArrowBackIcon />}
+          onClick={() => navigate("/teacher/progress/manage")}
+        >
+          Quay lại trang quản lý tiến độ
+        </Button>
+      </div>
       <Typography
         color="primary"
         className="uppercase text-center"
@@ -63,16 +122,13 @@ const TeacherProgressManagerDetail = () => {
             <p>
               <b>Tên đề tài:</b>
               <span className="pl-3 text-justify">
-                Xây dựng hệ thống đăng ký, quản lý, theo dõi tiến độ đồ án tốt
-                nghiệp của trường đại học Sư phạm Kỹ thuật - Đại học Đà Nẵngaaa
+                {instructorProgressReducer.project?.projectName}
               </span>
             </p>
             <p>
               <b>Mô tả:</b>
               <span className="pl-3 text-justify">
-                Nooi dung cua Xây dựng hệ thống đăng ký, quản lý, theo dõi tiến
-                độ đồ án tốt nghiệp của trường đại học Sư phạm Kỹ thuật - Đại
-                học Đà Nẵng
+                {instructorProgressReducer.project?.projectContent}
               </span>
             </p>
           </div>
@@ -86,11 +142,15 @@ const TeacherProgressManagerDetail = () => {
           <div className="space-y-2">
             <p>
               <b>Mã sinh viên:</b>
-              <span className="pl-3 text-justify">21115053120309</span>
+              <span className="pl-3 text-justify">
+                {instructorProgressReducer.project?.student.studentCode}
+              </span>
             </p>
             <p>
               <b>Họ tên sinh viên:</b>
-              <span className="pl-3 text-justify">Đặng Quốc Đạt</span>
+              <span className="pl-3 text-justify">
+                {instructorProgressReducer.project?.student.fullName}
+              </span>
             </p>
           </div>
         </div>
@@ -102,28 +162,20 @@ const TeacherProgressManagerDetail = () => {
           Tiến độ đồ án
         </h1>
         <div className="space-y-5 px-5">
-          {[1, 1, 1].map((item, index) => {
+          {instructorProgressReducer.stages?.map((item, index) => {
             return (
               <div
                 className="flex flex-col md:flex-row items-center gap-3 bg-blue-100 p-5 rounded-lg"
                 key={index}
               >
-                {/* <Button
-                  variant="contained"
-                  className="md:w-[50%] lg:w-[30%]"
-                  sx={{ borderRadius: "100px" }}
-                  size="large"
-                >
-                  Báo cáo Giai đoạn 1
-                </Button> */}
-                <div>
+                <div className="w-full">
                   <div className="flex items-center gap-3">
                     <div className="flex flex-col md:flex-row md:items-center justify-center">
                       <p className="pr-2">
                         <Chip
                           className="font-bold"
                           sx={{ borderRadius: 1 }}
-                          label="Giai đoạn 1"
+                          label={item.stageName}
                           color="primary"
                           size="small"
                         />
@@ -131,97 +183,105 @@ const TeacherProgressManagerDetail = () => {
                       <p>
                         Từ{" "}
                         <span className="font-bold italic text-gray-600">
-                          03-01-2024
+                          {new Date(item.startDate).toLocaleString("vi-VN", {
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
                         </span>
                         <span className="px-2">đến</span>
                         <span className="font-bold italic text-gray-600">
-                          03-01-2024
+                          {new Date(item.endDate).toLocaleString("vi-VN", {
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
                         </span>
                       </p>
                     </div>
-                    <Chip label="Đang thực hiện" color="warning" size="small" />
+                    <Chip
+                      label={item.stageStatus.stageStatusName}
+                      color={
+                        item.stageStatus.stageStatusId === 1
+                          ? "error"
+                          : item.stageStatus.stageStatusId === 2
+                            ? "info"
+                            : "success"
+                      }
+                      size="small"
+                    />
                   </div>
-                  <div className="mt-3 space-y-3 bg-gray-100 p-3 rounded-md">
+                  <div className="mt-3 space-y-3 bg-gray-100 p-3 rounded-md w-full">
                     <p>
-                      <b>Tiêu đề: </b>{" "}
-                      <span>Tiến hành thực hiện giai đoạn 1</span>
+                      <b>Tiêu đề: </b> <span>{item.stageTitle}</span>
                     </p>
                     <p>
                       <b>Nội dung: </b>{" "}
-                      <span className="text-justify ">
-                        Tiến hành thực hiện giai đoạn 1 Lorem ipsum dolor sit
-                        amet consectetur adipisicing elit. Ad, aspernatur libero
-                        quisquam, error cumque veniam non veritatis ducimus
-                        expedita cum voluptatibus rerum esse dolorem vitae
-                        laboriosam nemo ut earum vel.
-                      </span>
+                      <span className="text-justify ">{item.stageContent}</span>
                     </p>
                     <div className="bg-gray-50 p-3 rounded-lg border">
                       <h4 className="font-medium text-gray-800 mb-2">
                         📂 Danh sách file:
                       </h4>
-                      {true ? (
+                      {item.stageFiles.length > 0 ? (
                         <ul className="space-y-2">
-                          {[1, 1].map((file, index) => (
+                          {item.stageFiles?.map((file, index) => (
                             <div
                               className="bg-blue-100 ml-5 p-1 flex items-center justify-between rounded-md border border-gray-300 lg:w-[70%] hover:bg-blue-200 transition-all cursor-pointer"
-                              // onClick={(e) => handleShowViewFile(e, file.pathFile)}
-                              // key={file.projectFileId}
-                              key={index}
+                              onClick={(e) =>
+                                handleShowViewFile(e, file.pathFile)
+                              }
+                              key={file.stageFileId}
                             >
                               <div className="flex items-center gap-3">
                                 <ArticleOutlinedIcon fontSize="medium" />
-                                <p className="text-sm">fielfilfoefl.docx</p>
+                                <p className="text-sm">{file.nameFile}</p>
                               </div>
                               <IconButton
-                              // onClick={(event) =>
-                              //   handleOpenMenuOptionFile(event, file)
-                              // }
+                                onClick={(event) =>
+                                  handleOpenMenuOptionFile(event, file)
+                                }
                               >
                                 <MoreVertOutlinedIcon fontSize="small" />
                               </IconButton>
 
                               {/* MENU OPTION FILE */}
-                              {/* <Menu
-                            id="basic-menu"
-                            anchorEl={anchorEl}
-                            open={Boolean(anchorEl)}
-                            onClose={(e) => handleCloseMenuOptionFile(e)}
-                            anchorOrigin={{
-                              vertical: "bottom",
-                              horizontal: "center",
-                            }}
-                          >
-                            <MenuItem
-                              onClick={(e) =>
-                                handleShowViewFile(e, selectedFile?.pathFile)
-                              }
-                              className="hover:text-blue-500 transition-all"
-                            >
-                              <RemoveRedEyeOutlinedIcon />
-                              <span className="pl-2">Xem chi tiết</span>
-                            </MenuItem>
-                            <MenuItem
-                              onClick={(e) =>
-                                handleDownloadFile(e, selectedFile?.pathFile)
-                              }
-                              className="hover:text-green-500 transition-all"
-                            >
-                              <FileDownloadOutlinedIcon />
-                              <span className="pl-2">Tải xuống</span>
-                            </MenuItem>
-                            {projectStatusId === 1 && (
-                              <MenuItem
-                                onClick={(e) =>
-                                  handleDeleteFile(e, selectedFile)
+                              <Menu
+                                id="basic-menu"
+                                anchorEl={anchorEl}
+                                open={
+                                  Boolean(anchorEl) &&
+                                  selectedFile?.stageFileId === file.stageFileId
                                 }
-                                className="hover:text-red-500 transition-all"
+                                onClose={(e) => handleCloseMenuOptionFile(e)}
+                                anchorOrigin={{
+                                  vertical: "bottom",
+                                  horizontal: "center",
+                                }}
                               >
-                                <DeleteOutlineOutlinedIcon />
-                                <span className="pl-2">Xóa</span>
-                              </MenuItem>
-                            )}
-                          </Menu> */}
+                                <MenuItem
+                                  onClick={(e) =>
+                                    handleShowViewFile(e, file?.pathFile)
+                                  }
+                                  className="hover:text-blue-500 transition-all"
+                                >
+                                  <RemoveRedEyeOutlinedIcon />
+                                  <span className="pl-2">Xem chi tiết</span>
+                                </MenuItem>
+                                <MenuItem
+                                  onClick={(e) =>
+                                    handleDownloadFile(e, file?.pathFile)
+                                  }
+                                  className="hover:text-green-500 transition-all"
+                                >
+                                  <FileDownloadOutlinedIcon />
+                                  <span className="pl-2">Tải xuống</span>
+                                </MenuItem>
+                              </Menu>
                             </div>
                           ))}
                         </ul>
@@ -244,7 +304,7 @@ const TeacherProgressManagerDetail = () => {
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <TabList onChange={handleTabChange}>
                   <Tab label="Báo cáo của sinh viên" value="1" />
-                  <Tab label="Hỏi đáp với giáo viên" value="2" />
+                  <Tab label="Thắc mắc của sinh viên" value="2" />
                 </TabList>
               </Box>
               <TabPanel value="1">

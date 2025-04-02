@@ -180,9 +180,7 @@ export const deleteProgressReportAction = (requestData) => async (dispatch) => {
     });
 
     if (errorMessage) {
-      requestData.toast.error(
-        "Xảy ra lỗi trong quá trình cập nhật báo cáo tiến độ"
-      );
+      requestData.toast.error("Xảy ra lỗi trong quá trình xóa báo cáo tiến độ");
     }
   }
 };
