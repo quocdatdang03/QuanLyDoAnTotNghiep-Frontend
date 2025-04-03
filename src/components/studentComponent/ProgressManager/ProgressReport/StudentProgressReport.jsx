@@ -21,14 +21,13 @@ import {
 
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 
@@ -153,6 +152,20 @@ const StudentProgressReport = ({ projectId }) => {
     setOpenDeleteProgressReportModal(false);
   };
 
+  // handle refresh progressReports List:
+  const handleRefreshProgressReportsList = () => {
+    // load progressReports list:
+    dispatch(
+      getAllProgressReportsByProjectAction({
+        projectId: projectId,
+      })
+    );
+
+    // clear filter
+    setSortOrder("desc");
+    setStageId("");
+  };
+
   // get all progressReports of project
   useEffect(() => {
     dispatch(
@@ -179,44 +192,56 @@ const StudentProgressReport = ({ projectId }) => {
           Báo cáo tiến độ của sinh viên
         </Typography>
 
-        <div className="flex justify-end mt-3 gap-3">
-          {/* Dropdown lọc theo giai đoạn (stage) */}
-          <FormControl size="small" className="w-60 bg-white rounded-md">
-            <InputLabel>Tất cả giai đoạn</InputLabel>
-            <Select
-              value={stageId}
-              onChange={(e) => setStageId(e.target.value)}
-              label="Tất cả giai đoạn"
-            >
-              <MenuItem value="">Tất cả giai đoạn</MenuItem>
-              {progressReportReducer.stages?.map((item) => {
-                return (
-                  <MenuItem value={item.stageId} key={item.stageId}>
-                    {item.stageName}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
+        {/* Button refresh */}
+        <div className="flex flex-wrap items-center justify-between mt-5 gap-5">
+          <Button
+            variant="contained"
+            startIcon={<RefreshIcon />}
+            color="info"
+            className="inline-block"
+            onClick={handleRefreshProgressReportsList}
+          >
+            Tải lại danh sách
+          </Button>
+          <div className="flex flex-wrap justify-end gap-3">
+            {/* Dropdown lọc theo giai đoạn (stage) */}
+            <FormControl size="small" className="w-60 bg-white rounded-md">
+              <InputLabel>Tất cả giai đoạn</InputLabel>
+              <Select
+                value={stageId}
+                onChange={(e) => setStageId(e.target.value)}
+                label="Tất cả giai đoạn"
+              >
+                <MenuItem value="">Tất cả giai đoạn</MenuItem>
+                {progressReportReducer.stages?.map((item) => {
+                  return (
+                    <MenuItem value={item.stageId} key={item.stageId}>
+                      {item.stageName}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
 
-          {/* Dropdown sắp xếp theo createdDate */}
-          <FormControl size="small" className="w-60 bg-white rounded-md">
-            <InputLabel>Sắp xếp theo</InputLabel>
-            <Select
-              value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value)}
-              label="Sắp xếp theo"
-            >
-              <MenuItem value="desc">
-                <ArrowDownwardIcon fontSize="small" className="mr-2" />
-                Mới nhất
-              </MenuItem>
-              <MenuItem value="asc">
-                <ArrowUpwardIcon fontSize="small" className="mr-2" />
-                Cũ nhất
-              </MenuItem>
-            </Select>
-          </FormControl>
+            {/* Dropdown sắp xếp theo createdDate */}
+            <FormControl size="small" className="w-60 bg-white rounded-md">
+              <InputLabel>Sắp xếp theo</InputLabel>
+              <Select
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value)}
+                label="Sắp xếp theo"
+              >
+                <MenuItem value="desc">
+                  <ArrowDownwardIcon fontSize="small" className="mr-2" />
+                  Mới nhất
+                </MenuItem>
+                <MenuItem value="asc">
+                  <ArrowUpwardIcon fontSize="small" className="mr-2" />
+                  Cũ nhất
+                </MenuItem>
+              </Select>
+            </FormControl>
+          </div>
         </div>
         <div className="mt-5">
           <div className=" space-y-5">

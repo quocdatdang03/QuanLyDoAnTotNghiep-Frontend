@@ -16,6 +16,8 @@ import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
+import RefreshIcon from "@mui/icons-material/Refresh";
+
 import { useNavigate, useParams } from "react-router-dom";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
@@ -50,6 +52,16 @@ const TeacherProgressManagerDetail = () => {
 
     dispatch(getProjectByIdAction(requestData));
   }, [projectId]);
+
+  // handle refresh stages list:
+  const handleRefreshStageList = () => {
+    // load stages List:
+    dispatch(
+      getAllStagesOfProjectAction({
+        projectId: instructorProgressReducer.project?.projectId,
+      })
+    );
+  };
 
   // get all stages of project
   useEffect(() => {
@@ -161,6 +173,17 @@ const TeacherProgressManagerDetail = () => {
         <h1 className="text-[#0355d2] font-bold uppercase pb-3 mb-2 text-xl">
           Tiến độ đồ án
         </h1>
+        <div className=" mb-5 px-5">
+          <Button
+            variant="contained"
+            startIcon={<RefreshIcon />}
+            color="info"
+            className="inline-block"
+            onClick={handleRefreshStageList}
+          >
+            Tải lại danh sách
+          </Button>
+        </div>
         <div className="space-y-5 px-5">
           {instructorProgressReducer.stages?.map((item, index) => {
             return (

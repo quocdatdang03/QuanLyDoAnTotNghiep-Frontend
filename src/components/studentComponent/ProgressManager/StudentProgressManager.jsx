@@ -13,10 +13,8 @@ import {
 
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import React, { useEffect, useState } from "react";
 import TabContext from "@mui/lab/TabContext";
@@ -104,6 +102,16 @@ const StudentProgressManager = () => {
     dispatch(getProjectByStudentCodeAction(requestData));
   }, []);
 
+  //  handle refresh stage list
+  const handleRefreshStageList = () => {
+    // load stages List:
+    dispatch(
+      getAllStagesByProjectAction({
+        projectId: projectReducer.project?.projectId,
+      })
+    );
+  };
+
   // get all stages of project
   useEffect(() => {
     dispatch(
@@ -173,6 +181,17 @@ const StudentProgressManager = () => {
         <h1 className="text-[#0355d2] font-bold uppercase pb-3 mb-2 text-xl">
           Tiến độ đồ án
         </h1>
+        <div className=" mb-5 px-5">
+          <Button
+            variant="contained"
+            startIcon={<RefreshIcon />}
+            color="info"
+            className="inline-block"
+            onClick={handleRefreshStageList}
+          >
+            Tải lại danh sách
+          </Button>
+        </div>
         <div className="space-y-5 px-5">
           {progressReportReducer.stages?.map((item, index) => {
             return (
