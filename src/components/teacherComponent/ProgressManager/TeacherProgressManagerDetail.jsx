@@ -28,6 +28,7 @@ import {
   getAllStagesOfProjectAction,
   getProjectByIdAction,
 } from "../../../redux/InstructorProgress/Action";
+import TeacherTabChatMessage from "./Tab/TeacherTabChatMessage";
 
 const TeacherProgressManagerDetail = () => {
   const { projectId } = useParams();
@@ -335,7 +336,9 @@ const TeacherProgressManagerDetail = () => {
               </TabPanel>
 
               {/* Tab Chat */}
-              <TabPanel value="2">{/* <TabChatMessage /> */}</TabPanel>
+              <TabPanel value="2">
+                <TeacherTabChatMessage />
+              </TabPanel>
             </TabContext>
           </div>
         </div>

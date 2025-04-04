@@ -277,3 +277,28 @@ export const deleteProgressReportFileByIdAction =
       });
     }
   };
+
+export const getCurrentStageByProjectIdAction =
+  (requestData) => async (dispatch) => {
+    dispatch({ type: actionTypes.GET_CURRENT_STAGE_BY_PROJECT_ID_REQUEST });
+
+    try {
+      const response = await axiosAPI.get(
+        `/student/progressReports/project/${requestData.projectId}/currentStage`
+      );
+
+      console.log(response.data);
+
+      dispatch({
+        type: actionTypes.GET_CURRENT_STAGE_BY_PROJECT_ID_SUCCESS,
+        payload: response.data,
+      });
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+
+      dispatch({
+        type: actionTypes.GET_CURRENT_STAGE_BY_PROJECT_ID_FAILURE,
+        payload: errorMessage,
+      });
+    }
+  };

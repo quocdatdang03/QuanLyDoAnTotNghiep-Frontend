@@ -6,7 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 import defaultImage from "../../../../assets/images/default-avatar.png";
 
-const ChatMessage = ({
+const TeacherChatMessage = ({
   sender,
   content,
   createdAt,
@@ -141,7 +141,7 @@ const ChatMessage = ({
                       <p className="text-sm">
                         {parentMessage.isRevoked
                           ? "Tin nhắn đã được thu hồi"
-                          : parentMessage?.content}
+                          : parentMessage.content}
                       </p>
                     </div>
                   </div>
@@ -176,11 +176,7 @@ const ChatMessage = ({
                     className="hover:text-blue-500 transition-all duration-200 cursor-pointer"
                     sx={{ fontSize: 18 }}
                     onClick={() =>
-                      onSelectMessage({
-                        chatMessageId,
-                        sender,
-                        content,
-                      })
+                      onSelectMessage({ chatMessageId, sender, content })
                     }
                   />
                 </div>
@@ -202,4 +198,4 @@ const ChatMessage = ({
   );
 };
 
-export default ChatMessage;
+export default TeacherChatMessage;

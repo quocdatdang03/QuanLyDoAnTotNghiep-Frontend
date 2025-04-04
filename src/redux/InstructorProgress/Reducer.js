@@ -6,6 +6,7 @@ const initialState = {
   progressReview: null,
   project: null,
   stages: null,
+  currentStage: null,
   isLoading: false,
   error: null,
   success: null,
@@ -22,6 +23,7 @@ const instructorProgressReducer = (state = initialState, action) => {
     case actionTypes.UPDATE_PROGRESS_REVIEW_REQUEST:
     case actionTypes.DELETE_PROGRESS_REVIEW_FILE_BY_ID_REQUEST:
     case actionTypes.DELETE_PROGRESS_REVIEW_BY_ID_REQUEST:
+    case actionTypes.GET_CURRENT_STAGE_BY_PROJECT_ID_REQUEST:
       return {
         ...state,
         isLoading: false,
@@ -107,6 +109,14 @@ const instructorProgressReducer = (state = initialState, action) => {
         }),
       };
 
+    case actionTypes.GET_CURRENT_STAGE_BY_PROJECT_ID_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        currentStage: action.payload,
+        error: null,
+      };
+
     case actionTypes.GET_ALL_STAGES_BY_PROJECT_FAILURE:
     case actionTypes.GET_PROJECT_BY_PROJECTID_FAILURE:
     case actionTypes.GET_PROGRESS_REVIEW_BY_ID_FAILURE:
@@ -116,6 +126,7 @@ const instructorProgressReducer = (state = initialState, action) => {
     case actionTypes.GET_PROGRESS_REPORT_BY_ID_FAILURE:
     case actionTypes.DELETE_PROGRESS_REVIEW_FILE_BY_ID_FAILURE:
     case actionTypes.DELETE_PROGRESS_REVIEW_BY_ID_FAILURE:
+    case actionTypes.GET_CURRENT_STAGE_BY_PROJECT_ID_FAILURE:
       return {
         ...state,
         isLoading: false,

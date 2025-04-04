@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import ChatMessage from "../Chat/ChatMessage";
 import { useDispatch, useSelector } from "react-redux";
 import { over } from "stompjs";
 import { IconButton } from "@mui/material";
@@ -7,12 +6,13 @@ import SendIcon from "@mui/icons-material/Send";
 import SockJS from "sockjs-client/dist/sockjs";
 import CloseIcon from "@mui/icons-material/Close";
 import { getChatMessagesByProjectIdAction } from "../../../../redux/Chat/Action";
-import { getCurrentStageByProjectIdAction } from "../../../../redux/ProgressReport/Action";
+import TeacherChatMessage from "../Chat/TeacherChatMessage";
+import { getCurrentStageByProjectIdAction } from "../../../../redux/InstructorProgress/Action";
 import toast from "react-hot-toast";
 
 var client = null;
-const TabChatMessage = () => {
-  const { chatReducer, projectReducer, progressReportReducer } = useSelector(
+const TeacherTabChatMessage = () => {
+  const { chatReducer, instructorProgressReducer } = useSelector(
     (store) => store
   );
   const { authReducer } = useSelector((store) => store);
@@ -29,23 +29,23 @@ const TabChatMessage = () => {
 
   useEffect(() => {
     // get chat messages:
-    if (projectReducer.project?.projectId) {
+    if (instructorProgressReducer.project?.projectId) {
       dispatch(
         getChatMessagesByProjectIdAction({
-          projectId: projectReducer.project?.projectId,
+          projectId: instructorProgressReducer.project?.projectId,
         })
       );
     }
 
     // get current stage by projectId:
-    if (projectReducer.project?.projectId) {
+    if (instructorProgressReducer.project?.projectId) {
       dispatch(
         getCurrentStageByProjectIdAction({
-          projectId: projectReducer.project?.projectId,
+          projectId: instructorProgressReducer.project?.projectId,
         })
       );
     }
-  }, [projectReducer.project?.projectId, dispatch]);
+  }, [instructorProgressReducer.project?.projectId, dispatch]);
 
   // handle set chat message
   useEffect(() => {
@@ -66,7 +66,7 @@ const TabChatMessage = () => {
 
         // subscibe to the topic:
         client.subscribe(
-          `/topic/project.${projectReducer.project?.projectId}`,
+          `/topic/project.${instructorProgressReducer.project?.projectId}`,
           (msg) => {
             const receivedMessage = JSON.parse(msg.body);
 
@@ -104,7 +104,7 @@ const TabChatMessage = () => {
         client.disconnect();
       }
     };
-  }, [projectReducer.project?.projectId]);
+  }, [instructorProgressReducer.project?.projectId]);
 
   // handle send message:
   const handleSendMessage = () => {
@@ -114,8 +114,8 @@ const TabChatMessage = () => {
     }
 
     const chatMessage = {
-      projectId: projectReducer.project?.projectId,
-      stageId: progressReportReducer.currentStage?.stageId,
+      projectId: instructorProgressReducer.project?.projectId,
+      stageId: instructorProgressReducer.currentStage?.stageId,
       senderId: authReducer.user?.accountId,
       content: message,
       parentMessageId: isSelectedMessage
@@ -181,7 +181,7 @@ const TabChatMessage = () => {
         >
           {messages?.map((item, index) => {
             return (
-              <ChatMessage
+              <TeacherChatMessage
                 sender={item.sender}
                 content={item.content}
                 createdAt={item.timestamp}
@@ -192,7 +192,7 @@ const TabChatMessage = () => {
                 }
                 chatMessageId={item.chatMessageId}
                 stompClient={stompClient}
-                projectId={projectReducer.project?.projectId}
+                projectId={instructorProgressReducer.project?.projectId}
                 isRevokedMessage={item.isRevoked}
                 setMessages={setMessages}
                 onSelectMessage={handleSelectMessage}
@@ -256,4 +256,4 @@ const TabChatMessage = () => {
   );
 };
 
-export default TabChatMessage;
+export default TeacherTabChatMessage;

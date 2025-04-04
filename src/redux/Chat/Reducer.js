@@ -1,7 +1,6 @@
 import * as actionTypes from "./ActionType";
 
 const initialState = {
-  chatRoom: null,
   messages: [],
   isLoading: false,
   error: null,
@@ -10,29 +9,20 @@ const initialState = {
 
 const chatReducer = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.GET_CHATROOM_BY_TEAMID_REQUEST:
-    case actionTypes.GET_CHATMESSAGES_BY_TEAMID_REQUEST:
+    case actionTypes.GET_CHAT_MESSAGES_BY_PROJECT_ID_REQUEST:
       return {
         ...state,
         isLoading: true,
       };
 
-    case actionTypes.GET_CHATROOM_BY_TEAMID_SUCCESS:
-      return {
-        ...state,
-        isLoading: false,
-        chatRoom: action.payload,
-      };
-
-    case actionTypes.GET_CHATMESSAGES_BY_TEAMID_SUCCESS:
+    case actionTypes.GET_CHAT_MESSAGES_BY_PROJECT_ID_SUCCESS:
       return {
         ...state,
         isLoading: false,
         messages: action.payload,
       };
 
-    case actionTypes.GET_CHATROOM_BY_TEAMID_FAILURE:
-    case actionTypes.GET_CHATMESSAGES_BY_TEAMID_FAILURE:
+    case actionTypes.GET_CHAT_MESSAGES_BY_PROJECT_ID_FAILURE:
       return {
         ...state,
         isLoading: false,
