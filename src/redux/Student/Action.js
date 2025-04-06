@@ -90,3 +90,28 @@ export const filterAllStudentsAction = (requestData) => async (dispatch) => {
     });
   }
 };
+
+export const getInstructorByStudentIdAction =
+  (requestData) => async (dispatch) => {
+    dispatch({
+      type: actionTypes.GET_INSTRUCTOR_BY_STUDENTID_IN_CURRENT_SEMESTER_REQUEST,
+    });
+
+    try {
+      const response = await axiosAPI.get(
+        `/students/${requestData.studentId}/instructor`
+      );
+
+      dispatch({
+        type: actionTypes.GET_INSTRUCTOR_BY_STUDENTID_IN_CURRENT_SEMESTER_SUCCESS,
+        payload: response.data,
+      });
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      console.log(error);
+      dispatch({
+        type: actionTypes.GET_INSTRUCTOR_BY_STUDENTID_IN_CURRENT_SEMESTER_FAILURE,
+        payload: errorMessage,
+      });
+    }
+  };

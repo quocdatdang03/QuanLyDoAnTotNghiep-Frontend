@@ -2,7 +2,6 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import NotFound from "../errors/NotFound";
 import { TeacherDocument } from "./TeacherDocument/TeacherDocument";
-import { TeacherAnnouncement } from "./Announcement/TeacherAnnouncement";
 import InstructorDivision from "./InstructorDivision/InstructorDivision";
 import { useSelector } from "react-redux";
 import Forbidden from "../errors/Forbidden";
@@ -15,13 +14,14 @@ import StageManager from "./StageManager/StageManager";
 import TeacherProgressManagerDetail from "./ProgressManager/TeacherProgressManagerDetail";
 import FormEditStage from "./StageManager/FormEditStage";
 import FormUpdateProgressReview from "./ProgressManager/ProgressReview/FormUpdateProgressReview";
+import TeacherNotification from "./Notification/TeacherNotification";
 
 const TeacherRoutes = () => {
   const { authReducer } = useSelector((store) => store);
 
   return (
     <Routes>
-      <Route path="/announcements" element={<TeacherAnnouncement />} />
+      <Route path="/notifications" element={<TeacherNotification />} />
       <Route path="/projects" element={<ProjectManager />} />
       <Route path="/students" element={<StudentManager />} />
       <Route path="/progress/manage" element={<TeacherProgressManager />} />

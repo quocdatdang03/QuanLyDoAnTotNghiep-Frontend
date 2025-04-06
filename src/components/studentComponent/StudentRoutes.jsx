@@ -9,10 +9,12 @@ import FormEditProject from "./ProjectRegister/FormEditProject";
 import FormCreateProgressReport from "./ProgressManager/ProgressReport/FormCreateProgressReport";
 import StudentProgressManager from "./ProgressManager/StudentProgressManager";
 import FormUpdateProgressReport from "./ProgressManager/ProgressReport/FormUpdateProgressReport";
+import StudentNotification from "./Notification/StudentNotification";
 
 const StudentRoutes = () => {
   return (
     <Routes>
+      <Route path="/notifications" element={<StudentNotification />} />
       <Route path="/project/register" element={<ProjectRegister />} />
       <Route path="/project/edit" element={<FormEditProject />} />
       <Route path="/teams/register" element={<TeamRegister />} />

@@ -41,6 +41,7 @@ import NotificationAddIcon from "@mui/icons-material/NotificationAdd";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import GroupsIcon from "@mui/icons-material/Groups";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 import Filter1Icon from "@mui/icons-material/Filter1";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -72,6 +73,11 @@ const pages = [
 
 const sinhVienOptions = [
   {
+    icon: <NotificationsIcon />,
+    title: "Xem thông báo",
+    path: "/student/notifications",
+  },
+  {
     icon: <HistoryEduIcon />,
     title: "Đăng ký đề tài",
     path: "/student/project/register",
@@ -96,7 +102,7 @@ const giangVienOptions = [
   {
     icon: <NotificationAddIcon />,
     title: "Đăng thông báo",
-    path: "/teacher/announcements",
+    path: "/teacher/notifications",
   },
   {
     icon: <GroupsIcon />,

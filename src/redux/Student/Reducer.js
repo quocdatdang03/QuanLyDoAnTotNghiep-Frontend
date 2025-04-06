@@ -2,6 +2,7 @@ import * as actionTypes from "./ActionType";
 
 const initialState = {
   studentPagination: null,
+  instructor: null,
   error: null,
   success: null,
   isLoading: false,
@@ -10,6 +11,7 @@ const initialState = {
 const studentReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.FILTER_ALL_STUDENTS_REQUEST:
+    case actionTypes.GET_INSTRUCTOR_BY_STUDENTID_IN_CURRENT_SEMESTER_REQUEST:
       return {
         ...state,
         isLoading: true,
@@ -25,7 +27,16 @@ const studentReducer = (state = initialState, action) => {
         error: null,
       };
 
+    case actionTypes.GET_INSTRUCTOR_BY_STUDENTID_IN_CURRENT_SEMESTER_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        instructor: action.payload,
+        error: null,
+      };
+
     case actionTypes.FILTER_ALL_STUDENTS_FAILURE:
+    case actionTypes.GET_INSTRUCTOR_BY_STUDENTID_IN_CURRENT_SEMESTER_FAILURE:
       return {
         ...state,
         isLoading: false,
