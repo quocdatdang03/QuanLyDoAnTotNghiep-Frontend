@@ -13,6 +13,7 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import SchoolIcon from "@mui/icons-material/School";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import {
   Collapse,
   Drawer,
@@ -328,6 +329,16 @@ function Navbar() {
                           >
                             DSSV đã phân chia GVHD
                           </MenuItem>
+                          <MenuItem
+                            key="Tổng hợp đề tài ĐATN"
+                            onClick={() =>
+                              handleNavigateToTeacherPath(
+                                "/teacher/projects/summary"
+                              )
+                            }
+                          >
+                            Tổng hợp đề tài ĐATN
+                          </MenuItem>
                         </>
                       )}
                     </Menu>
@@ -464,6 +475,20 @@ function Navbar() {
                                     <PeopleAltIcon />
                                   </ListItemIcon>
                                   <ListItemText primary="DSSV đã phân chia GVHD" />
+                                </ListItemButton>
+                                <ListItemButton
+                                  sx={{ pl: 4 }}
+                                  key="Tổng hợp đề tài ĐATN"
+                                  onClick={() =>
+                                    handleNavigateToPathOnDrawer(
+                                      "/teacher/projects/summary"
+                                    )
+                                  }
+                                >
+                                  <ListItemIcon>
+                                    <ReceiptLongIcon />
+                                  </ListItemIcon>
+                                  <ListItemText primary="Tổng hợp đề tài ĐATN" />
                                 </ListItemButton>
                               </>
                             )}

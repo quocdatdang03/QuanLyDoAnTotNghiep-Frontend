@@ -307,3 +307,108 @@ export const changeInstructorOfStudentAction =
       });
     }
   };
+
+export const getAllProjectsAction = (requestData) => async (dispatch) => {
+  dispatch({ type: actionTypes.GET_ALL_PROJECTS_REQUEST });
+
+  try {
+    const { keyword, projectPagination } = requestData;
+    const params = new URLSearchParams();
+
+    params.append("keyword", keyword);
+
+    if (projectPagination?.pageNumber)
+      params.append("pageNumber", projectPagination.pageNumber);
+
+    if (projectPagination?.pageSize)
+      params.append("pageSize", projectPagination.pageSize);
+
+    if (projectPagination?.sortBy)
+      params.append("sortBy", projectPagination.sortBy);
+
+    if (projectPagination?.sortDir)
+      params.append("sortDir", projectPagination.sortDir);
+
+    if (projectPagination?.semesterId)
+      params.append("semesterId", projectPagination.semesterId);
+
+    if (projectPagination?.classId)
+      params.append("classId", projectPagination.classId);
+
+    if (projectPagination?.projectStatusId)
+      params.append("projectStatusId", projectPagination.projectStatusId);
+
+    if (projectPagination?.instructorCode)
+      params.append("instructorCode", projectPagination.instructorCode);
+
+    const response = await axiosAPI.get(
+      `/instructor-leader/projects?${params.toString()}`
+    );
+    console.log(response.data);
+
+    dispatch({
+      type: actionTypes.GET_ALL_PROJECTS_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || error.message;
+    console.log(error);
+    dispatch({
+      type: actionTypes.GET_ALL_PROJECTS_FAILURE,
+      payload: errorMessage,
+    });
+  }
+};
+
+export const getAllProjectsForExportAction =
+  (requestData) => async (dispatch) => {
+    dispatch({ type: actionTypes.GET_ALL_PROJECTS_FOR_EXPORT_REQUEST });
+
+    try {
+      const { keyword, projectPagination } = requestData;
+      const params = new URLSearchParams();
+
+      params.append("keyword", keyword);
+
+      if (projectPagination?.pageNumber)
+        params.append("pageNumber", projectPagination.pageNumber);
+
+      if (projectPagination?.pageSize)
+        params.append("pageSize", projectPagination.pageSize);
+
+      if (projectPagination?.sortBy)
+        params.append("sortBy", projectPagination.sortBy);
+
+      if (projectPagination?.sortDir)
+        params.append("sortDir", projectPagination.sortDir);
+
+      if (projectPagination?.semesterId)
+        params.append("semesterId", projectPagination.semesterId);
+
+      if (projectPagination?.classId)
+        params.append("classId", projectPagination.classId);
+
+      if (projectPagination?.projectStatusId)
+        params.append("projectStatusId", projectPagination.projectStatusId);
+
+      if (projectPagination?.instructorCode)
+        params.append("instructorCode", projectPagination.instructorCode);
+
+      const response = await axiosAPI.get(
+        `/instructor-leader/projects?${params.toString()}`
+      );
+      console.log(response.data);
+
+      dispatch({
+        type: actionTypes.GET_ALL_PROJECTS_FOR_EXPORT_SUCCESS,
+        payload: response.data,
+      });
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      console.log(error);
+      dispatch({
+        type: actionTypes.GET_ALL_PROJECTS_FOR_EXPORT_FAILURE,
+        payload: errorMessage,
+      });
+    }
+  };

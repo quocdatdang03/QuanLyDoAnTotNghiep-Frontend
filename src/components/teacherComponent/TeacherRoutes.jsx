@@ -15,6 +15,7 @@ import TeacherProgressManagerDetail from "./ProgressManager/TeacherProgressManag
 import FormEditStage from "./StageManager/FormEditStage";
 import FormUpdateProgressReview from "./ProgressManager/ProgressReview/FormUpdateProgressReview";
 import TeacherNotification from "./Notification/TeacherNotification";
+import InstructorProjectSummary from "./InstructorProjectSummary/InstructorProjectSummary";
 
 const TeacherRoutes = () => {
   const { authReducer } = useSelector((store) => store);
@@ -55,6 +56,16 @@ const TeacherRoutes = () => {
         element={
           authReducer.user?.userDetails.isLeader ? (
             <InstructorDivisionResult />
+          ) : (
+            <Forbidden />
+          )
+        }
+      />
+      <Route
+        path="/projects/summary"
+        element={
+          authReducer.user?.userDetails.isLeader ? (
+            <InstructorProjectSummary />
           ) : (
             <Forbidden />
           )

@@ -4,6 +4,8 @@ import * as actionTypes from "./ActionType";
 const initialState = {
   studentPagination: null,
   studentHavingInstructorPagination: null,
+  projectSummaryPagination: null,
+  projectsForExport: null,
   choosenStudents: [],
   classes: null,
   instructors: null,
@@ -26,6 +28,8 @@ const teacherLeaderReducer = (state = initialState, action) => {
     case actionTypes.GET_ALL_STUDENTS_HAVING_INSTRUCTOR_BY_FACULTY_REQUEST:
     case actionTypes.REMOVE_INSTRUCTOR_FROM_STUDENT_REQUEST:
     case actionTypes.CHANGE_INSTRUCTOR_OF_STUDENT_REQUEST:
+    case actionTypes.GET_ALL_PROJECTS_REQUEST:
+    case actionTypes.GET_ALL_PROJECTS_FOR_EXPORT_REQUEST:
       return {
         ...state,
         isLoading: true,
@@ -143,6 +147,22 @@ const teacherLeaderReducer = (state = initialState, action) => {
         },
       };
 
+    case actionTypes.GET_ALL_PROJECTS_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        projectSummaryPagination: action.payload,
+        error: null,
+      };
+
+    case actionTypes.GET_ALL_PROJECTS_FOR_EXPORT_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        projectsForExport: action.payload,
+        error: null,
+      };
+
     case actionTypes.GET_ALL_STUDENTS_WITHOUT_INSTRUCTOR_FAILURE:
     case actionTypes.GET_ALL_CLASSES_BY_FACULTY_OF_TEACHER_LEADER_FAILURE:
     case actionTypes.CHOOSE_STUDENT_FAILURE:
@@ -154,6 +174,8 @@ const teacherLeaderReducer = (state = initialState, action) => {
     case actionTypes.GET_ALL_STUDENTS_HAVING_INSTRUCTOR_BY_FACULTY_FAILURE:
     case actionTypes.REMOVE_INSTRUCTOR_FROM_STUDENT_FAILURE:
     case actionTypes.CHANGE_INSTRUCTOR_OF_STUDENT_FAILURE:
+    case actionTypes.GET_ALL_PROJECTS_FAILURE:
+    case actionTypes.GET_ALL_PROJECTS_FOR_EXPORT_FAILURE:
       return {
         ...state,
         isLoading: false,
