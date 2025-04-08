@@ -85,26 +85,37 @@ const StudentNotification = () => {
         client.subscribe(
           `/topic/notification/semester.${semesterReducer.currentSemester?.semesterId}/teacher.${studentReducer.instructor?.teacherCode}`,
           (msg) => {
+            const action = msg.headers.action;
             const receivedNotification = JSON.parse(msg.body);
 
-            setNofitications((prevNotifications) => {
-              // Check for duplicate notificationId
-              if (
-                !prevNotifications.some(
+            if (action === "DELETE") {
+              setNofitications((prev) =>
+                prev.filter(
                   (item) =>
-                    item.notificationId === receivedNotification.notificationId
+                    item.notificationId !== receivedNotification.notificationId
                 )
-              ) {
-                return [receivedNotification, ...prevNotifications];
-              } else {
-                // Update existing notification if it already exists
-                return prevNotifications.map((item) =>
-                  item.notificationId === receivedNotification.notificationId
-                    ? receivedNotification
-                    : item
-                );
-              }
-            });
+              );
+            } else {
+              setNofitications((prevNotifications) => {
+                // Check for duplicate notificationId
+                if (
+                  !prevNotifications.some(
+                    (item) =>
+                      item.notificationId ===
+                      receivedNotification.notificationId
+                  )
+                ) {
+                  return [receivedNotification, ...prevNotifications];
+                } else {
+                  // Update existing notification if it already exists
+                  return prevNotifications.map((item) =>
+                    item.notificationId === receivedNotification.notificationId
+                      ? receivedNotification
+                      : item
+                  );
+                }
+              });
+            }
           }
         );
       },

@@ -42,3 +42,28 @@ export const getAllNotificationsByTeacherAndSemesterAction =
       });
     }
   };
+
+export const getNotificationByIdAction = (requestData) => async (dispatch) => {
+  dispatch({
+    type: actionTypes.GET_NOTIFICATION_BY_ID_REQUEST,
+  });
+
+  try {
+    const response = await axiosAPI.get(
+      `/notifications/${requestData.notificationId}`
+    );
+
+    console.log(response.data);
+
+    dispatch({
+      type: actionTypes.GET_NOTIFICATION_BY_ID_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || error.message;
+    dispatch({
+      type: actionTypes.GET_NOTIFICATION_BY_ID_FAILURE,
+      payload: errorMessage,
+    });
+  }
+};

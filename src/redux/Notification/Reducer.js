@@ -2,6 +2,7 @@ import * as actionTypes from "./ActionType";
 
 const initialState = {
   notifications: [],
+  notification: null,
   isLoading: false,
   error: null,
   success: null,
@@ -10,6 +11,7 @@ const initialState = {
 const notificationReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.GET_ALL_NOTIFICATIONS_BY_TEACHER_AND_SEMESTER_REQUEST:
+    case actionTypes.GET_NOTIFICATION_BY_ID_REQUEST:
       return {
         ...state,
         isLoading: true,
@@ -22,7 +24,15 @@ const notificationReducer = (state = initialState, action) => {
         notifications: action.payload,
       };
 
+    case actionTypes.GET_NOTIFICATION_BY_ID_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        notification: action.payload,
+      };
+
     case actionTypes.GET_ALL_NOTIFICATIONS_BY_TEACHER_AND_SEMESTER_FAILURE:
+    case actionTypes.GET_NOTIFICATION_BY_ID_FAILURE:
       return {
         ...state,
         isLoading: false,
