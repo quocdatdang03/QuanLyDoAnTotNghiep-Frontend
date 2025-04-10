@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -27,14 +27,21 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { getAllFacultiesAction } from "../../../redux/Faculty/Action";
 import { getAllDegreesAction } from "../../../redux/Degree/Action";
 import { uploadImageToCloudinary } from "../../../util/UploadImageToCloudinary";
-import { formTeacherValidation } from "./validation/formTeacherValidation";
 import dayjs from "dayjs";
-import { createTeacherAction } from "../../../redux/Teacher/Action";
+import {
+  getTeacherByCodeAction,
+  updateTeacherAction,
+} from "../../../redux/Teacher/Action";
+import { formEditTeacherValidation } from "./validation/formEditTeacherValidation";
 
-const FormCreateTeacher = () => {
+const FormEditTeacher = () => {
+  const { teacherCodeParam } = useParams();
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { facultyReducer, degreeReducer } = useSelector((store) => store);
+  const { facultyReducer, degreeReducer, teacherReducer } = useSelector(
+    (store) => store
+  );
 
   const [uploadImage, setUploadImage] = useState(false);
   const [isDelayedLoading, setIsDelayedLoading] = useState(false);
@@ -59,23 +66,27 @@ const FormCreateTeacher = () => {
 
   // handle create teacher:
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      teacherCode: "",
-      fullName: "",
-      email: "",
-      password: "dat03122003",
-      dateOfBirth: null,
-      phoneNumber: "",
-      facultyId: "",
-      degreeId: "",
-      address: "",
-      gender: false,
-      isLeader: false,
-      image: "",
+      teacherCode: teacherReducer.teacher?.teacherCode || "",
+      fullName: teacherReducer.teacher?.fullName || "",
+      email: teacherReducer.teacher?.email || "",
+      password: "",
+      dateOfBirth: teacherReducer.teacher?.dateOfBirth
+        ? dayjs(teacherReducer.teacher?.dateOfBirth)
+        : dayjs(),
+      phoneNumber: teacherReducer.teacher?.phoneNumber || "",
+      facultyId: teacherReducer.teacher?.faculty.facultyId || "",
+      degreeId: teacherReducer.teacher?.degree.degreeId || "",
+      address: teacherReducer.teacher?.address || "",
+      gender: teacherReducer.teacher?.gender || false,
+      isLeader: teacherReducer.teacher?.leader || false,
+      image: teacherReducer.teacher?.image || "",
     },
-    validationSchema: formTeacherValidation,
+    validationSchema: formEditTeacherValidation,
     onSubmit: (values) => {
       const requestData = {
+        teacherId: teacherReducer.teacher?.teacherId,
         teacherData: {
           ...values,
           dateOfBirth: formatDate(values.dateOfBirth),
@@ -87,9 +98,14 @@ const FormCreateTeacher = () => {
       };
 
       console.log(requestData);
-      dispatch(createTeacherAction(requestData));
+      dispatch(updateTeacherAction(requestData));
     },
   });
+
+  // get info of teacher
+  useEffect(() => {
+    dispatch(getTeacherByCodeAction({ teacherCode: teacherCodeParam }));
+  }, [teacherCodeParam]);
 
   // get all degrees and get all faculties:
   useEffect(() => {
@@ -124,7 +140,7 @@ const FormCreateTeacher = () => {
       </div>
       <Paper className="p-5">
         <h2 className="text-center uppercase text-xl font-bold mb-5">
-          Thêm giảng viên
+          Chỉnh sửa giảng viên
         </h2>
         <div>
           <form className="space-y-4" onSubmit={formik.handleSubmit}>
@@ -249,7 +265,10 @@ const FormCreateTeacher = () => {
                   htmlFor="password"
                   className="block mb-2 text-sm font-medium"
                 >
-                  Mật khẩu <b className="text-red-600">(*)</b>
+                  Mật khẩu
+                  <i className="text-gray-400 pl-1">
+                    (Để trống nếu không muốn thay đổi)
+                  </i>
                 </label>
                 <TextField
                   label="Nhập mật khẩu"
@@ -461,7 +480,7 @@ const FormCreateTeacher = () => {
                 className="w-[50%] md:w-[30%]"
                 //   loading={isDelayedLoading}
               >
-                Thêm mới
+                Cập nhật
               </Button>
             </div>
           </form>
@@ -471,4 +490,4 @@ const FormCreateTeacher = () => {
   );
 };
 
-export default FormCreateTeacher;
+export default FormEditTeacher;

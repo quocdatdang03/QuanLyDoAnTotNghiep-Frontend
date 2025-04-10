@@ -15,6 +15,8 @@ const teacherReducer = (state = initialState, action) => {
     case actionTypes.GET_ALL_STUDENTS_BY_INSTRUCTOR_REQUEST:
     case actionTypes.GET_ALL_CLASSES_BY_FACULTY_OF_TEACHER_REQUEST:
     case actionTypes.GET_ALL_TEACHERS_REQUEST:
+    case actionTypes.GET_TEACHER_BY_CODE_REQUEST:
+    case actionTypes.UPDATE_TEACHER_REQUEST:
       return {
         ...state,
         isLoading: true,
@@ -46,9 +48,19 @@ const teacherReducer = (state = initialState, action) => {
         error: null,
       };
 
+    case actionTypes.GET_TEACHER_BY_CODE_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        teacher: action.payload,
+        error: null,
+      };
+
     case actionTypes.GET_ALL_STUDENTS_BY_INSTRUCTOR_FAILURE:
     case actionTypes.GET_ALL_CLASSES_BY_FACULTY_OF_TEACHER_FAILURE:
     case actionTypes.GET_ALL_TEACHERS_FAILURE:
+    case actionTypes.GET_TEACHER_BY_CODE_FAILURE:
+    case actionTypes.UPDATE_TEACHER_FAILURE:
       return {
         ...state,
         isLoading: false,

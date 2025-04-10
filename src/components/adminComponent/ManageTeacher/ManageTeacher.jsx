@@ -334,7 +334,11 @@ const ManageTeacher = () => {
                           {item.faculty.facultyName}
                         </TableCell>
                         <TableCell align="left">
-                          <Button variant="contained" color="info">
+                          <Button
+                            variant="contained"
+                            color="info"
+                            onClick={() => navigate("edit/" + item.teacherCode)}
+                          >
                             Sửa
                           </Button>
                         </TableCell>

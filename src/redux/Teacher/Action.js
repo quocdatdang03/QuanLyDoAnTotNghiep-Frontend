@@ -145,3 +145,59 @@ export const createTeacherAction = (requestData) => async (dispatch) => {
     if (errorMessage) requestData.toast.error(errorMessage);
   }
 };
+
+export const getTeacherByCodeAction = (requestData) => async (dispatch) => {
+  dispatch({ type: actionTypes.GET_TEACHER_BY_CODE_REQUEST });
+
+  try {
+    const response = await axiosAPI.get(
+      `/admin/teachers/${requestData.teacherCode}`
+    );
+    console.log(response.data);
+
+    dispatch({
+      type: actionTypes.GET_TEACHER_BY_CODE_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || error.message;
+
+    dispatch({
+      type: actionTypes.GET_TEACHER_BY_CODE_FAILURE,
+      payload: errorMessage,
+    });
+
+    if (errorMessage) requestData.toast.error(errorMessage);
+  }
+};
+
+export const updateTeacherAction = (requestData) => async (dispatch) => {
+  dispatch({ type: actionTypes.UPDATE_TEACHER_REQUEST });
+
+  try {
+    const response = await axiosAPI.put(
+      `/admin/accounts/teacher/${requestData.teacherId}`,
+      requestData.teacherData
+    );
+    console.log(response.data);
+
+    // dispatch({
+    //   type: actionTypes.CREATE_TEACHER_SUCCESS,
+    //   payload: response.data,
+    // });
+
+    if (response.data) {
+      requestData.toast.success("Cập nhật tài khoản giảng viên thành công");
+      requestData.navigate("/admin/manage-teacher");
+    }
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || error.message;
+
+    dispatch({
+      type: actionTypes.UPDATE_TEACHER_FAILURE,
+      payload: errorMessage,
+    });
+
+    if (errorMessage) requestData.toast.error(errorMessage);
+  }
+};

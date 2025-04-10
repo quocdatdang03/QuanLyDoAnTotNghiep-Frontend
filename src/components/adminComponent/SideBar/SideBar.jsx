@@ -31,6 +31,7 @@ import FormEditSchoolYear from "../ManageSemester/FormEditSchoolYear";
 import FormEditSemester from "../ManageSemester/FormEditSemester";
 import ManageTeacher from "../ManageTeacher/ManageTeacher";
 import FormCreateTeacher from "../ManageTeacher/FormCreateTeacher";
+import FormEditTeacher from "../ManageTeacher/FormEditTeacher";
 
 // +++++++++++++  start for drawer
 const drawerWidth = 320;
@@ -258,6 +259,10 @@ export const SideBar = () => {
           <Route
             path="/manage-teacher/create"
             element={<FormCreateTeacher />}
+          />
+          <Route
+            path="/manage-teacher/edit/:teacherCodeParam"
+            element={<FormEditTeacher />}
           />
         </Routes>
       </Box>
