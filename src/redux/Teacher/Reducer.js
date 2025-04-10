@@ -1,7 +1,9 @@
 import * as actionTypes from "./ActionType";
 
 const initialState = {
+  teacherPagination: null,
   studentsOfInstructorPagination: null,
+  teacher: null,
   classes: null,
   error: null,
   success: null,
@@ -12,6 +14,7 @@ const teacherReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.GET_ALL_STUDENTS_BY_INSTRUCTOR_REQUEST:
     case actionTypes.GET_ALL_CLASSES_BY_FACULTY_OF_TEACHER_REQUEST:
+    case actionTypes.GET_ALL_TEACHERS_REQUEST:
       return {
         ...state,
         isLoading: true,
@@ -35,8 +38,17 @@ const teacherReducer = (state = initialState, action) => {
         error: null,
       };
 
+    case actionTypes.GET_ALL_TEACHERS_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        teacherPagination: action.payload,
+        error: null,
+      };
+
     case actionTypes.GET_ALL_STUDENTS_BY_INSTRUCTOR_FAILURE:
     case actionTypes.GET_ALL_CLASSES_BY_FACULTY_OF_TEACHER_FAILURE:
+    case actionTypes.GET_ALL_TEACHERS_FAILURE:
       return {
         ...state,
         isLoading: false,

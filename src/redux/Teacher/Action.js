@@ -73,3 +73,75 @@ export const getAllClassesByFacultyOfTeacherAction = () => async (dispatch) => {
     });
   }
 };
+
+export const getAllTeachersAction = (requestData) => async (dispatch) => {
+  dispatch({ type: actionTypes.GET_ALL_TEACHERS_REQUEST });
+
+  try {
+    const { keyword, studentPagination } = requestData;
+    const params = new URLSearchParams();
+
+    if (keyword) params.append("keyword", keyword.trim());
+
+    if (studentPagination?.pageNumber)
+      params.append("pageNumber", studentPagination.pageNumber);
+
+    if (studentPagination?.pageSize)
+      params.append("pageSize", studentPagination.pageSize);
+
+    if (studentPagination?.sortBy)
+      params.append("sortBy", studentPagination.sortBy);
+
+    if (studentPagination?.sortDir)
+      params.append("sortDir", studentPagination.sortDir);
+
+    if (studentPagination?.facultyId)
+      params.append("facultyId", studentPagination.facultyId);
+
+    const response = await axiosAPI.get(`/admin/teachers?${params.toString()}`);
+    console.log(response.data);
+
+    dispatch({
+      type: actionTypes.GET_ALL_TEACHERS_SUCCESS,
+      payload: response.data,
+    });
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || error.message;
+
+    dispatch({
+      type: actionTypes.GET_ALL_TEACHERS_FAILURE,
+      payload: errorMessage,
+    });
+  }
+};
+
+export const createTeacherAction = (requestData) => async (dispatch) => {
+  dispatch({ type: actionTypes.CREATE_TEACHER_REQUEST });
+
+  try {
+    const response = await axiosAPI.post(
+      `/admin/accounts/teacher`,
+      requestData.teacherData
+    );
+    console.log(response.data);
+
+    // dispatch({
+    //   type: actionTypes.CREATE_TEACHER_SUCCESS,
+    //   payload: response.data,
+    // });
+
+    if (response.data) {
+      requestData.toast.success("Tạo tài khoản giảng viên thành công");
+      requestData.navigate("/admin/manage-teacher");
+    }
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || error.message;
+
+    dispatch({
+      type: actionTypes.CREATE_TEACHER_FAILURE,
+      payload: errorMessage,
+    });
+
+    if (errorMessage) requestData.toast.error(errorMessage);
+  }
+};

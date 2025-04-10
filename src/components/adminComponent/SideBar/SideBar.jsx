@@ -29,6 +29,8 @@ import ManageSemester from "../ManageSemester/ManageSemester";
 import AdminProfile from "../AdminProfile/AdminProfile";
 import FormEditSchoolYear from "../ManageSemester/FormEditSchoolYear";
 import FormEditSemester from "../ManageSemester/FormEditSemester";
+import ManageTeacher from "../ManageTeacher/ManageTeacher";
+import FormCreateTeacher from "../ManageTeacher/FormCreateTeacher";
 
 // +++++++++++++  start for drawer
 const drawerWidth = 320;
@@ -127,7 +129,7 @@ const sidebarAdminOptions = [
   {
     text: "Quản lý giảng viên",
     icon: <Groups3Icon />,
-    path: "/admin/mamage-teacher",
+    path: "/admin/manage-teacher",
   },
 ];
 
@@ -252,7 +254,11 @@ export const SideBar = () => {
             path="/manage-registerStudent"
             element={<ManageStudentRegister />}
           />
-          <Route path="/mamage-teacher" element="HWLLOOOOOO" />
+          <Route path="/manage-teacher" element={<ManageTeacher />} />
+          <Route
+            path="/manage-teacher/create"
+            element={<FormCreateTeacher />}
+          />
         </Routes>
       </Box>
     </Box>

@@ -263,6 +263,7 @@ const FormEditStage = () => {
                     <DateTimePicker
                       className="w-full"
                       name="startDate"
+                      format="DD/MM/YYYY"
                       value={formik.values.startDate || null}
                       onChange={(newValue) =>
                         formik.setFieldValue("startDate", newValue || null)
@@ -286,6 +287,7 @@ const FormEditStage = () => {
                     <DateTimePicker
                       className="w-full"
                       name="endDate"
+                      format="DD/MM/YYYY"
                       value={formik.values.endDate || null}
                       onChange={(newValue) =>
                         formik.setFieldValue("endDate", newValue || null)

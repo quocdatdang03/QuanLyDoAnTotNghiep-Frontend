@@ -38,7 +38,9 @@ const ProfileDetails = () => {
           <span>
             {userInfo?.roles[0].roleName === "SINHVIEN"
               ? "Sinh viên"
-              : "Giảng viên"}
+              : userInfo?.roles[0].roleName === "GIANGVIEN"
+                ? "Giảng viên"
+                : "Quản trị viên"}
           </span>
         </p>
         {userInfo?.roles[0].roleName === "GIANGVIEN" ||
