@@ -115,3 +115,29 @@ export const getInstructorByStudentIdAction =
       });
     }
   };
+
+export const updateEnableStatusOfStudentAction =
+  (requestData) => async (dispatch) => {
+    dispatch({
+      type: actionTypes.UPDATE_ENABLE_STATUS_REQUEST,
+    });
+
+    try {
+      const response = await axiosAPI.patch(
+        `/admin/students/enableStatus`,
+        requestData
+      );
+
+      dispatch({
+        type: actionTypes.UPDATE_ENABLE_STATUS_SUCCESS,
+        payload: response.data,
+      });
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      console.log(error);
+      dispatch({
+        type: actionTypes.UPDATE_ENABLE_STATUS_FAILURE,
+        payload: errorMessage,
+      });
+    }
+  };

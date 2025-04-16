@@ -1,6 +1,7 @@
 import RefreshIcon from "@mui/icons-material/Refresh";
 import SearchIcon from "@mui/icons-material/Search";
 import {
+  Button,
   Divider,
   FormControl,
   IconButton,
@@ -21,17 +22,21 @@ import {
 } from "@mui/material";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
-  getAllSemestersAction,
   getAllSemestersWithoutPaginationAction,
   getCurrentSemesterAction,
 } from "../../../redux/Semester/Action";
 import { getAllFacultiesAction } from "../../../redux/Faculty/Action";
 import { getAllClassesAction } from "../../../redux/Class/Action";
-import { filterAllStudentsAction } from "../../../redux/Student/Action";
+import {
+  filterAllStudentsAction,
+  updateEnableStatusOfStudentAction,
+} from "../../../redux/Student/Action";
 import noResultImage from "../../../assets/images/no-result-img.png";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -77,6 +82,9 @@ const tableHeaderDatas = [
   },
   {
     title: "Học kỳ",
+  },
+  {
+    title: "Hành động",
   },
 ];
 
@@ -200,6 +208,20 @@ const ManageStudentRegister = () => {
   const handleSortBy = (fieldName) => {
     console.log("SET:" + fieldName);
     setSortBy(fieldName);
+  };
+
+  // handle lock/unlock student account:
+  const handleUpdateEnableStatusOfStudent = (student, enableStatus) => {
+    console.log(student);
+    const requestData = {
+      studentCode: student.studentCode,
+      semesterId: student.semester.semesterId,
+      enableStatus: enableStatus,
+    };
+
+    console.log(requestData);
+
+    dispatch(updateEnableStatusOfStudentAction(requestData));
   };
 
   return (
@@ -393,6 +415,31 @@ const ManageStudentRegister = () => {
                       >
                         {item.semester.semesterName}
                       </p>
+                    </StyledTableCell>
+                    <StyledTableCell align="left">
+                      {item.enable ? (
+                        <Button
+                          variant="contained"
+                          color="error"
+                          startIcon={<LockOutlinedIcon />}
+                          onClick={() =>
+                            handleUpdateEnableStatusOfStudent(item, "lock")
+                          }
+                        >
+                          Khóa
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="contained"
+                          color="success"
+                          startIcon={<LockOpenIcon />}
+                          onClick={() =>
+                            handleUpdateEnableStatusOfStudent(item, "unlock")
+                          }
+                        >
+                          Mở khóa
+                        </Button>
+                      )}
                     </StyledTableCell>
                   </StyledTableRow>
                 );

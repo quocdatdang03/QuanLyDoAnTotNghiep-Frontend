@@ -12,6 +12,7 @@ const studentReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.FILTER_ALL_STUDENTS_REQUEST:
     case actionTypes.GET_INSTRUCTOR_BY_STUDENTID_IN_CURRENT_SEMESTER_REQUEST:
+    case actionTypes.UPDATE_ENABLE_STATUS_REQUEST:
       return {
         ...state,
         isLoading: true,
@@ -35,8 +36,24 @@ const studentReducer = (state = initialState, action) => {
         error: null,
       };
 
+    case actionTypes.UPDATE_ENABLE_STATUS_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        studentPagination: {
+          ...state.studentPagination,
+          content: state.studentPagination.content.map((item) =>
+            item.studentCode === action.payload.studentCode
+              ? action.payload
+              : item
+          ),
+        },
+        error: null,
+      };
+
     case actionTypes.FILTER_ALL_STUDENTS_FAILURE:
     case actionTypes.GET_INSTRUCTOR_BY_STUDENTID_IN_CURRENT_SEMESTER_FAILURE:
+    case actionTypes.UPDATE_ENABLE_STATUS_FAILURE:
       return {
         ...state,
         isLoading: false,
