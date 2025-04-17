@@ -24,17 +24,20 @@ import {
 } from "@mui/material";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import EditIcon from "@mui/icons-material/Edit";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {
-  getAllSemestersWithoutPaginationAction,
-  getCurrentSemesterAction,
-} from "../../../redux/Semester/Action";
+
 import { getAllFacultiesAction } from "../../../redux/Faculty/Action";
 import { getAllClassesAction } from "../../../redux/Class/Action";
-import { filterAllStudentsAction } from "../../../redux/Student/Action";
+import {
+  getAllStudentsAccountAction,
+  updateEnableStatusOfStudentAction,
+} from "../../../redux/Student/Action";
 import noResultImage from "../../../assets/images/no-result-img.png";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -79,37 +82,31 @@ const tableHeaderDatas = [
     sortByField: "clazz.faculty.facultyName",
   },
   {
-    title: "Học kỳ",
-  },
-  {
     title: "Hành động",
   },
 ];
 
-const ManageStudentRegister = () => {
+const ManageStudent = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [keyword, setKeyword] = useState("");
-  const [semesterId, setSemesterId] = useState("");
   const [classId, setClassId] = useState("");
   const [facultyId, setFacultyId] = useState("");
   const [currentPageNum, setCurrentPageNum] = useState(1);
   const [sortDir, setSortDir] = useState("asc");
   const [sortBy, setSortBy] = useState("account.fullName");
 
-  console.log(sortBy);
-
-  const { semesterReducer, facultyReducer, classReducer, studentReducer } =
-    useSelector((store) => store);
+  const { facultyReducer, classReducer, studentReducer } = useSelector(
+    (store) => store
+  );
 
   // get all info for pagination:
-  const totalElements = studentReducer.studentPagination?.totalElements;
-  const pageSize = studentReducer.studentPagination?.pageSize;
-  const pageNumber = studentReducer.studentPagination?.pageNumber;
+  const totalElements = studentReducer.studentAccountPagination?.totalElements;
+  const pageSize = studentReducer.studentAccountPagination?.pageSize;
+  const pageNumber = studentReducer.studentAccountPagination?.pageNumber;
 
-  // get all Semesters, Faculty, Class
+  // get all Faculty, Class
   useEffect(() => {
-    dispatch(getAllSemestersWithoutPaginationAction());
     dispatch(getAllFacultiesAction());
     dispatch(getAllClassesAction());
   }, [dispatch]);
@@ -118,26 +115,14 @@ const ManageStudentRegister = () => {
   useEffect(() => {
     const requestData = {};
 
-    dispatch(filterAllStudentsAction(requestData));
+    dispatch(getAllStudentsAccountAction(requestData));
   }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(getCurrentSemesterAction());
-  }, []);
-
-  // Khi lấy được học kỳ hiện tại từ store thì cập nhật semesterId
-  useEffect(() => {
-    if (semesterReducer.currentSemester?.semesterId) {
-      setSemesterId(semesterReducer.currentSemester.semesterId);
-    }
-  }, [semesterReducer.currentSemester]);
 
   // handle change page:
   const handleChangePage = (e, value) => {
     const requestData = {
       keyword,
-      studentPagination: {
-        semesterId,
+      studentAccountPagination: {
         classId,
         facultyId,
         pageNumber: value,
@@ -150,14 +135,13 @@ const ManageStudentRegister = () => {
 
     setCurrentPageNum(value);
 
-    dispatch(filterAllStudentsAction(requestData));
+    dispatch(getAllStudentsAccountAction(requestData));
   };
 
   const handleFilterStudent = (pageNum) => {
     const requestData = {
       keyword,
-      studentPagination: {
-        semesterId,
+      studentAccountPagination: {
         classId,
         facultyId,
         pageNumber: pageNum,
@@ -168,14 +152,14 @@ const ManageStudentRegister = () => {
 
     console.log(requestData);
 
-    dispatch(filterAllStudentsAction(requestData));
+    dispatch(getAllStudentsAccountAction(requestData));
   };
 
   // handle filter by keyword, semester, class, faculty
   useEffect(() => {
     // Nếu filter -> reset về pageNumber là 1
     handleFilterStudent(1);
-  }, [keyword, semesterId, facultyId, classId]);
+  }, [keyword, facultyId, classId]);
 
   // handle sort by and sort dir
   useEffect(() => {
@@ -186,7 +170,6 @@ const ManageStudentRegister = () => {
   // handle clear search
   const handleClearSearch = () => {
     setKeyword("");
-    setSemesterId(semesterReducer.currentSemester?.semesterId);
     setClassId("");
     setFacultyId("");
     setCurrentPageNum(1);
@@ -206,6 +189,19 @@ const ManageStudentRegister = () => {
     setSortBy(fieldName);
   };
 
+  // handle lock/unlock student account:
+  const handleUpdateEnableStatusOfStudent = (student, enableStatus) => {
+    console.log(student);
+    const requestData = {
+      studentCode: student.studentCode,
+      enableStatus: enableStatus,
+    };
+
+    console.log(requestData);
+
+    dispatch(updateEnableStatusOfStudentAction(requestData));
+  };
+
   return (
     <Container className="my-10">
       <Typography
@@ -214,11 +210,11 @@ const ManageStudentRegister = () => {
         component="h2"
         sx={{ fontSize: 30, fontWeight: "bold" }}
       >
-        Danh sách sinh viên đăng ký đồ án tốt nghiệp
+        Quản lý tài khoản sinh viên
       </Typography>
       <div>
         <h1 className="text-[#0355d2] font-bold uppercase pb-3 border-b-[2px] border-[#0355d2] mt-6 mb-5">
-          Danh sách sinh viên
+          Danh sách tài khoản sinh viên
         </h1>
 
         <div className="flex items-center justify-end">
@@ -228,7 +224,7 @@ const ManageStudentRegister = () => {
             startIcon={<PersonAddIcon />}
             onClick={() => navigate("create")}
           >
-            Thêm sinh viên
+            Thêm tài khoản
           </Button>
         </div>
 
@@ -270,33 +266,6 @@ const ManageStudentRegister = () => {
             {/* FILTER SELECT */}
           </div>
           <div className="flex gap-5 w-full">
-            {/* FILTER BY SEMESTER */}
-            <FormControl fullWidth size="small">
-              <InputLabel id="demo-simple-select-label">Học kỳ</InputLabel>
-
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={semesterId}
-                label="Học kỳ"
-                onChange={(e) => setSemesterId(e.target.value)}
-              >
-                <MenuItem value="">
-                  <em>Học kỳ</em> {/* Giá trị rỗng để hiển thị khi chưa chọn */}
-                </MenuItem>
-                {semesterReducer.semesters?.map((item) => {
-                  return (
-                    <MenuItem key={item.semesterId} value={item.semesterId}>
-                      {item.semesterName}
-                      {item.isCurrent && (
-                        <b className="italic pl-1">(Học kỳ hiện tại)</b>
-                      )}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </FormControl>
-
             {/* FILTER BY FACULTY */}
             <FormControl fullWidth size="small">
               <InputLabel id="demo-simple-select-label">Khoa</InputLabel>
@@ -354,7 +323,7 @@ const ManageStudentRegister = () => {
         )}
 
         {/* TABLE */}
-        {studentReducer.studentPagination?.content.length <= 0 ? (
+        {studentReducer.studentAccountPagination?.content.length <= 0 ? (
           <div className="flex flex-col justify-center items-center">
             <img
               className="w-52 h-52"
@@ -396,7 +365,7 @@ const ManageStudentRegister = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {studentReducer.studentPagination?.content.map(
+                {studentReducer.studentAccountPagination?.content.map(
                   (item, index) => {
                     return (
                       <StyledTableRow key={item.studentCode}>
@@ -416,12 +385,47 @@ const ManageStudentRegister = () => {
                           {item.studentClass.faculty.facultyName}
                         </StyledTableCell>
                         <StyledTableCell align="left">
-                          <p
-                            className="flex items-center"
-                            key={item.semester.semesterId}
-                          >
-                            {item.semester.semesterName}
-                          </p>
+                          <div className="flex gap-2">
+                            <Button
+                              variant="contained"
+                              color="info"
+                              startIcon={<EditIcon />}
+                            >
+                              Sửa
+                            </Button>
+                            {/* <Button variant="contained" color="error">
+                            Xóa
+                          </Button> */}
+                            {item.enable ? (
+                              <Button
+                                variant="contained"
+                                color="error"
+                                startIcon={<LockOutlinedIcon />}
+                                onClick={() =>
+                                  handleUpdateEnableStatusOfStudent(
+                                    item,
+                                    "lock"
+                                  )
+                                }
+                              >
+                                Khóa
+                              </Button>
+                            ) : (
+                              <Button
+                                variant="contained"
+                                color="success"
+                                startIcon={<LockOpenIcon />}
+                                onClick={() =>
+                                  handleUpdateEnableStatusOfStudent(
+                                    item,
+                                    "unlock"
+                                  )
+                                }
+                              >
+                                Mở khóa
+                              </Button>
+                            )}
+                          </div>
                         </StyledTableCell>
                       </StyledTableRow>
                     );
@@ -435,7 +439,7 @@ const ManageStudentRegister = () => {
         {/* END TABLE */}
 
         {/* Pagination */}
-        {studentReducer.studentPagination?.content.length > 0 && (
+        {studentReducer.studentAccountPagination?.content.length > 0 && (
           <div className="flex items-center justify-center mt-10">
             <Pagination
               count={Math.ceil(totalElements / pageSize)}
@@ -450,4 +454,4 @@ const ManageStudentRegister = () => {
   );
 };
 
-export default ManageStudentRegister;
+export default ManageStudent;

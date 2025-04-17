@@ -141,3 +141,50 @@ export const updateEnableStatusOfStudentAction =
       });
     }
   };
+
+export const getAllStudentsAccountAction =
+  (requestData) => async (dispatch) => {
+    dispatch({ type: actionTypes.GET_ALL_STUDENTS_ACCOUNT_REQUEST });
+
+    try {
+      const { keyword, studentAccountPagination } = requestData;
+      const params = new URLSearchParams();
+
+      if (keyword) params.append("keyword", keyword.trim());
+
+      if (studentAccountPagination?.pageNumber)
+        params.append("pageNumber", studentAccountPagination.pageNumber);
+
+      if (studentAccountPagination?.pageSize)
+        params.append("pageSize", studentAccountPagination.pageSize);
+
+      if (studentAccountPagination?.sortBy)
+        params.append("sortBy", studentAccountPagination.sortBy);
+
+      if (studentAccountPagination?.sortDir)
+        params.append("sortDir", studentAccountPagination.sortDir);
+
+      if (studentAccountPagination?.classId)
+        params.append("classId", studentAccountPagination.classId);
+
+      if (studentAccountPagination?.facultyId)
+        params.append("facultyId", studentAccountPagination.facultyId);
+
+      const response = await axiosAPI.get(
+        `/admin/students?${params.toString()}`
+      );
+      console.log(response.data);
+
+      dispatch({
+        type: actionTypes.GET_ALL_STUDENTS_ACCOUNT_SUCCESS,
+        payload: response.data,
+      });
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      console.log(error);
+      dispatch({
+        type: actionTypes.GET_ALL_STUDENTS_ACCOUNT_FAILURE,
+        payload: errorMessage,
+      });
+    }
+  };

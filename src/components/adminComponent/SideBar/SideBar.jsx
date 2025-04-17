@@ -1,9 +1,7 @@
 import React from "react";
 
-import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
 import {
   Box,
   Divider,
@@ -14,7 +12,6 @@ import {
   ListItemIcon,
   styled,
   Toolbar,
-  Typography,
 } from "@mui/material";
 import MuiAppBar from "@mui/material/AppBar";
 import MuiDrawer from "@mui/material/Drawer";
@@ -23,6 +20,7 @@ import Header from "../Header/Header";
 import GroupIcon from "@mui/icons-material/Group";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import Groups3Icon from "@mui/icons-material/Groups3";
+import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import ManageStudentRegister from "../ManageStudentRegister/ManageStudentRegister";
 import ManageSemester from "../ManageSemester/ManageSemester";
@@ -32,6 +30,8 @@ import FormEditSemester from "../ManageSemester/FormEditSemester";
 import ManageTeacher from "../ManageTeacher/ManageTeacher";
 import FormCreateTeacher from "../ManageTeacher/FormCreateTeacher";
 import FormEditTeacher from "../ManageTeacher/FormEditTeacher";
+import ManageStudent from "../ManageStudent/ManageStudent";
+import FormCreateStudent from "../ManageStudent/FormCreateStudent";
 
 // +++++++++++++  start for drawer
 const drawerWidth = 320;
@@ -121,6 +121,11 @@ const sidebarAdminOptions = [
     text: "Quản lý học kỳ đồ án",
     icon: <EventNoteIcon />,
     path: "/admin/manage-semester",
+  },
+  {
+    text: "Quản lý tài khoản sinh viên",
+    icon: <SupervisedUserCircleIcon />,
+    path: "/admin/manage-student",
   },
   {
     text: "Quản lý sinh viên đăng ký ĐATN",
@@ -254,6 +259,11 @@ export const SideBar = () => {
           <Route
             path="/manage-registerStudent"
             element={<ManageStudentRegister />}
+          />
+          <Route path="/manage-student" element={<ManageStudent />} />
+          <Route
+            path="/manage-student/create"
+            element={<FormCreateStudent />}
           />
           <Route path="/manage-teacher" element={<ManageTeacher />} />
           <Route
