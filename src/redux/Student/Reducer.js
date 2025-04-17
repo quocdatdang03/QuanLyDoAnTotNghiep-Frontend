@@ -15,6 +15,7 @@ const studentReducer = (state = initialState, action) => {
     case actionTypes.GET_ALL_STUDENTS_ACCOUNT_REQUEST:
     case actionTypes.GET_INSTRUCTOR_BY_STUDENTID_IN_CURRENT_SEMESTER_REQUEST:
     case actionTypes.UPDATE_ENABLE_STATUS_REQUEST:
+    case actionTypes.CREATE_STUDENT_ACCOUNT_REQUEST:
       return {
         ...state,
         isLoading: true,
@@ -65,6 +66,7 @@ const studentReducer = (state = initialState, action) => {
     case actionTypes.GET_ALL_STUDENTS_ACCOUNT_FAILURE:
     case actionTypes.GET_INSTRUCTOR_BY_STUDENTID_IN_CURRENT_SEMESTER_FAILURE:
     case actionTypes.UPDATE_ENABLE_STATUS_FAILURE:
+    case actionTypes.CREATE_STUDENT_ACCOUNT_FAILURE:
       return {
         ...state,
         isLoading: false,

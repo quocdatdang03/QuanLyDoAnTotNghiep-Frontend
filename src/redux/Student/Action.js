@@ -188,3 +188,34 @@ export const getAllStudentsAccountAction =
       });
     }
   };
+
+export const createStudentAccountAction = (requestData) => async (dispatch) => {
+  dispatch({ type: actionTypes.CREATE_STUDENT_ACCOUNT_REQUEST });
+
+  try {
+    const response = await axiosAPI.post(
+      `/admin/accounts/student`,
+      requestData.studentData
+    );
+    console.log(response.data);
+
+    // dispatch({
+    //   type: actionTypes.CREATE_TEACHER_SUCCESS,
+    //   payload: response.data,
+    // });
+
+    if (response.data) {
+      requestData.toast.success("Tạo tài khoản sinh viên thành công");
+      requestData.navigate("/admin/manage-student");
+    }
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || error.message;
+
+    dispatch({
+      type: actionTypes.CREATE_STUDENT_ACCOUNT_FAILURE,
+      payload: errorMessage,
+    });
+
+    if (errorMessage) requestData.toast.error(errorMessage);
+  }
+};

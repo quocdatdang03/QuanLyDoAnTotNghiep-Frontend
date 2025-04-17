@@ -28,6 +28,7 @@ import { uploadImageToCloudinary } from "../../../util/UploadImageToCloudinary";
 import dayjs from "dayjs";
 import { getAllClassesAction } from "../../../redux/Class/Action";
 import { formCreateStudentAccountValidation } from "./validation/formCreateStudentAccountValidation";
+import { createStudentAccountAction } from "../../../redux/Student/Action";
 
 const FormCreateStudent = () => {
   const navigate = useNavigate();
@@ -83,7 +84,7 @@ const FormCreateStudent = () => {
       };
 
       console.log(requestData);
-      //   dispatch(createTeacherAction(requestData));
+      dispatch(createStudentAccountAction(requestData));
     },
   });
 
