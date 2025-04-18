@@ -32,6 +32,7 @@ import FormCreateTeacher from "../ManageTeacher/FormCreateTeacher";
 import FormEditTeacher from "../ManageTeacher/FormEditTeacher";
 import ManageStudent from "../ManageStudent/ManageStudent";
 import FormCreateStudent from "../ManageStudent/FormCreateStudent";
+import FormEditStudent from "../ManageStudent/FormEditStudent";
 
 // +++++++++++++  start for drawer
 const drawerWidth = 320;
@@ -264,6 +265,10 @@ export const SideBar = () => {
           <Route
             path="/manage-student/create"
             element={<FormCreateStudent />}
+          />
+          <Route
+            path="/manage-student/edit/:studentCodeParam"
+            element={<FormEditStudent />}
           />
           <Route path="/manage-teacher" element={<ManageTeacher />} />
           <Route

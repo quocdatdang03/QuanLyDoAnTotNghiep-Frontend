@@ -390,6 +390,9 @@ const ManageStudent = () => {
                               variant="contained"
                               color="info"
                               startIcon={<EditIcon />}
+                              onClick={() =>
+                                navigate(`edit/${item.studentCode}`)
+                              }
                             >
                               Sửa
                             </Button>

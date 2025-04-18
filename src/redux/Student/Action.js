@@ -1,6 +1,32 @@
 import { axiosAPI } from "../../config/api";
 import * as actionTypes from "./ActionType";
 
+export const getStudentByStudentCodeAction =
+  (requestData) => async (dispatch) => {
+    dispatch({ type: actionTypes.GET_STUDENT_BY_STUDENTCODE_REQUEST });
+
+    try {
+      const response = await axiosAPI.get(
+        `/students/${requestData.studentCode}`
+      );
+
+      console.log(response.data);
+
+      dispatch({
+        type: actionTypes.GET_STUDENT_BY_STUDENTCODE_SUCCESS,
+        payload: response.data,
+      });
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      console.log(errorMessage);
+
+      dispatch({
+        type: actionTypes.GET_STUDENT_BY_STUDENTCODE_FAILURE,
+        payload: errorMessage,
+      });
+    }
+  };
+
 export const getAllStudentsByFacultyAndKeyword =
   (requestData) => async (dispatch) => {
     dispatch({ type: actionTypes.GET_STUDENTS_BY_FACULTY_AND_KEYWORD_REQUEST });
@@ -199,11 +225,6 @@ export const createStudentAccountAction = (requestData) => async (dispatch) => {
     );
     console.log(response.data);
 
-    // dispatch({
-    //   type: actionTypes.CREATE_TEACHER_SUCCESS,
-    //   payload: response.data,
-    // });
-
     if (response.data) {
       requestData.toast.success("Tạo tài khoản sinh viên thành công");
       requestData.navigate("/admin/manage-student");
@@ -213,6 +234,32 @@ export const createStudentAccountAction = (requestData) => async (dispatch) => {
 
     dispatch({
       type: actionTypes.CREATE_STUDENT_ACCOUNT_FAILURE,
+      payload: errorMessage,
+    });
+
+    if (errorMessage) requestData.toast.error(errorMessage);
+  }
+};
+
+export const updateStudentAccountAction = (requestData) => async (dispatch) => {
+  dispatch({ type: actionTypes.UPDATE_STUDENT_ACCOUNT_REQUEST });
+
+  try {
+    const response = await axiosAPI.put(
+      `/admin/accounts/student/${requestData.studentId}`,
+      requestData.studentData
+    );
+    console.log(response.data);
+
+    if (response.data) {
+      requestData.toast.success("Cập nhật tài khoản sinh viên thành công");
+      requestData.navigate("/admin/manage-student");
+    }
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || error.message;
+
+    dispatch({
+      type: actionTypes.UPDATE_STUDENT_ACCOUNT_FAILURE,
       payload: errorMessage,
     });
 

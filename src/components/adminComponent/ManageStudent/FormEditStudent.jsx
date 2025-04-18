@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -27,13 +27,18 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { uploadImageToCloudinary } from "../../../util/UploadImageToCloudinary";
 import dayjs from "dayjs";
 import { getAllClassesAction } from "../../../redux/Class/Action";
-import { formCreateStudentAccountValidation } from "./validation/formCreateStudentAccountValidation";
-import { createStudentAccountAction } from "../../../redux/Student/Action";
+import {
+  getStudentByStudentCodeAction,
+  updateStudentAccountAction,
+} from "../../../redux/Student/Action";
+import { formEditStudentAccountValidation } from "./validation/formEditStudentAccountValidation";
 
-const FormCreateStudent = () => {
+const FormEditStudent = () => {
+  const { studentCodeParam } = useParams();
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { classReducer } = useSelector((store) => store);
+  const { classReducer, studentReducer } = useSelector((store) => store);
 
   const [uploadImage, setUploadImage] = useState(false);
   const [isDelayedLoading, setIsDelayedLoading] = useState(false);
@@ -56,35 +61,37 @@ const FormCreateStudent = () => {
     return dayjs(value).format("YYYY-MM-DD");
   };
 
-  // handle create student:
+  // handle edit student:
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      studentCode: "",
-      fullName: "",
-      email: "",
-      password: "dat03122003",
-      dateOfBirth: null,
-      phoneNumber: "",
-      classId: "",
-      address: "",
-      gender: false,
-      image: "",
+      studentCode: studentReducer.student?.studentCode || "",
+      fullName: studentReducer.student?.fullName || "",
+      email: studentReducer.student?.email || "",
+      password: "",
+      dateOfBirth: studentReducer.student?.dateOfBirth
+        ? dayjs(studentReducer.student?.dateOfBirth)
+        : dayjs(),
+      phoneNumber: studentReducer.student?.phoneNumber || "",
+      classId: studentReducer.student?.studentClass.classId || "",
+      address: studentReducer.student?.address || "",
+      gender: studentReducer.student?.gender || false,
+      image: studentReducer.student?.image || "",
     },
-    validationSchema: formCreateStudentAccountValidation,
+    validationSchema: formEditStudentAccountValidation,
     onSubmit: (values) => {
       const requestData = {
+        studentId: studentReducer.student?.studentId,
         studentData: {
           ...values,
           dateOfBirth: formatDate(values.dateOfBirth),
-          roleIds: [1],
-          enable: true,
         },
         navigate,
         toast,
       };
 
       console.log(requestData);
-      dispatch(createStudentAccountAction(requestData));
+      dispatch(updateStudentAccountAction(requestData));
     },
   });
 
@@ -92,6 +99,14 @@ const FormCreateStudent = () => {
   useEffect(() => {
     dispatch(getAllClassesAction);
   }, [dispatch]);
+
+  // get student by studentCode:
+  useEffect(() => {
+    const requestData = {
+      studentCode: studentCodeParam,
+    };
+    dispatch(getStudentByStudentCodeAction(requestData));
+  }, [studentCodeParam]);
 
   //   // handle loading:
   //   useEffect(() => {
@@ -120,7 +135,7 @@ const FormCreateStudent = () => {
       </div>
       <Paper className="p-5">
         <h2 className="text-center uppercase text-xl font-bold mb-5">
-          Thêm tài khoản sinh viên
+          Chỉnh sửa tài khoản sinh viên
         </h2>
         <div>
           <form className="space-y-4" onSubmit={formik.handleSubmit}>
@@ -245,7 +260,10 @@ const FormCreateStudent = () => {
                   htmlFor="password"
                   className="block mb-2 text-sm font-medium"
                 >
-                  Mật khẩu <b className="text-red-600">(*)</b>
+                  Mật khẩu
+                  <i className="text-gray-400 pl-1">
+                    (Để trống nếu không muốn thay đổi)
+                  </i>
                 </label>
                 <TextField
                   label="Nhập mật khẩu"
@@ -408,7 +426,7 @@ const FormCreateStudent = () => {
                 className="w-[50%] md:w-[30%]"
                 //   loading={isDelayedLoading}
               >
-                Thêm mới
+                Cập nhật
               </Button>
             </div>
           </form>
@@ -418,4 +436,4 @@ const FormCreateStudent = () => {
   );
 };
 
-export default FormCreateStudent;
+export default FormEditStudent;

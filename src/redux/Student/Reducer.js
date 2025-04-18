@@ -3,6 +3,7 @@ import * as actionTypes from "./ActionType";
 const initialState = {
   studentPagination: null,
   studentAccountPagination: null,
+  student: null,
   instructor: null,
   error: null,
   success: null,
@@ -11,6 +12,7 @@ const initialState = {
 
 const studentReducer = (state = initialState, action) => {
   switch (action.type) {
+    case actionTypes.GET_STUDENT_BY_STUDENTCODE_REQUEST:
     case actionTypes.FILTER_ALL_STUDENTS_REQUEST:
     case actionTypes.GET_ALL_STUDENTS_ACCOUNT_REQUEST:
     case actionTypes.GET_INSTRUCTOR_BY_STUDENTID_IN_CURRENT_SEMESTER_REQUEST:
@@ -20,6 +22,14 @@ const studentReducer = (state = initialState, action) => {
         ...state,
         isLoading: true,
         success: null,
+        error: null,
+      };
+
+    case actionTypes.GET_STUDENT_BY_STUDENTCODE_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        student: action.payload,
         error: null,
       };
 
@@ -62,6 +72,7 @@ const studentReducer = (state = initialState, action) => {
         error: null,
       };
 
+    case actionTypes.GET_STUDENT_BY_STUDENTCODE_FAILURE:
     case actionTypes.FILTER_ALL_STUDENTS_FAILURE:
     case actionTypes.GET_ALL_STUDENTS_ACCOUNT_FAILURE:
     case actionTypes.GET_INSTRUCTOR_BY_STUDENTID_IN_CURRENT_SEMESTER_FAILURE:
