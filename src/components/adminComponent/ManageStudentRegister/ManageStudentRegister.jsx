@@ -25,6 +25,8 @@ import {
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import DeleteIcon from "@mui/icons-material/Delete";
+
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -422,6 +424,17 @@ const ManageStudentRegister = () => {
                           >
                             {item.semester.semesterName}
                           </p>
+                        </StyledTableCell>
+                        <StyledTableCell align="left">
+                          <Button
+                            variant="contained"
+                            color="error"
+                            startIcon={<DeleteIcon />}
+                            title="Xóa sinh viên khỏi học kỳ hiện tại"
+                            // onClick={() => navigate(`edit/${item.studentCode}`)}
+                          >
+                            Xóa
+                          </Button>
                         </StyledTableCell>
                       </StyledTableRow>
                     );

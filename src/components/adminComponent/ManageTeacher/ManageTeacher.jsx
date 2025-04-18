@@ -26,6 +26,8 @@ import { useNavigate } from "react-router-dom";
 
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+
 import noResultImage from "../../../assets/images/no-result-img.png";
 import defaultImage from "../../../assets/images/default-avatar.png";
 import SearchIcon from "@mui/icons-material/Search";
@@ -192,6 +194,7 @@ const ManageTeacher = () => {
             variant="contained"
             color="success"
             onClick={() => navigate("/admin/manage-teacher/create")}
+            startIcon={<PersonAddIcon />}
           >
             Thêm tài khoản
           </Button>

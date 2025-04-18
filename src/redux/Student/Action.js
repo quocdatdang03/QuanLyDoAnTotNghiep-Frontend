@@ -266,3 +266,129 @@ export const updateStudentAccountAction = (requestData) => async (dispatch) => {
     if (errorMessage) requestData.toast.error(errorMessage);
   }
 };
+
+// START METHODS FOR MANAGING REGISTERED STUDENT
+export const getAllStudentsNotEnrolledInCurrentSemesterAction =
+  (requestData) => async (dispatch) => {
+    dispatch({
+      type: actionTypes.GET_ALL_STUDENTS_NOT_ENROLLED_IN_CURRENT_SEMESTER_REQUEST,
+    });
+
+    try {
+      const { keyword, studentPagination } = requestData;
+      const params = new URLSearchParams();
+
+      if (keyword) params.append("keyword", keyword.trim());
+
+      if (studentPagination?.pageNumber)
+        params.append("pageNumber", studentPagination.pageNumber);
+
+      if (studentPagination?.pageSize)
+        params.append("pageSize", studentPagination.pageSize);
+
+      if (studentPagination?.sortBy)
+        params.append("sortBy", studentPagination.sortBy);
+
+      if (studentPagination?.sortDir)
+        params.append("sortDir", studentPagination.sortDir);
+
+      if (studentPagination?.classId)
+        params.append("classId", studentPagination.classId);
+
+      if (studentPagination?.facultyId)
+        params.append("facultyId", studentPagination.facultyId);
+
+      const response = await axiosAPI.get(
+        `/admin/students/not-enrolled?${params.toString()}`
+      );
+      console.log(response.data);
+
+      dispatch({
+        type: actionTypes.GET_ALL_STUDENTS_NOT_ENROLLED_IN_CURRENT_SEMESTER_SUCCESS,
+        payload: response.data,
+      });
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      console.log(error);
+      dispatch({
+        type: actionTypes.GET_ALL_STUDENTS_NOT_ENROLLED_IN_CURRENT_SEMESTER_FAILURE,
+        payload: errorMessage,
+      });
+    }
+  };
+
+export const chooseStudentAction = (requestData) => async (dispatch) => {
+  dispatch({ type: actionTypes.CHOOSE_STUDENT_REQUEST });
+
+  try {
+    const response = await axiosAPI.get(`/students/${requestData.studentCode}`);
+
+    dispatch({
+      type: actionTypes.CHOOSE_STUDENT_SUCCESS,
+      payload: response.data,
+    });
+
+    if (response.data) {
+      requestData.toast.success("Chọn sinh viên thành công");
+    }
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || error.message;
+    dispatch({
+      type: actionTypes.CHOOSE_STUDENT_FAILURE,
+      payload: errorMessage,
+    });
+  }
+};
+
+export const removeStudentFromTemporaryList =
+  (requestData) => async (dispatch) => {
+    try {
+      dispatch({
+        type: actionTypes.REMOVE_STUDENT_FROM_TEMPORARY_LIST_SUCCESS,
+        payload: requestData.studentCode,
+      });
+
+      requestData.toast.success("Xóa sinh viên khỏi danh sách tạm thành công");
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      dispatch({
+        type: actionTypes.REMOVE_STUDENT_FROM_TEMPORARY_LIST_FAILURE,
+        payload: errorMessage,
+      });
+    }
+  };
+
+export const addStudentToCurrentSemesterAction =
+  (requestData) => async (dispatch) => {
+    dispatch({ type: actionTypes.ADD_STUDENT_TO_CURRENT_SEMESTER_REQUEST });
+    try {
+      const response = await axiosAPI.post(
+        `/admin/students/studentSemester`,
+        requestData.data
+      );
+
+      dispatch({
+        type: actionTypes.ADD_STUDENT_TO_CURRENT_SEMESTER_SUCCESS,
+      });
+
+      if (response.data) {
+        requestData.toast.success(
+          "Thêm sinh viên vào học kỳ ĐATN hiện tại thành công"
+        );
+        requestData.navigate("/admin/manage-registerStudent");
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      dispatch({
+        type: actionTypes.ADD_STUDENT_TO_CURRENT_SEMESTER_FAILURE,
+        payload: errorMessage,
+      });
+
+      if (errorMessage)
+        requestData.toast.error(
+          "Xảy ra lỗi trong quá trình thêm sinh viên vào học kỳ ĐATN hiện tại"
+        );
+    }
+  };
+
+// END METHODS FOR MANAGING REGISTERED STUDENT
