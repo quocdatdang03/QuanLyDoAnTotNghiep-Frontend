@@ -25,6 +25,7 @@ const studentReducer = (state = initialState, action) => {
     case actionTypes.CHOOSE_STUDENT_REQUEST:
     case actionTypes.REMOVE_STUDENT_FROM_TEMPORARY_LIST_REQUEST:
     case actionTypes.ADD_STUDENT_TO_CURRENT_SEMESTER_REQUEST:
+    case actionTypes.DELETE_STUDENT_IN_CURRENT_SEMESTER_REQUEST:
       return {
         ...state,
         isLoading: true,
@@ -128,6 +129,7 @@ const studentReducer = (state = initialState, action) => {
     case actionTypes.CHOOSE_STUDENT_FAILURE:
     case actionTypes.REMOVE_STUDENT_FROM_TEMPORARY_LIST_FAILURE:
     case actionTypes.ADD_STUDENT_TO_CURRENT_SEMESTER_FAILURE:
+    case actionTypes.DELETE_STUDENT_IN_CURRENT_SEMESTER_FAILURE:
       return {
         ...state,
         isLoading: false,

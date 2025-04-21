@@ -391,4 +391,38 @@ export const addStudentToCurrentSemesterAction =
     }
   };
 
+export const deleteStudentInCurrentSemesterAction =
+  (requestData) => async (dispatch) => {
+    dispatch({ type: actionTypes.DELETE_STUDENT_IN_CURRENT_SEMESTER_REQUEST });
+    try {
+      const params = new URLSearchParams();
+
+      params.append("studentId", requestData.studentId);
+      params.append("semesterId", requestData.semesterId);
+
+      const response = await axiosAPI.delete(
+        `/admin/students/studentSemester?${params.toString()}`
+      );
+
+      if (response.data) {
+        requestData.toast.success(
+          "Xóa sinh viên ra khỏi học kỳ ĐATN hiện tại thành công"
+        );
+
+        dispatch(filterAllStudentsAction({}));
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      dispatch({
+        type: actionTypes.DELETE_STUDENT_IN_CURRENT_SEMESTER_FAILURE,
+        payload: errorMessage,
+      });
+
+      if (errorMessage)
+        requestData.toast.error(
+          "Xảy ra lỗi trong quá trình xóa sinh viên ra khỏi học kỳ ĐATN hiện tại"
+        );
+    }
+  };
+
 // END METHODS FOR MANAGING REGISTERED STUDENT

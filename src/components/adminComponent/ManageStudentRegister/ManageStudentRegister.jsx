@@ -1,14 +1,18 @@
 import RefreshIcon from "@mui/icons-material/Refresh";
 import SearchIcon from "@mui/icons-material/Search";
 import {
+  Backdrop,
+  Box,
   Button,
   Container,
   Divider,
+  Fade,
   FormControl,
   IconButton,
   InputBase,
   InputLabel,
   MenuItem,
+  Modal,
   Pagination,
   Paper,
   Select,
@@ -26,6 +30,7 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from "@mui/icons-material/Close";
 
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -36,8 +41,12 @@ import {
 } from "../../../redux/Semester/Action";
 import { getAllFacultiesAction } from "../../../redux/Faculty/Action";
 import { getAllClassesAction } from "../../../redux/Class/Action";
-import { filterAllStudentsAction } from "../../../redux/Student/Action";
+import {
+  deleteStudentInCurrentSemesterAction,
+  filterAllStudentsAction,
+} from "../../../redux/Student/Action";
 import noResultImage from "../../../assets/images/no-result-img.png";
+import toast from "react-hot-toast";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -58,6 +67,19 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     border: 0,
   },
 }));
+
+// Style for MODAL CONFIRM DELETE STUDENT SEMESTER:
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  paddingTop: 6,
+  paddingX: 4,
+  paddingBottom: 4,
+};
 
 // Table header data:
 const tableHeaderDatas = [
@@ -98,8 +120,11 @@ const ManageStudentRegister = () => {
   const [currentPageNum, setCurrentPageNum] = useState(1);
   const [sortDir, setSortDir] = useState("asc");
   const [sortBy, setSortBy] = useState("account.fullName");
-
-  console.log(sortBy);
+  const [
+    openModalConfirmDeleteStudentSemester,
+    setOpenModalConfirmDeleteStudentSemester,
+  ] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
 
   const { semesterReducer, facultyReducer, classReducer, studentReducer } =
     useSelector((store) => store);
@@ -208,258 +233,351 @@ const ManageStudentRegister = () => {
     setSortBy(fieldName);
   };
 
+  // handle open modal confirm delete studentSemester:
+  const handleOpenModalConfirmDeleteStudentSemester = (student) => {
+    setSelectedStudent(student);
+    setOpenModalConfirmDeleteStudentSemester(true);
+  };
+
+  // handle close modal confirm delete studentSemester:
+  const handleCloseModalConfirmDeleteStudentSemester = () => {
+    setOpenModalConfirmDeleteStudentSemester(false);
+    setSelectedStudent(null);
+  };
+
+  // handle delete studentSemester:
+  const handleDeleteStudentSemester = (studentId, semesterId) => {
+    const requestData = {
+      studentId: studentId,
+      semesterId: semesterId,
+      toast,
+    };
+
+    dispatch(deleteStudentInCurrentSemesterAction(requestData));
+
+    handleCloseModalConfirmDeleteStudentSemester();
+  };
+
   return (
-    <Container className="my-10">
-      <Typography
-        color="primary"
-        className="uppercase text-center"
-        component="h2"
-        sx={{ fontSize: 30, fontWeight: "bold" }}
-      >
-        Danh sách sinh viên đăng ký đồ án tốt nghiệp
-      </Typography>
-      <div>
-        <h1 className="text-[#0355d2] font-bold uppercase pb-3 border-b-[2px] border-[#0355d2] mt-6 mb-5">
-          Danh sách sinh viên
-        </h1>
+    <>
+      <Container className="my-10">
+        <Typography
+          color="primary"
+          className="uppercase text-center"
+          component="h2"
+          sx={{ fontSize: 30, fontWeight: "bold" }}
+        >
+          Danh sách sinh viên đăng ký đồ án tốt nghiệp
+        </Typography>
+        <div>
+          <h1 className="text-[#0355d2] font-bold uppercase pb-3 border-b-[2px] border-[#0355d2] mt-6 mb-5">
+            Danh sách sinh viên
+          </h1>
 
-        <div className="flex items-center justify-end">
-          <Button
-            variant="contained"
-            color="success"
-            startIcon={<PersonAddIcon />}
-            onClick={() => navigate("create")}
-          >
-            Thêm sinh viên
-          </Button>
-        </div>
-
-        {/* SEARCH & FILTER */}
-        <div className="flex items-center gap-3">
-          {/* INPUT SEARCH */}
-          <div className="flex my-10">
-            <Paper
-              sx={{
-                p: "2px 4px",
-                display: "flex",
-                alignItems: "center",
-                width: 400,
-              }}
+          <div className="flex items-center justify-end">
+            <Button
+              variant="contained"
+              color="success"
+              startIcon={<PersonAddIcon />}
+              onClick={() => navigate("create")}
             >
-              <InputBase
-                // inputRef={inputSearchRef}
-                sx={{ ml: 1, flex: 1 }}
-                placeholder="Tìm kiếm theo tên hoặc mã sinh viên"
-                value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
-              />
-              <IconButton
-                color="primary"
-                type="button"
-                sx={{ p: "10px" }}
-                aria-label="search"
-                onClick={() => handleFilterStudent(1)}
-              >
-                <SearchIcon />
-              </IconButton>
-              <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-              <IconButton sx={{ p: "10px" }} onClick={handleClearSearch}>
-                <RefreshIcon />
-              </IconButton>
-            </Paper>
-            {/* END INPUT SEARCH */}
-
-            {/* FILTER SELECT */}
+              Thêm sinh viên
+            </Button>
           </div>
-          <div className="flex gap-5 w-full">
-            {/* FILTER BY SEMESTER */}
-            <FormControl fullWidth size="small">
-              <InputLabel id="demo-simple-select-label">Học kỳ</InputLabel>
 
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={semesterId}
-                label="Học kỳ"
-                onChange={(e) => setSemesterId(e.target.value)}
+          {/* SEARCH & FILTER */}
+          <div className="flex items-center gap-3">
+            {/* INPUT SEARCH */}
+            <div className="flex my-10">
+              <Paper
+                sx={{
+                  p: "2px 4px",
+                  display: "flex",
+                  alignItems: "center",
+                  width: 400,
+                }}
               >
-                <MenuItem value="">
-                  <em>Học kỳ</em> {/* Giá trị rỗng để hiển thị khi chưa chọn */}
-                </MenuItem>
-                {semesterReducer.semesters?.map((item) => {
-                  return (
-                    <MenuItem key={item.semesterId} value={item.semesterId}>
-                      {item.semesterName}
-                      {item.isCurrent && (
-                        <b className="italic pl-1">(Học kỳ hiện tại)</b>
-                      )}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </FormControl>
+                <InputBase
+                  // inputRef={inputSearchRef}
+                  sx={{ ml: 1, flex: 1 }}
+                  placeholder="Tìm kiếm theo tên hoặc mã sinh viên"
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                />
+                <IconButton
+                  color="primary"
+                  type="button"
+                  sx={{ p: "10px" }}
+                  aria-label="search"
+                  onClick={() => handleFilterStudent(1)}
+                >
+                  <SearchIcon />
+                </IconButton>
+                <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+                <IconButton sx={{ p: "10px" }} onClick={handleClearSearch}>
+                  <RefreshIcon />
+                </IconButton>
+              </Paper>
+              {/* END INPUT SEARCH */}
 
-            {/* FILTER BY FACULTY */}
-            <FormControl fullWidth size="small">
-              <InputLabel id="demo-simple-select-label">Khoa</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={facultyId}
-                label="Khoa"
-                onChange={(e) => setFacultyId(e.target.value)}
-              >
-                <MenuItem value="">
-                  <em>Khoa</em> {/* Giá trị rỗng để hiển thị khi chưa chọn */}
-                </MenuItem>
-                {facultyReducer.faculties?.map((item) => {
-                  return (
-                    <MenuItem key={item.facultyId} value={item.facultyId}>
-                      {item.facultyName}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </FormControl>
+              {/* FILTER SELECT */}
+            </div>
+            <div className="flex gap-5 w-full">
+              {/* FILTER BY SEMESTER */}
+              <FormControl fullWidth size="small">
+                <InputLabel id="demo-simple-select-label">Học kỳ</InputLabel>
 
-            {/* FILTER BY CLASS */}
-            <FormControl fullWidth size="small">
-              <InputLabel id="demo-simple-select-label">Lớp</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={classId}
-                label="Lớp"
-                onChange={(e) => setClassId(e.target.value)}
-              >
-                <MenuItem value="">
-                  <em>Lớp</em> {/* Giá trị rỗng để hiển thị khi chưa chọn */}
-                </MenuItem>
-                {classReducer.classes?.map((item) => {
-                  return (
-                    <MenuItem key={item.classId} value={item.classId}>
-                      {item.className}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </FormControl>
-          </div>
-        </div>
-        {/* END SEARCH & FILTER */}
-
-        {keyword.trim() && (
-          <h2 className="text-center mb-5 mt-2">
-            Kết quả danh sách sinh viên được tìm kiếm theo{" "}
-            {keyword.trim() && <b>{'từ khóa "' + keyword + '"'}</b>}
-          </h2>
-        )}
-
-        {/* TABLE */}
-        {studentReducer.studentPagination?.content.length <= 0 ? (
-          <div className="flex flex-col justify-center items-center">
-            <img
-              className="w-52 h-52"
-              src={noResultImage}
-              alt="No result image"
-            />
-            <h1 className="text-center text-xl uppercase">Danh sách trống</h1>
-          </div>
-        ) : (
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 700 }} aria-label="customized table">
-              <TableHead>
-                <TableRow>
-                  {/* TABLE HEADER */}
-                  {tableHeaderDatas.map((item, index) => {
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={semesterId}
+                  label="Học kỳ"
+                  onChange={(e) => setSemesterId(e.target.value)}
+                >
+                  <MenuItem value="">
+                    <em>Học kỳ</em>{" "}
+                    {/* Giá trị rỗng để hiển thị khi chưa chọn */}
+                  </MenuItem>
+                  {semesterReducer.semesters?.map((item) => {
                     return (
-                      <StyledTableCell key={index} align="left">
-                        <div
-                          className={`flex items-center gap-3 ${item.sortByField && "cursor-pointer hover:underline"}`}
-                          onClick={() =>
-                            sortBy === item.sortByField
-                              ? handleSortDir()
-                              : item.sortByField &&
-                                handleSortBy(item.sortByField)
-                          }
-                        >
-                          <span className="select-none">{item.title}</span>
-                          {sortBy === item.sortByField && sortDir === "asc" && (
-                            <ArrowUpwardIcon fontSize="medium" />
-                          )}
-                          {sortBy === item.sortByField &&
-                            sortDir === "desc" && (
-                              <ArrowDownwardIcon fontSize="medium" />
-                            )}
-                        </div>
-                      </StyledTableCell>
+                      <MenuItem key={item.semesterId} value={item.semesterId}>
+                        {item.semesterName}
+                        {item.isCurrent && (
+                          <b className="italic pl-1">(Học kỳ hiện tại)</b>
+                        )}
+                      </MenuItem>
                     );
                   })}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {studentReducer.studentPagination?.content.map(
-                  (item, index) => {
+                </Select>
+              </FormControl>
+
+              {/* FILTER BY FACULTY */}
+              <FormControl fullWidth size="small">
+                <InputLabel id="demo-simple-select-label">Khoa</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={facultyId}
+                  label="Khoa"
+                  onChange={(e) => setFacultyId(e.target.value)}
+                >
+                  <MenuItem value="">
+                    <em>Khoa</em> {/* Giá trị rỗng để hiển thị khi chưa chọn */}
+                  </MenuItem>
+                  {facultyReducer.faculties?.map((item) => {
                     return (
-                      <StyledTableRow key={item.studentCode}>
-                        <StyledTableCell align="left">
-                          {index + 1}
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          {item.studentCode}
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          {item.fullName}
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          {item.studentClass.className}
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          {item.studentClass.faculty.facultyName}
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          <p
-                            className="flex items-center"
-                            key={item.semester.semesterId}
-                          >
-                            {item.semester.semesterName}
-                          </p>
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          <Button
-                            variant="contained"
-                            color="error"
-                            startIcon={<DeleteIcon />}
-                            title="Xóa sinh viên khỏi học kỳ hiện tại"
-                            // onClick={() => navigate(`edit/${item.studentCode}`)}
-                          >
-                            Xóa
-                          </Button>
-                        </StyledTableCell>
-                      </StyledTableRow>
+                      <MenuItem key={item.facultyId} value={item.facultyId}>
+                        {item.facultyName}
+                      </MenuItem>
                     );
-                  }
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
+                  })}
+                </Select>
+              </FormControl>
 
-        {/* END TABLE */}
-
-        {/* Pagination */}
-        {studentReducer.studentPagination?.content.length > 0 && (
-          <div className="flex items-center justify-center mt-10">
-            <Pagination
-              count={Math.ceil(totalElements / pageSize)}
-              page={pageNumber}
-              color="primary"
-              onChange={handleChangePage}
-            />
+              {/* FILTER BY CLASS */}
+              <FormControl fullWidth size="small">
+                <InputLabel id="demo-simple-select-label">Lớp</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={classId}
+                  label="Lớp"
+                  onChange={(e) => setClassId(e.target.value)}
+                >
+                  <MenuItem value="">
+                    <em>Lớp</em> {/* Giá trị rỗng để hiển thị khi chưa chọn */}
+                  </MenuItem>
+                  {classReducer.classes?.map((item) => {
+                    return (
+                      <MenuItem key={item.classId} value={item.classId}>
+                        {item.className}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </div>
           </div>
-        )}
-      </div>
-    </Container>
+          {/* END SEARCH & FILTER */}
+
+          {keyword.trim() && (
+            <h2 className="text-center mb-5 mt-2">
+              Kết quả danh sách sinh viên được tìm kiếm theo{" "}
+              {keyword.trim() && <b>{'từ khóa "' + keyword + '"'}</b>}
+            </h2>
+          )}
+
+          {/* TABLE */}
+          {studentReducer.studentPagination?.content.length <= 0 ? (
+            <div className="flex flex-col justify-center items-center">
+              <img
+                className="w-52 h-52"
+                src={noResultImage}
+                alt="No result image"
+              />
+              <h1 className="text-center text-xl uppercase">Danh sách trống</h1>
+            </div>
+          ) : (
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                <TableHead>
+                  <TableRow>
+                    {/* TABLE HEADER */}
+                    {tableHeaderDatas.map((item, index) => {
+                      return (
+                        <StyledTableCell key={index} align="left">
+                          <div
+                            className={`flex items-center gap-3 ${item.sortByField && "cursor-pointer hover:underline"}`}
+                            onClick={() =>
+                              sortBy === item.sortByField
+                                ? handleSortDir()
+                                : item.sortByField &&
+                                  handleSortBy(item.sortByField)
+                            }
+                          >
+                            <span className="select-none">{item.title}</span>
+                            {sortBy === item.sortByField &&
+                              sortDir === "asc" && (
+                                <ArrowUpwardIcon fontSize="medium" />
+                              )}
+                            {sortBy === item.sortByField &&
+                              sortDir === "desc" && (
+                                <ArrowDownwardIcon fontSize="medium" />
+                              )}
+                          </div>
+                        </StyledTableCell>
+                      );
+                    })}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {studentReducer.studentPagination?.content.map(
+                    (item, index) => {
+                      return (
+                        <StyledTableRow key={item.studentCode}>
+                          <StyledTableCell align="left">
+                            {index + 1}
+                          </StyledTableCell>
+                          <StyledTableCell align="left">
+                            {item.studentCode}
+                          </StyledTableCell>
+                          <StyledTableCell align="left">
+                            {item.fullName}
+                          </StyledTableCell>
+                          <StyledTableCell align="left">
+                            {item.studentClass.className}
+                          </StyledTableCell>
+                          <StyledTableCell align="left">
+                            {item.studentClass.faculty.facultyName}
+                          </StyledTableCell>
+                          <StyledTableCell align="left">
+                            <p
+                              className="flex items-center"
+                              key={item.semester.semesterId}
+                            >
+                              {item.semester.semesterName}
+                            </p>
+                          </StyledTableCell>
+                          <StyledTableCell align="left">
+                            <Button
+                              variant="contained"
+                              color="error"
+                              startIcon={<DeleteIcon />}
+                              title="Xóa sinh viên khỏi học kỳ hiện tại"
+                              onClick={() =>
+                                handleOpenModalConfirmDeleteStudentSemester(
+                                  item
+                                )
+                              }
+                            >
+                              Xóa
+                            </Button>
+                          </StyledTableCell>
+                        </StyledTableRow>
+                      );
+                    }
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+
+          {/* END TABLE */}
+
+          {/* Pagination */}
+          {studentReducer.studentPagination?.content.length > 0 && (
+            <div className="flex items-center justify-center mt-10">
+              <Pagination
+                count={Math.ceil(totalElements / pageSize)}
+                page={pageNumber}
+                color="primary"
+                onChange={handleChangePage}
+              />
+            </div>
+          )}
+        </div>
+      </Container>
+
+      {/* MODAL CONFIRM DELETE STUDENT SEMESTER */}
+      <Modal
+        open={openModalConfirmDeleteStudentSemester}
+        onClose={handleCloseModalConfirmDeleteStudentSemester}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={openModalConfirmDeleteStudentSemester}>
+          <Box
+            sx={style}
+            className="relative rounded-md shadow-md w-[90vw] md:w-[70vw] max-h-[90vh] overflow-y-auto"
+          >
+            {/* Button close */}
+            <div className="absolute top-1 right-1">
+              <IconButton
+                color="error"
+                onClick={handleCloseModalConfirmDeleteStudentSemester}
+              >
+                <CloseIcon color="error" />
+              </IconButton>
+            </div>
+
+            <p>
+              Bạn có chắc chắn muốn<b className="px-1 text-red-500">xóa</b>
+              sinh viên
+              <b className="px-1">{selectedStudent?.fullName}</b>
+              ra khỏi học kỳ đồ án tốt nghiệp
+              <b className="px-1">{selectedStudent?.semester?.semesterName}</b>
+            </p>
+
+            <div className="flex items-center justify-center gap-3 mt-10">
+              <Button
+                color="error"
+                variant="contained"
+                onClick={handleCloseModalConfirmDeleteStudentSemester}
+              >
+                Hủy
+              </Button>
+              <Button
+                color="success"
+                variant="contained"
+                onClick={() =>
+                  handleDeleteStudentSemester(
+                    selectedStudent.studentId,
+                    selectedStudent.semester.semesterId
+                  )
+                }
+              >
+                Xác nhận
+              </Button>
+            </div>
+          </Box>
+        </Fade>
+      </Modal>
+    </>
   );
 };
 
