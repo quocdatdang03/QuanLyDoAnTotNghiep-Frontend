@@ -201,3 +201,37 @@ export const updateTeacherAction = (requestData) => async (dispatch) => {
     if (errorMessage) requestData.toast.error(errorMessage);
   }
 };
+
+export const updateEnableStatusOfTeacherAction =
+  (requestData) => async (dispatch) => {
+    dispatch({
+      type: actionTypes.UPDATE_ENABLE_STATUS_OF_TEACHER_REQUEST,
+    });
+
+    try {
+      const response = await axiosAPI.patch(
+        `/admin/teachers/enableStatus`,
+        requestData.data
+      );
+
+      dispatch({
+        type: actionTypes.UPDATE_ENABLE_STATUS_OF_TEACHER_SUCCESS,
+        payload: response.data,
+      });
+
+      if (response.data)
+        requestData.toast.success(
+          (requestData.data?.enableStatus === "lock" ? "Khóa" : "Mở khóa") +
+            " tài khoản giảng viên thành công"
+        );
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      console.log(error);
+      dispatch({
+        type: actionTypes.UPDATE_ENABLE_STATUS_OF_TEACHER_FAILURE,
+        payload: errorMessage,
+      });
+
+      if (errorMessage) requestData.toast.error(errorMessage);
+    }
+  };

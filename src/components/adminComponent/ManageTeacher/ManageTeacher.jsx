@@ -27,12 +27,18 @@ import { useNavigate } from "react-router-dom";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
+import EditIcon from "@mui/icons-material/Edit";
 
 import noResultImage from "../../../assets/images/no-result-img.png";
 import defaultImage from "../../../assets/images/default-avatar.png";
 import SearchIcon from "@mui/icons-material/Search";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { getAllTeachersAction } from "../../../redux/Teacher/Action";
+import {
+  getAllTeachersAction,
+  updateEnableStatusOfTeacherAction,
+} from "../../../redux/Teacher/Action";
 
 import { getAllFacultiesAction } from "../../../redux/Faculty/Action";
 
@@ -158,6 +164,19 @@ const ManageTeacher = () => {
   const handleSortBy = (fieldName) => {
     console.log("SET:" + fieldName);
     setSortBy(fieldName);
+  };
+
+  // handle lock/unlock student account:
+  const handleUpdateEnableStatusOfTeacher = (teacher, enableStatus) => {
+    const requestData = {
+      data: {
+        teacherCode: teacher.teacherCode,
+        enableStatus: enableStatus,
+      },
+      toast,
+    };
+
+    dispatch(updateEnableStatusOfTeacherAction(requestData));
   };
 
   // handle loading :
@@ -337,13 +356,47 @@ const ManageTeacher = () => {
                           {item.faculty.facultyName}
                         </TableCell>
                         <TableCell align="left">
-                          <Button
-                            variant="contained"
-                            color="info"
-                            onClick={() => navigate("edit/" + item.teacherCode)}
-                          >
-                            Sửa
-                          </Button>
+                          <div className="flex items-center gap-3">
+                            <Button
+                              variant="contained"
+                              color="info"
+                              startIcon={<EditIcon />}
+                              onClick={() =>
+                                navigate("edit/" + item.teacherCode)
+                              }
+                            >
+                              Sửa
+                            </Button>
+                            {item.enable ? (
+                              <Button
+                                variant="contained"
+                                color="error"
+                                startIcon={<LockOutlinedIcon />}
+                                onClick={() =>
+                                  handleUpdateEnableStatusOfTeacher(
+                                    item,
+                                    "lock"
+                                  )
+                                }
+                              >
+                                Khóa
+                              </Button>
+                            ) : (
+                              <Button
+                                variant="contained"
+                                color="success"
+                                startIcon={<LockOpenIcon />}
+                                onClick={() =>
+                                  handleUpdateEnableStatusOfTeacher(
+                                    item,
+                                    "unlock"
+                                  )
+                                }
+                              >
+                                Mở khóa
+                              </Button>
+                            )}
+                          </div>
                         </TableCell>
                       </TableRow>
                     );
