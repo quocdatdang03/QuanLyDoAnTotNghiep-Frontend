@@ -83,11 +83,11 @@ const sinhVienOptions = [
     title: "Đăng ký đề tài",
     path: "/student/project/register",
   },
-  {
-    icon: <GroupIcon />,
-    title: "Đăng ký nhóm",
-    path: "/student/teams/register",
-  },
+  // {
+  //   icon: <GroupIcon />,
+  //   title: "Đăng ký nhóm",
+  //   path: "/student/teams/register",
+  // },
   {
     icon: <ManageHistoryIcon />,
     title: "Quản lý tiến độ",
