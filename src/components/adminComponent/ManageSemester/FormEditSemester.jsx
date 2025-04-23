@@ -11,15 +11,21 @@ import {
   TextField,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import { formSemesterValidation } from "./validation/formSemesterValidation";
-import { updateSemesterAction } from "../../../redux/Semester/Action";
+import {
+  getSemesterByIdAction,
+  updateSemesterAction,
+} from "../../../redux/Semester/Action";
 import toast from "react-hot-toast";
+import { getAllSchoolYearAction } from "../../../redux/SchoolYear/Action";
 
 const FormEditSemester = () => {
+  const { semesterIdParam } = useParams();
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { semesterReducer, schoolYearReducer } = useSelector((store) => store);
@@ -49,6 +55,18 @@ const FormEditSemester = () => {
       dispatch(updateSemesterAction(requestData));
     },
   });
+
+  // handle load semester by semesterId
+  useEffect(() => {
+    const requestData = {
+      semesterId: semesterIdParam,
+    };
+
+    dispatch(getSemesterByIdAction(requestData));
+
+    // get all school years
+    dispatch(getAllSchoolYearAction());
+  }, [semesterIdParam]);
 
   return (
     <>

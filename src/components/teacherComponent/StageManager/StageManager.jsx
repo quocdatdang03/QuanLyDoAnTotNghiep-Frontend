@@ -443,14 +443,20 @@ const StageManager = () => {
             Danh sách giai đoạn
           </h1>
           <div className="space-y-5">
-            {instructorStageReducer.stages?.map((item, index) => (
-              <StageDetail
-                key={index}
-                stage={item}
-                offset={index}
-                stages={instructorStageReducer.stages}
-              />
-            ))}
+            {instructorStageReducer.stages.length > 0 ? (
+              instructorStageReducer.stages?.map((item, index) => (
+                <StageDetail
+                  key={index}
+                  stage={item}
+                  offset={index}
+                  stages={instructorStageReducer.stages}
+                />
+              ))
+            ) : (
+              <div className="text-center italic py-10 text-gray-600 bg-gray-200 rounded-sm">
+                Danh sách giai đoạn trống
+              </div>
+            )}
           </div>
         </div>
       </Container>

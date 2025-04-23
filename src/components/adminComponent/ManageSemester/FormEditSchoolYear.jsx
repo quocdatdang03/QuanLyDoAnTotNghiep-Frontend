@@ -4,11 +4,16 @@ import React, { useEffect, useState } from "react";
 import { formSchoolYearValidation } from "./validation/formSchoolYearValidation";
 import { useDispatch, useSelector } from "react-redux";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useNavigate } from "react-router-dom";
-import { updateSchoolYearAction } from "../../../redux/SchoolYear/Action";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  getSchoolYearByIdAction,
+  updateSchoolYearAction,
+} from "../../../redux/SchoolYear/Action";
 import toast from "react-hot-toast";
 
 const FormEditSchoolYear = () => {
+  const { schoolYearIdParam } = useParams();
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { schoolYearReducer } = useSelector((store) => store);
@@ -33,9 +38,21 @@ const FormEditSchoolYear = () => {
         navigate,
         toast,
       };
+
+      console.log(requestData);
+
       dispatch(updateSchoolYearAction(requestData));
     },
   });
+
+  // handle Loading schoolYear By Id
+  useEffect(() => {
+    const requestData = {
+      schoolYearId: schoolYearIdParam,
+    };
+
+    dispatch(getSchoolYearByIdAction(requestData));
+  }, [schoolYearIdParam]);
 
   // handle loading:
   useEffect(() => {

@@ -144,9 +144,6 @@ export const getSemesterByIdAction = (requestData) => async (dispatch) => {
       type: actionTypes.GET_SEMESTER_BY_ID_SUCCESS,
       payload: response.data,
     });
-
-    if (response.data && !requestData.isSemesterLoading)
-      requestData.navigate("semester/edit");
   } catch (error) {
     const errorMessage = error.response?.data?.message || error.message;
     dispatch({

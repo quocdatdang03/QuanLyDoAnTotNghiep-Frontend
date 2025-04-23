@@ -148,9 +148,6 @@ export const getSchoolYearByIdAction = (requestData) => async (dispatch) => {
       type: actionTypes.GET_SCHOOL_YEAR_BY_ID_SUCCESS,
       payload: response.data,
     });
-
-    if (response.data && !requestData.isSchoolYearLoading)
-      requestData.navigate("schoolYear/edit");
   } catch (error) {
     const errorMessage = error.response?.data?.message || error.message;
     dispatch({
@@ -175,10 +172,13 @@ export const updateSchoolYearAction = (requestData) => async (dispatch) => {
     });
 
     if (response.data) {
+      console.log(response.data);
       requestData.toast.success("Cập nhật năm học thành công");
       requestData.navigate("/admin/manage-semester");
     }
   } catch (error) {
+    console.log(error);
+
     const errorMessage = error.response?.data?.message || error.message;
     dispatch({
       type: actionTypes.UPDATE_SCHOOL_YEAR_FAILURE,

@@ -217,28 +217,6 @@ const ManageSemester = () => {
     toast.success("Xóa học kỳ thành công");
   };
 
-  // handle open form edit school year:
-  const handleOpenFormEditSchoolYear = (schoolYearId) => {
-    const requestData = {
-      schoolYearId,
-      navigate,
-      isSchoolYearLoading,
-    };
-
-    dispatch(getSchoolYearByIdAction(requestData));
-  };
-
-  // handle open form edit school year:
-  const handleOpenFormEditSemester = (semesterId) => {
-    const requestData = {
-      semesterId,
-      navigate,
-      isSemesterLoading,
-    };
-
-    dispatch(getSemesterByIdAction(requestData));
-  };
-
   return (
     <>
       <div>
@@ -451,7 +429,7 @@ const ManageSemester = () => {
                               variant="contained"
                               color="warning"
                               onClick={() =>
-                                handleOpenFormEditSchoolYear(item.schoolYearId)
+                                navigate(`schoolYear/edit/${item.schoolYearId}`)
                               }
                             >
                               Sửa
@@ -525,7 +503,7 @@ const ManageSemester = () => {
                               variant="contained"
                               color="warning"
                               onClick={() =>
-                                handleOpenFormEditSemester(item.semesterId)
+                                navigate(`semester/edit/${item.semesterId}`)
                               }
                             >
                               Sửa

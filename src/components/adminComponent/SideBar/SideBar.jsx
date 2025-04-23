@@ -251,11 +251,11 @@ export const SideBar = () => {
           <Route path="/profile/*" element={<AdminProfile />} />
           <Route path="/manage-semester" element={<ManageSemester />} />
           <Route
-            path="/manage-semester/schoolYear/edit"
+            path="/manage-semester/schoolYear/edit/:schoolYearIdParam"
             element={<FormEditSchoolYear />}
           />
           <Route
-            path="/manage-semester/semester/edit"
+            path="/manage-semester/semester/edit/:semesterIdParam"
             element={<FormEditSemester />}
           />
           <Route
