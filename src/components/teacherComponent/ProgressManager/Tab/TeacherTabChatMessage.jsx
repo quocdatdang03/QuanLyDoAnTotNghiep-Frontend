@@ -52,9 +52,11 @@ const TeacherTabChatMessage = () => {
     setMessages(chatReducer.messages);
   }, [chatReducer.messages]);
 
+  const SOCKET_URL = import.meta.env.VITE_SOCKET_URL; // get url from env file (both dev and product)
+
   // handle connect to websocket server:
   useEffect(() => {
-    let socket = new SockJS("http://localhost:8989/ws");
+    let socket = new SockJS(SOCKET_URL);
     client = over(socket);
 
     client.connect(

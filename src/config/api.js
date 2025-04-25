@@ -1,9 +1,6 @@
 import axios from "axios";
 
-const api_url_local = "http://localhost:8989/api";
-const api_url_production =
-  "https://quanlydoantotnghiep-backend.onrender.com/api";
-export const BASE_API_URL = api_url_production;
+export const BASE_API_URL = import.meta.env.VITE_BASE_API_URL;
 
 // Tạo instance axios chính
 export const axiosAPI = axios.create({
