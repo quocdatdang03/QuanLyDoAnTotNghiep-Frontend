@@ -36,7 +36,7 @@ import defaultImage from "../../../assets/images/default-avatar.png";
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { projectRegisterValidation } from "./validation/ProjectRegisterValidation";
+import { projectRegisterValidation } from "./validation/projectRegisterValidation";
 import { uploadFileToCloudinary } from "../../../util/UploadFileToCloudinary";
 import { store } from "../../../redux/store";
 import {
