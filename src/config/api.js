@@ -1,6 +1,7 @@
 import axios from "axios";
 
-export const BASE_API_URL = "http://localhost:8989/api";
+export const BASE_API_URL =
+  "https://quanlydoantotnghiep-backend.onrender.com/api";
 
 // Tạo instance axios chính
 export const axiosAPI = axios.create({
