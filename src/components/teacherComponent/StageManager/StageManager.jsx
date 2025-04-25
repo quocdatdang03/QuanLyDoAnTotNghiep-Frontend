@@ -443,7 +443,7 @@ const StageManager = () => {
             Danh sách giai đoạn
           </h1>
           <div className="space-y-5">
-            {instructorStageReducer.stages.length > 0 ? (
+            {instructorStageReducer.stages?.length > 0 ? (
               instructorStageReducer.stages?.map((item, index) => (
                 <StageDetail
                   key={index}
