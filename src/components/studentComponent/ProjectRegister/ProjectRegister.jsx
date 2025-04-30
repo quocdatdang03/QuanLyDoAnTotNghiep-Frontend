@@ -188,7 +188,7 @@ const ProjectRegister = () => {
             Giảng viên hướng dẫn của bạn
           </h1>
           {projectReducer?.instructor ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="grid md:grid-cols-3 gap-3">
               <Card className="md:col-start-2">
                 {/* {isDelayedLoading ? (
                               <Skeleton variant="rectangular" height={250} />
