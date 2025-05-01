@@ -27,6 +27,7 @@ import {
 
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
 import GroupIcon from "@mui/icons-material/Group";
 import ManageHistoryIcon from "@mui/icons-material/ManageHistory";
 import DescriptionIcon from "@mui/icons-material/Description";
@@ -77,6 +78,11 @@ const sinhVienOptions = [
     icon: <NotificationsIcon />,
     title: "Xem thông báo",
     path: "/student/notifications",
+  },
+  {
+    icon: <HowToRegIcon />,
+    title: "Đề xuất GVHD",
+    path: "/student/recommendTeacher",
   },
   {
     icon: <HistoryEduIcon />,

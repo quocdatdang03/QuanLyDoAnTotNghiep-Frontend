@@ -15,3 +15,11 @@ export const isStudentPresentInList = (student, studentList) => {
 
   return false;
 };
+
+export const isTeacherPresentInList = (teacher, teacherList) => {
+  for (let item of teacherList) {
+    if (teacher.teacherCode === item.teacherCode) return true;
+  }
+
+  return false;
+};

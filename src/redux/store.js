@@ -17,6 +17,7 @@ import progressReportReducer from "./ProgressReport/Reducer";
 import instructorProgressReducer from "./InstructorProgress/Reducer";
 import notificationReducer from "./Notification/Reducer";
 import degreeReducer from "./Degree/Reducer";
+import { recommendedTeacherReducer } from "./RecommendedTeacher/Reducer";
 
 const rootReducer = combineReducers({
   authReducer: authReducer,
@@ -36,6 +37,7 @@ const rootReducer = combineReducers({
   instructorProgressReducer: instructorProgressReducer,
   notificationReducer: notificationReducer,
   degreeReducer: degreeReducer,
+  recommendedTeacherReducer: recommendedTeacherReducer,
 });
 
 export const store = legacy_createStore(rootReducer, applyMiddleware(thunk));

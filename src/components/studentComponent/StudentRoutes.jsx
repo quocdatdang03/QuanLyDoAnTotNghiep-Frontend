@@ -10,11 +10,13 @@ import FormCreateProgressReport from "./ProgressManager/ProgressReport/FormCreat
 import StudentProgressManager from "./ProgressManager/StudentProgressManager";
 import FormUpdateProgressReport from "./ProgressManager/ProgressReport/FormUpdateProgressReport";
 import StudentNotification from "./Notification/StudentNotification";
+import RecommendTeacher from "./RecommendTeacher/RecommendTeacher";
 
 const StudentRoutes = () => {
   return (
     <Routes>
       <Route path="/notifications" element={<StudentNotification />} />
+      <Route path="/recommendTeacher" element={<RecommendTeacher />} />
       <Route path="/project/register" element={<ProjectRegister />} />
       <Route path="/project/edit" element={<FormEditProject />} />
       <Route path="/teams/register" element={<TeamRegister />} />
