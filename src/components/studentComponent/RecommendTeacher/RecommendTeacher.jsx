@@ -32,6 +32,7 @@ import {
   removeRecommendedTeacherAction,
 } from "../../../redux/RecommendedTeacher/Action";
 import { isTeacherPresentInList } from "../../../config/logic";
+import { getInstructorOfProjectByStudentCodeAction } from "../../../redux/Project/Action";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -103,7 +104,7 @@ const RecommendTeacher = () => {
   const [sortBy, setSortBy] = useState("account.fullName");
   const [isDelayedLoading, setIsDelayedLoading] = useState(true);
 
-  const { teacherLeaderReducer, recommendedTeacherReducer, authReducer } =
+  const { recommendedTeacherReducer, authReducer, projectReducer } =
     useSelector((store) => store);
 
   const isInstructorLoading = recommendedTeacherReducer.isLoading;
@@ -128,6 +129,9 @@ const RecommendTeacher = () => {
     };
 
     dispatch(getAllRecommendedTeacherAction(requestData));
+
+    // check whether studnent had instructor (if have -> don't allow to add recommended teacher
+    dispatch(getInstructorOfProjectByStudentCodeAction(requestData));
   }, [authReducer.user?.code]);
 
   // handle change page:
@@ -247,178 +251,185 @@ const RecommendTeacher = () => {
           Đề xuất giảng viên hướng dẫn
         </Typography>
 
-        {/* DSSV chưa được phân GVHD */}
-        <div>
-          <h1 className="text-xl font-bold mt-5">
-            Danh sách giảng viên hướng dẫn
-          </h1>
+        {/* Danh sách GVHD theo khoa của sinh viên*/}
+        {/* Check nếu sinh viên đã được phân chia GVHD rồi thì không hiển thị danh sách GVHD nãy nữa */}
+        {!projectReducer.instructor && (
+          <div>
+            <h1 className="text-xl font-bold mt-5">
+              Danh sách giảng viên hướng dẫn
+            </h1>
 
-          {/* SEARCH & FILTER */}
-          <div className="flex items-center gap-3">
-            {/* INPUT SEARCH */}
-            <div className="flex my-5">
-              <Paper
-                sx={{
-                  p: "2px 4px",
-                  display: "flex",
-                  alignItems: "center",
-                  width: 400,
-                }}
-              >
-                <InputBase
-                  // inputRef={inputSearchRef}
-                  sx={{ ml: 1, flex: 1 }}
-                  placeholder="Tìm kiếm theo tên hoặc mã giảng viên"
-                  value={keyword}
-                  onChange={(e) => setKeyword(e.target.value)}
-                />
-                <IconButton
-                  color="primary"
-                  type="button"
-                  sx={{ p: "10px" }}
-                  aria-label="search"
-                  onClick={() => handleFilterTeacher(1)}
+            {/* SEARCH & FILTER */}
+            <div className="flex items-center gap-3">
+              {/* INPUT SEARCH */}
+              <div className="flex my-5">
+                <Paper
+                  sx={{
+                    p: "2px 4px",
+                    display: "flex",
+                    alignItems: "center",
+                    width: 400,
+                  }}
                 >
-                  <SearchIcon />
-                </IconButton>
-                <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                <IconButton sx={{ p: "10px" }} onClick={handleClearSearch}>
-                  <RefreshIcon />
-                </IconButton>
-              </Paper>
-              {/* END INPUT SEARCH */}
+                  <InputBase
+                    // inputRef={inputSearchRef}
+                    sx={{ ml: 1, flex: 1 }}
+                    placeholder="Tìm kiếm theo tên hoặc mã giảng viên"
+                    value={keyword}
+                    onChange={(e) => setKeyword(e.target.value)}
+                  />
+                  <IconButton
+                    color="primary"
+                    type="button"
+                    sx={{ p: "10px" }}
+                    aria-label="search"
+                    onClick={() => handleFilterTeacher(1)}
+                  >
+                    <SearchIcon />
+                  </IconButton>
+                  <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+                  <IconButton sx={{ p: "10px" }} onClick={handleClearSearch}>
+                    <RefreshIcon />
+                  </IconButton>
+                </Paper>
+                {/* END INPUT SEARCH */}
 
-              {/* FILTER SELECT */}
+                {/* FILTER SELECT */}
+              </div>
             </div>
+            {/* END SEARCH & FILTER */}
+
+            {keyword.trim() && (
+              <h2 className="text-center mb-5 mt-2">
+                <i>Kết quả danh sách GVHD được tìm kiếm theo </i>
+                {keyword.trim() && <b>{'từ khóa "' + keyword + '"'}</b>}
+              </h2>
+            )}
+
+            {/* TABLE */}
+            {recommendedTeacherReducer.teacherPagination?.content.length <=
+            0 ? (
+              <div className="flex flex-col justify-center items-center">
+                <img
+                  className="w-52 h-52"
+                  src={noResultImage}
+                  alt="No result image"
+                />
+                <i className="text-center text-xl uppercase">Danh sách trống</i>
+              </div>
+            ) : (
+              <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                  <TableHead>
+                    <TableRow>
+                      {/* TABLE HEADER */}
+                      {tableInstructorHeaderDatas.map((item, index) => {
+                        return (
+                          <TableCell key={index} align="left">
+                            <div
+                              className={`flex items-center gap-3 ${item.sortByField && "cursor-pointer hover:underline"}`}
+                              onClick={() =>
+                                sortBy === item.sortByField
+                                  ? handleSortDir()
+                                  : item.sortByField &&
+                                    handleSortBy(item.sortByField)
+                              }
+                            >
+                              <span className="select-none">{item.title}</span>
+                              {sortBy === item.sortByField &&
+                                sortDir === "asc" && (
+                                  <ArrowUpwardIcon fontSize="medium" />
+                                )}
+                              {sortBy === item.sortByField &&
+                                sortDir === "desc" && (
+                                  <ArrowDownwardIcon fontSize="medium" />
+                                )}
+                            </div>
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {recommendedTeacherReducer.teacherPagination?.content.map(
+                      (item, index) => {
+                        return (
+                          <TableRow key={item.teacherCode}>
+                            <TableCell align="left">{index + 1}</TableCell>
+                            <TableCell align="left">
+                              <img
+                                className="w-16 h-16 object-cover object-center rounded-"
+                                src={item.image}
+                                alt={item.fullName}
+                              />
+                            </TableCell>
+                            <TableCell align="left">
+                              {item.teacherCode}
+                            </TableCell>
+                            <TableCell align="left">{item.fullName}</TableCell>
+
+                            <TableCell align="left">
+                              {item.faculty.facultyName}
+                            </TableCell>
+
+                            <TableCell align="left">
+                              {item.degree.degreeName}
+                            </TableCell>
+                            <TableCell align="left">
+                              {isTeacherPresentInList(
+                                item,
+                                recommendedTeacherReducer?.recommendedTeachers
+                              ) ? (
+                                <Button disabled variant="contained">
+                                  Đã đề xuất
+                                </Button>
+                              ) : (
+                                <Button
+                                  variant="contained"
+                                  color="success"
+                                  onClick={() =>
+                                    handleAddRecommendedTeacher(item.teacherId)
+                                  }
+                                >
+                                  Đề xuất
+                                </Button>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      }
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
+
+            {/* END TABLE */}
+
+            {/* Pagination */}
+            {recommendedTeacherReducer.teacherPagination?.content.length >
+              0 && (
+              <div className="flex items-center justify-center mt-10">
+                <Pagination
+                  count={Math.ceil(totalElements / pageSize)}
+                  page={pageNumber}
+                  color="primary"
+                  onChange={handleChangePage}
+                />
+              </div>
+            )}
           </div>
-          {/* END SEARCH & FILTER */}
-
-          {keyword.trim() && (
-            <h2 className="text-center mb-5 mt-2">
-              <i>Kết quả danh sách sinh viên được tìm kiếm theo </i>
-              {keyword.trim() && <b>{'từ khóa "' + keyword + '"'}</b>}
-            </h2>
-          )}
-
-          {/* TABLE */}
-          {teacherLeaderReducer.studentPagination?.content.length <= 0 ? (
-            <div className="flex flex-col justify-center items-center">
-              <img
-                className="w-52 h-52"
-                src={noResultImage}
-                alt="No result image"
-              />
-              <i className="text-center text-xl uppercase">Danh sách trống</i>
-            </div>
-          ) : (
-            <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                <TableHead>
-                  <TableRow>
-                    {/* TABLE HEADER */}
-                    {tableInstructorHeaderDatas.map((item, index) => {
-                      return (
-                        <TableCell key={index} align="left">
-                          <div
-                            className={`flex items-center gap-3 ${item.sortByField && "cursor-pointer hover:underline"}`}
-                            onClick={() =>
-                              sortBy === item.sortByField
-                                ? handleSortDir()
-                                : item.sortByField &&
-                                  handleSortBy(item.sortByField)
-                            }
-                          >
-                            <span className="select-none">{item.title}</span>
-                            {sortBy === item.sortByField &&
-                              sortDir === "asc" && (
-                                <ArrowUpwardIcon fontSize="medium" />
-                              )}
-                            {sortBy === item.sortByField &&
-                              sortDir === "desc" && (
-                                <ArrowDownwardIcon fontSize="medium" />
-                              )}
-                          </div>
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {recommendedTeacherReducer.teacherPagination?.content.map(
-                    (item, index) => {
-                      return (
-                        <TableRow key={item.teacherCode}>
-                          <TableCell align="left">{index + 1}</TableCell>
-                          <TableCell align="left">
-                            <img
-                              className="w-16 h-16 object-cover object-center rounded-"
-                              src={item.image}
-                              alt={item.fullName}
-                            />
-                          </TableCell>
-                          <TableCell align="left">{item.teacherCode}</TableCell>
-                          <TableCell align="left">{item.fullName}</TableCell>
-
-                          <TableCell align="left">
-                            {item.faculty.facultyName}
-                          </TableCell>
-
-                          <TableCell align="left">
-                            {item.degree.degreeName}
-                          </TableCell>
-                          <TableCell align="left">
-                            {isTeacherPresentInList(
-                              item,
-                              recommendedTeacherReducer?.recommendedTeachers
-                            ) ? (
-                              <Button disabled variant="contained">
-                                Đã đề xuất
-                              </Button>
-                            ) : (
-                              <Button
-                                variant="contained"
-                                color="success"
-                                onClick={() =>
-                                  handleAddRecommendedTeacher(item.teacherId)
-                                }
-                              >
-                                Đề xuất
-                              </Button>
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    }
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          )}
-
-          {/* END TABLE */}
-
-          {/* Pagination */}
-          {recommendedTeacherReducer.teacherPagination?.content.length > 0 && (
-            <div className="flex items-center justify-center mt-10">
-              <Pagination
-                count={Math.ceil(totalElements / pageSize)}
-                page={pageNumber}
-                color="primary"
-                onChange={handleChangePage}
-              />
-            </div>
-          )}
-        </div>
+        )}
 
         <div>
-          {/* DSSV đang chọn */}
+          {/* Danh sách GVHD đã đề xuất đang chọn */}
           <Typography
             className="uppercase text-center"
             sx={{ fontSize: 20, marginTop: 7, marginBottom: 2 }}
             variant="h1"
             color="primary"
           >
-            Danh sách đề xuất GVHD của bạn
+            Danh sách GVHD bạn đã đề xuất
           </Typography>
           <TableContainer component={Paper}>
             <Table>
@@ -432,7 +443,9 @@ const RecommendTeacher = () => {
                   <StyledTableCell align="center">Họ tên</StyledTableCell>
                   <StyledTableCell align="center">Khoa</StyledTableCell>
                   <StyledTableCell align="center">Học vị</StyledTableCell>
-                  <StyledTableCell align="center">Hành động</StyledTableCell>
+                  {!projectReducer.instructor && (
+                    <StyledTableCell align="center">Hành động</StyledTableCell>
+                  )}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -463,18 +476,20 @@ const RecommendTeacher = () => {
                       <StyledTableCell align="center">
                         {item.degree.degreeName}
                       </StyledTableCell>
-                      <StyledTableCell align="center">
-                        <Button
-                          variant="contained"
-                          color="error"
-                          startIcon={<DeleteIcon />}
-                          onClick={() =>
-                            handleRemoveRecommendedTeacher(item.teacherId)
-                          }
-                        >
-                          Xóa
-                        </Button>
-                      </StyledTableCell>
+                      {!projectReducer.instructor && (
+                        <StyledTableCell align="center">
+                          <Button
+                            variant="contained"
+                            color="error"
+                            startIcon={<DeleteIcon />}
+                            onClick={() =>
+                              handleRemoveRecommendedTeacher(item.teacherId)
+                            }
+                          >
+                            Xóa
+                          </Button>
+                        </StyledTableCell>
+                      )}
                     </StyledTableRow>
                   )
                 )}
