@@ -569,7 +569,7 @@ const ManageSemester = () => {
                   Hủy bỏ
                 </Button>
                 <Button variant="contained" onClick={handleDeleteSchoolYear}>
-                  Xóa
+                  Xác nhận
                 </Button>
               </div>
             </div>
@@ -608,7 +608,7 @@ const ManageSemester = () => {
                   Hủy bỏ
                 </Button>
                 <Button variant="contained" onClick={handleDeleteSemester}>
-                  Xóa
+                  Xác nhận
                 </Button>
               </div>
             </div>
