@@ -142,8 +142,7 @@ const nonLoggedInSettings = ["Đăng nhập"];
 
 function Navbar() {
   const [openDrawer, setOpenDrawer] = React.useState(false);
-  const [anchorElStudent, setAnchorElStudent] = React.useState(null);
-  const [anchorElTeacher, setAnchorElTeacher] = React.useState(null);
+  const [isOpenMenu, setIsOpenMenu] = React.useState(false);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [openStudentOption, setOpenStudentOption] = React.useState(false);
   const [openTeacherOption, setOpenTeacherOption] = React.useState(false);
@@ -152,22 +151,6 @@ function Navbar() {
   const dispatch = useDispatch();
   const isAuthLoading = authReducer.isLoading;
   const [isDelayedLoading, setIsDelayedLoading] = React.useState(true);
-
-  const handleOpenMenuStudent = (event) => {
-    setAnchorElStudent(event.currentTarget);
-  };
-
-  const handleCloseMenuStudent = () => {
-    setAnchorElStudent(null);
-  };
-
-  const handleOpenMenuTeacher = (event) => {
-    setAnchorElTeacher(event.currentTarget);
-  };
-
-  const handleCloseMenuTeacher = () => {
-    setAnchorElTeacher(null);
-  };
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -193,19 +176,14 @@ function Navbar() {
     navigate("/user/profile");
   };
 
-  const handleNavigateToStudentPath = (path) => {
-    handleCloseMenuStudent();
-    navigate(path);
-  };
-
-  const handleNavigateToTeacherPath = (path) => {
-    handleCloseMenuTeacher();
-    navigate(path);
-  };
-
   const handleNavigateToPathOnDrawer = (path) => {
     setOpenDrawer(false);
     navigate(path);
+  };
+
+  const handleNavigateToPath = (path) => {
+    navigate(path);
+    setIsOpenMenu(false);
   };
 
   // handle loading :
@@ -247,107 +225,112 @@ function Navbar() {
           {/* END LOGO ON LARGE SCREEN*/}
 
           {/* START LIST ITEM OF NAVBAR (LARGE SCREEN) */}
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: "none", md: "flex" },
+              alignItems: "center",
+            }}
+          >
             {pages.map((page) =>
               page.title === "Sinh Viên" ? (
                 authReducer.user?.roles[0].roleName === "SINHVIEN" && (
-                  <div key={page.title}>
-                    <Button
-                      onMouseEnter={handleOpenMenuStudent}
-                      sx={{
-                        my: 2,
-                        color: "white",
-                        display: "block",
-                        textTransform: "none",
-                      }}
+                  <div
+                    className="relative group inline-block text-left"
+                    onMouseEnter={() => setIsOpenMenu(true)}
+                    onMouseLeave={() => setIsOpenMenu(false)}
+                  >
+                    <button
+                      onClick={() => setIsOpenMenu((prev) => !prev)}
+                      className="inline-flex items-center px-4 py-2 text-white rounded"
                     >
                       {page.title}
                       <ArrowDropDownIcon />
-                    </Button>
-                    <Menu
-                      anchorEl={anchorElStudent}
-                      open={Boolean(anchorElStudent)}
-                      onClose={handleCloseMenuStudent}
-                      MenuListProps={{ onMouseLeave: handleCloseMenuStudent }}
+                    </button>
+
+                    <div
+                      className={`absolute bg-white text-black rounded overflow-hidden shadow-subtle-menu w-full min-w-max z-50 
+          transition-all duration-200 origin-top transform 
+          ${isOpenMenu ? "scale-100 opacity-100" : "scale-95 opacity-0 pointer-events-none"}
+        `}
                     >
                       {sinhVienOptions.map((item) => (
-                        <MenuItem
+                        <div
                           key={item.title}
-                          onClick={() => handleNavigateToStudentPath(item.path)}
+                          onClick={() => handleNavigateToPath(item.path)}
+                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                         >
                           {item.title}
-                        </MenuItem>
+                        </div>
                       ))}
-                    </Menu>
+                    </div>
                   </div>
                 )
               ) : page.title === "Giảng Viên" ? (
                 (authReducer.user?.roles[0].roleName === "GIANGVIEN" ||
                   authReducer.user?.roles[0].roleName === "ADMIN") && (
-                  <div key={page.title}>
-                    <Button
-                      onMouseEnter={handleOpenMenuTeacher}
-                      sx={{
-                        my: 2,
-                        color: "white",
-                        display: "block",
-                        textTransform: "none",
-                      }}
+                  <div
+                    className="relative group inline-block text-left"
+                    onMouseEnter={() => setIsOpenMenu(true)}
+                    onMouseLeave={() => setIsOpenMenu(false)}
+                  >
+                    <button
+                      onClick={() => setIsOpenMenu((prev) => !prev)}
+                      className="inline-flex items-center px-4 py-2 text-white rounded"
                     >
                       {page.title}
                       <ArrowDropDownIcon />
-                    </Button>
-                    <Menu
-                      anchorEl={anchorElTeacher}
-                      open={Boolean(anchorElTeacher)}
-                      onClose={handleCloseMenuTeacher}
-                      MenuListProps={{ onMouseLeave: handleCloseMenuTeacher }}
+                    </button>
+
+                    <div
+                      className={`absolute bg-white text-black rounded overflow-hidden shadow-subtle-menu w-full min-w-max z-50 
+          transition-all duration-200 origin-top transform 
+          ${isOpenMenu ? "scale-100 opacity-100" : "scale-95 opacity-0 pointer-events-none"}
+        `}
                     >
-                      {giangVienOptions.map((option) => (
-                        <MenuItem
-                          key={option.title}
-                          onClick={() =>
-                            handleNavigateToTeacherPath(option.path)
-                          }
+                      {giangVienOptions.map((item) => (
+                        <div
+                          key={item.title}
+                          onClick={() => handleNavigateToPath(item.path)}
+                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                         >
-                          {option.title}
-                        </MenuItem>
+                          {item.title}
+                        </div>
                       ))}
                       {authReducer.user?.userDetails.isLeader && (
                         <>
-                          <MenuItem
+                          <div
                             key="Phân chia GVHD"
                             onClick={() =>
-                              handleNavigateToTeacherPath(
-                                "/teacher/instructors"
-                              )
+                              handleNavigateToPath("/teacher/instructors")
                             }
+                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                           >
                             Phân chia GVHD
-                          </MenuItem>
-                          <MenuItem
+                          </div>
+                          <div
                             key="DSSV đã phân chia GVHD"
                             onClick={() =>
-                              handleNavigateToTeacherPath(
+                              handleNavigateToPath(
                                 "/teacher/instructors/results"
                               )
                             }
+                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                           >
                             DSSV đã phân chia GVHD
-                          </MenuItem>
-                          <MenuItem
+                          </div>
+                          <div
                             key="Tổng hợp đề tài ĐATN"
                             onClick={() =>
-                              handleNavigateToTeacherPath(
-                                "/teacher/projects/summary"
-                              )
+                              handleNavigateToPath("/teacher/projects/summary")
                             }
+                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                           >
                             Tổng hợp đề tài ĐATN
-                          </MenuItem>
+                          </div>
                         </>
                       )}
-                    </Menu>
+                    </div>
                   </div>
                 )
               ) : (
