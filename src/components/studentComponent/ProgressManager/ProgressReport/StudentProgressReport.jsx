@@ -272,16 +272,24 @@ const StudentProgressReport = ({ projectId }) => {
                             />
                           </div>
                           <div className="flex items-center gap-3">
-                            <IconButton
-                              color="primary"
-                              onClick={() =>
-                                handleNavigateToFormUpdateProgressReport(
-                                  item.progressReportId
-                                )
-                              }
-                            >
-                              <EditIcon />
-                            </IconButton>
+                            {/* 
+                              Chỉ show btn edit khi progressReport:
+                                + Chưa được duyệt
+                                + Và không thuộc completed stage
+                            */}
+                            {!item.approved &&
+                              item.stage.stageStatus.stageStatusId != 3 && (
+                                <IconButton
+                                  color="primary"
+                                  onClick={() =>
+                                    handleNavigateToFormUpdateProgressReport(
+                                      item.progressReportId
+                                    )
+                                  }
+                                >
+                                  <EditIcon />
+                                </IconButton>
+                              )}
 
                             {/* Chỉ show btn delete khi progressReport: 
                                   + Chưa được duyệt 
