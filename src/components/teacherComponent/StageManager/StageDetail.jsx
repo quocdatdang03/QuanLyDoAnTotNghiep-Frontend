@@ -31,7 +31,6 @@ import {
   deleteStageFileByIdAction,
   getAllStagesByTeacherAndSemesterAction,
   getAllStageStatusesAction,
-  getStageByIdAction,
   updateStageOrderAction,
   updateStageStatusAction,
 } from "../../../redux/InstructorStage/Action";
@@ -124,12 +123,7 @@ const StageDetail = ({ stage, offset, stages }) => {
 
   // handle navigate to edit stage page:
   const handleNavigateToEditStagePage = () => {
-    const requestData = {
-      stageId: stage.stageId,
-    };
-    dispatch(getStageByIdAction(requestData));
-
-    navigate("/teacher/stages/edit");
+    navigate(`/teacher/stages/edit/${stage.stageId}`);
   };
 
   // handle delete stage:

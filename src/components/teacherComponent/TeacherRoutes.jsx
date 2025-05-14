@@ -39,7 +39,7 @@ const TeacherRoutes = () => {
         element={<FormUpdateProgressReview />}
       />
       <Route path="/stages" element={<StageManager />} />
-      <Route path="/stages/edit" element={<FormEditStage />} />
+      <Route path="/stages/edit/:stageId" element={<FormEditStage />} />
       <Route path="/documents" element={<TeacherDocument />} />
       <Route
         path="/instructors"

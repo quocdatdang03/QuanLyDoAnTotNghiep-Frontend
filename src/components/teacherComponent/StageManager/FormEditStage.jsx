@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
@@ -28,9 +28,14 @@ import dayjs from "dayjs";
 import { useFormik } from "formik";
 import { createStageValidation } from "./validation/createStageValidation";
 import toast from "react-hot-toast";
-import { updateStageAction } from "../../../redux/InstructorStage/Action";
+import {
+  getStageByIdAction,
+  updateStageAction,
+} from "../../../redux/InstructorStage/Action";
 
 const FormEditStage = () => {
+  const { stageId } = useParams();
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -146,6 +151,14 @@ const FormEditStage = () => {
     window.location.href = pathFile;
     handleCloseMenuOptionFile(e);
   };
+
+  // handle get stage by id:
+  useEffect(() => {
+    const requestData = {
+      stageId: stageId,
+    };
+    dispatch(getStageByIdAction(requestData));
+  }, [stageId]);
 
   return (
     <>
