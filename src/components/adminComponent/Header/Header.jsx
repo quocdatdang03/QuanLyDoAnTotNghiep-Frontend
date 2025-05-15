@@ -75,7 +75,7 @@ const Header = () => {
             ) : authReducer.user && !isDelayedLoading ? (
               authReducer.user?.image ? (
                 <img
-                  className="rounded-full w-10 h-10"
+                  className="rounded-full w-10 h-10 object-cover object-center"
                   src={authReducer.user?.image}
                   alt="Avatar"
                 />

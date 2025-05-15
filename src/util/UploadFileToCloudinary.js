@@ -2,7 +2,7 @@ import axios from "axios";
 
 const upload_preset = "Do An Tot Nghiep";
 const cloud_name = "dlgaomunb";
-const cloudinary_api_url = `https://api.cloudinary.com/v1_1/${cloud_name}/raw/upload`;
+const cloudinary_api_url = `https://api.cloudinary.com/v1_1/${cloud_name}/auto/upload`;
 
 export const uploadFileToCloudinary = async (file, folder) => {
   const data = new FormData();

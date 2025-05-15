@@ -87,14 +87,38 @@ const TeacherProgressReview = ({ progressReport, progressReview }) => {
   // handle show view file:
   const handleShowViewFile = (e, pathFile) => {
     e.stopPropagation();
-    window.open(`https://docs.google.com/gview?url=${pathFile}`, "_blank");
+
+    const isOfficeFile = /\.(doc?|docx?|xlsx?|pptx?|pdf?)$/i.test(pathFile);
+
+    if (isOfficeFile) {
+      window.open(
+        `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(pathFile)}`,
+        "_blank"
+      );
+    } else {
+      // Ảnh hoặc các file khác
+      window.open(pathFile, "_blank");
+    }
+
     handleCloseMenuOptionFile(e);
   };
 
   // handle download file:
-  const handleDownloadFile = (e, pathFile) => {
+  const handleDownloadFile = (e, pathFile, nameFile) => {
     e.stopPropagation();
-    window.location.href = pathFile;
+
+    // ép file về dạng download được (với Cloudinary ảnh)
+    const modifiedUrl = pathFile.includes("/upload/")
+      ? pathFile.replace("/upload/", "/upload/fl_attachment/")
+      : pathFile;
+
+    const link = document.createElement("a");
+    link.href = modifiedUrl;
+    link.download = nameFile; // Tên file khi tải xuống
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
     handleCloseMenuOptionFile(e);
   };
 
@@ -228,7 +252,9 @@ const TeacherProgressReview = ({ progressReport, progressReview }) => {
                         <span className="pl-2">Xem chi tiết</span>
                       </MenuItem>
                       <MenuItem
-                        onClick={(e) => handleDownloadFile(e, file?.pathFile)}
+                        onClick={(e) =>
+                          handleDownloadFile(e, file?.pathFile, file.nameFile)
+                        }
                         className="hover:text-green-500 transition-all"
                       >
                         <FileDownloadOutlinedIcon />
