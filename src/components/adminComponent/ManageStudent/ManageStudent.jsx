@@ -33,7 +33,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { getAllFacultiesAction } from "../../../redux/Faculty/Action";
-import { getAllClassesAction } from "../../../redux/Class/Action";
+import {
+  getAllClassesAction,
+  getAllClassesByFacultyAction,
+} from "../../../redux/Class/Action";
 import {
   getAllStudentsAccountAction,
   updateEnableStatusOfStudentAction,
@@ -111,6 +114,22 @@ const ManageStudent = () => {
     dispatch(getAllClassesAction());
   }, [dispatch]);
 
+  const handleFilterByFaculty = (facultyId) => {
+    setFacultyId(facultyId);
+    setClassId(""); // reset classId when changing facultyId
+
+    if (facultyId !== "") {
+      // get all Classes by facultyId (when changing dropdownlist faculty)
+      const requestData = {
+        facultyId: facultyId,
+      };
+
+      dispatch(getAllClassesByFacultyAction(requestData));
+    } else {
+      dispatch(getAllClassesAction());
+    }
+  };
+
   // get all students
   useEffect(() => {
     const requestData = {};
@@ -175,6 +194,7 @@ const ManageStudent = () => {
     setCurrentPageNum(1);
     setSortDir("asc");
     setSortBy("account.fullName");
+    dispatch(getAllClassesAction()); // when clear filter -> get all classes
   };
 
   // handle sort dir:
@@ -274,7 +294,7 @@ const ManageStudent = () => {
                 id="demo-simple-select"
                 value={facultyId}
                 label="Khoa"
-                onChange={(e) => setFacultyId(e.target.value)}
+                onChange={(e) => handleFilterByFaculty(e.target.value)}
               >
                 <MenuItem value="">
                   <em>Khoa</em> {/* Giá trị rỗng để hiển thị khi chưa chọn */}

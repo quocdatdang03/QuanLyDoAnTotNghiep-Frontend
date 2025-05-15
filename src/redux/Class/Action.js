@@ -19,3 +19,28 @@ export const getAllClassesAction = () => async (dispatch) => {
     });
   }
 };
+
+export const getAllClassesByFacultyAction =
+  (requestData) => async (dispatch) => {
+    dispatch({ type: actionTypes.GET_ALL_CLASSES_BY_FACULTY_REQUEST });
+
+    try {
+      const response = await axiosAPI.get(
+        `/classes/faculty/${requestData.facultyId}`
+      );
+
+      console.log(response.data);
+
+      dispatch({
+        type: actionTypes.GET_ALL_CLASSES_BY_FACULTY_SUCCESS,
+        payload: response.data,
+      });
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      dispatch({
+        type: actionTypes.GET_ALL_CLASSES_BY_FACULTY_FAILURE,
+        payload: errorMessage,
+      });
+      console.log(errorMessage);
+    }
+  };

@@ -11,6 +11,7 @@ const initialState = {
 const classReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.GET_ALL_CLASSES_REQUEST:
+    case actionTypes.GET_ALL_CLASSES_BY_FACULTY_REQUEST:
       return {
         ...state,
         isLoading: true,
@@ -19,6 +20,7 @@ const classReducer = (state = initialState, action) => {
       };
 
     case actionTypes.GET_ALL_CLASSES_SUCCESS:
+    case actionTypes.GET_ALL_CLASSES_BY_FACULTY_SUCCESS:
       return {
         ...state,
         isLoading: false,
@@ -27,6 +29,7 @@ const classReducer = (state = initialState, action) => {
       };
 
     case actionTypes.GET_ALL_CLASSES_FAILURE:
+    case actionTypes.GET_ALL_CLASSES_BY_FACULTY_FAILURE:
       return {
         ...state,
         isLoading: false,
