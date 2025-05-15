@@ -78,13 +78,17 @@ const StageDetail = ({ stage, offset, stages }) => {
   const handleShowViewFile = (e, pathFile) => {
     e.stopPropagation();
 
-    const isOfficeFile = /\.(doc?|docx?|xlsx?|pptx?|pdf?)$/i.test(pathFile);
+    const isOfficeFile = /\.(doc?|docx?|xlsx?|pptx?)$/i.test(pathFile); // office file
+    const isPdfFile = /\.pdf$/i.test(pathFile); // pdf file
 
     if (isOfficeFile) {
       window.open(
         `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(pathFile)}`,
         "_blank"
       );
+    } else if (isPdfFile) {
+      // PDF thì mở trực tiếp
+      window.open(pathFile, "_blank");
     } else {
       // Ảnh hoặc các file khác
       window.open(pathFile, "_blank");
