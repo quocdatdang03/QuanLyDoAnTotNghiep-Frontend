@@ -37,6 +37,7 @@ import {
   getAllSemestersWithoutPaginationAction,
   getCurrentSemesterAction,
 } from "../../../redux/Semester/Action";
+import CustomBreadCrumb from "../../BreadCrumb/CustomBreadCrumb";
 
 // Table header data:
 const tableHeaderDatas = [
@@ -221,7 +222,17 @@ const StudentManager = () => {
   }, [isInstructorLoading]);
 
   return (
-    <Container className="my-10">
+    <Container className="my-10 py-10" component={Paper}>
+      {/* Breadcrumbs */}
+      <CustomBreadCrumb
+        links={[
+          {
+            label: "Danh sách sinh vên được phân công",
+            href: "/teacher/students",
+          },
+        ]}
+      />
+
       <Typography
         color="primary"
         className="uppercase text-center"

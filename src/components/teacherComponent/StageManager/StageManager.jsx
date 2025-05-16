@@ -34,6 +34,7 @@ import {
   getAllStagesByTeacherAndSemesterAction,
 } from "../../../redux/InstructorStage/Action";
 import { createStageValidation } from "./validation/createStageValidation";
+import CustomBreadCrumb from "../../BreadCrumb/CustomBreadCrumb";
 
 const StageManager = () => {
   const navigate = useNavigate();
@@ -183,6 +184,10 @@ const StageManager = () => {
   return (
     <>
       <Container className="my-10 py-10" component={Paper}>
+        {/* Breadcrumbs */}
+        <CustomBreadCrumb
+          links={[{ label: "Quản lý giai đoạn", href: "/teacher/stages" }]}
+        />
         <Typography
           color="primary"
           className="text-center uppercase"

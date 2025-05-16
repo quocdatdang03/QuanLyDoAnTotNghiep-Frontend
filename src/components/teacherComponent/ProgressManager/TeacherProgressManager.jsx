@@ -45,6 +45,7 @@ import {
 } from "../../../redux/Semester/Action";
 import { getAllProjectsByInstructorAction } from "../../../redux/InstructorProject/Action";
 import { getProjectByIdAction } from "../../../redux/InstructorProgress/Action";
+import CustomBreadCrumb from "../../BreadCrumb/CustomBreadCrumb";
 
 // Style for MODAL Project Details:
 const style = {
@@ -241,6 +242,12 @@ const TeacherProgressManager = () => {
   return (
     <>
       <Container className="my-10 py-10" component={Paper}>
+        {/* Breadcrumbs */}
+        <CustomBreadCrumb
+          links={[
+            { label: "Quản lý tiến độ", href: "/teacher/progress/manage" },
+          ]}
+        />
         <Typography
           color="primary"
           className="uppercase text-center"

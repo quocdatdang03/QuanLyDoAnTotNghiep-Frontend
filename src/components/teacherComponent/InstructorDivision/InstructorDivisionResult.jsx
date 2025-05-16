@@ -42,6 +42,7 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import toast from "react-hot-toast";
+import CustomBreadCrumb from "../../BreadCrumb/CustomBreadCrumb";
 
 // Table header data:
 const tableHeaderDatas = [
@@ -322,16 +323,20 @@ const InstructorDivisionResult = () => {
 
   return (
     <>
-      <Container className="my-10">
-        <div className="mb-5">
-          <Button
-            startIcon={<ChevronLeftIcon />}
-            variant="outlined"
-            onClick={() => navigate("/teacher/instructors")}
-          >
-            Quay lại trang phân chia GVHD
-          </Button>
-        </div>
+      <Container className="my-10 py-10" component={Paper}>
+        {/* Breadcrumbs */}
+        <CustomBreadCrumb
+          links={[
+            {
+              label: "Phân chia GVHD",
+              href: "/teacher/instructors",
+            },
+            {
+              label: "Danh sách sinh viên đã phân chia GVHD",
+              href: "/teacher/instructors/results",
+            },
+          ]}
+        />
 
         <Typography
           color="primary"

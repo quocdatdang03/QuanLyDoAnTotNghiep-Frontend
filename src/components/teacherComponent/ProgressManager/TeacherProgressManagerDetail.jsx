@@ -29,6 +29,7 @@ import {
   getProjectByIdAction,
 } from "../../../redux/InstructorProgress/Action";
 import TeacherTabChatMessage from "./Tab/TeacherTabChatMessage";
+import CustomBreadCrumb from "../../BreadCrumb/CustomBreadCrumb";
 
 const TeacherProgressManagerDetail = () => {
   const { projectId } = useParams();
@@ -134,16 +135,16 @@ const TeacherProgressManagerDetail = () => {
 
   return (
     <Container className="my-10 py-10" component={Paper}>
-      <div className="mb-10">
-        <Button
-          variant="outlined"
-          color="info"
-          startIcon={<ArrowBackIcon />}
-          onClick={() => navigate("/teacher/progress/manage")}
-        >
-          Quay lại trang quản lý tiến độ
-        </Button>
-      </div>
+      {/* Breadcrumbs */}
+      <CustomBreadCrumb
+        links={[
+          { label: "Quản lý tiến độ", href: "/teacher/progress/manage" },
+          {
+            label: "Chi tiết tiến độ của sinh viên",
+            href: `/teacher/progress/detail/project/${projectId}`,
+          },
+        ]}
+      />
       <Typography
         color="primary"
         className="uppercase text-center"

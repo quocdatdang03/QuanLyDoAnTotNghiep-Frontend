@@ -57,6 +57,7 @@ import {
 } from "../../../redux/TeacherLeader/Action";
 import toast from "react-hot-toast";
 import { isStudentPresentInList } from "../../../config/logic";
+import CustomBreadCrumb from "../../BreadCrumb/CustomBreadCrumb";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -369,7 +370,16 @@ const InstructorDivision = () => {
 
   return (
     <>
-      <Container className="my-10">
+      <Container className="my-10 py-10" component={Paper}>
+        {/* Breadcrumbs */}
+        <CustomBreadCrumb
+          links={[
+            {
+              label: "Phân chia GVHD",
+              href: "/teacher/instructors",
+            },
+          ]}
+        />
         <Typography
           color="primary"
           className="uppercase text-center"

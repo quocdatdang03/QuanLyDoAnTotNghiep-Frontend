@@ -24,6 +24,7 @@ import { getAllNotificationsByTeacherAndSemesterAction } from "../../../redux/No
 import SockJS from "sockjs-client/dist/sockjs";
 import { over } from "stompjs";
 import { getCurrentSemesterAction } from "../../../redux/Semester/Action";
+import CustomBreadCrumb from "../../BreadCrumb/CustomBreadCrumb";
 
 // style of delete progress report modal:
 const style = {
@@ -254,6 +255,10 @@ const TeacherNotification = () => {
   return (
     <>
       <Container className="my-10 py-10" component={Paper}>
+        {/* Breadcrumbs */}
+        <CustomBreadCrumb
+          links={[{ label: "Thông báo", href: "/teacher/notifications" }]}
+        />
         <Typography
           color="primary"
           className="uppercase text-center"

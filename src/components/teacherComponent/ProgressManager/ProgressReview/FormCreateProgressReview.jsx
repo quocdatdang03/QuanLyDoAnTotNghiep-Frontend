@@ -37,6 +37,7 @@ import {
   getProgressReportByIdAction,
   getProjectByIdAction,
 } from "../../../../redux/InstructorProgress/Action";
+import CustomBreadCrumb from "../../../BreadCrumb/CustomBreadCrumb";
 
 const FormCreateProgressReview = () => {
   const { progressReportId, projectId } = useParams();
@@ -221,16 +222,20 @@ const FormCreateProgressReview = () => {
   // ++++++++++++++++++++++++++++++ END LOGIC CODE RELATED FILE:
   return (
     <Container className="my-10 py-10" component={Paper}>
-      <Button
-        variant="outlined"
-        color="info"
-        startIcon={<ArrowBackIcon />}
-        onClick={() =>
-          navigate(`/teacher/progress/detail/project/${projectId}`)
-        }
-      >
-        Quay lại trang tiến độ
-      </Button>
+      {/* Breadcrumbs */}
+      <CustomBreadCrumb
+        links={[
+          { label: "Quản lý tiến độ", href: "/teacher/progress/manage" },
+          {
+            label: "Chi tiết tiến độ của sinh viên",
+            href: `/teacher/progress/detail/project/${projectId}`,
+          },
+          {
+            label: "Tạo đánh giá tiến độ",
+            href: `/teacher/progress/${progressReportId}/project/${projectId}/review/create`,
+          },
+        ]}
+      />
       <Typography
         color="primary"
         className="uppercase text-center"

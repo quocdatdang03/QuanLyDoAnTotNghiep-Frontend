@@ -32,6 +32,7 @@ import {
   getStageByIdAction,
   updateStageAction,
 } from "../../../redux/InstructorStage/Action";
+import CustomBreadCrumb from "../../BreadCrumb/CustomBreadCrumb";
 
 const FormEditStage = () => {
   const { stageId } = useParams();
@@ -191,14 +192,13 @@ const FormEditStage = () => {
   return (
     <>
       <Container className="my-10 py-10" component={Paper}>
-        <Button
-          variant="outlined"
-          color="info"
-          startIcon={<ArrowBackIcon />}
-          onClick={() => navigate("/teacher/stages")}
-        >
-          Quay lại trang quản lý giai đoạn
-        </Button>
+        {/* Breadcrumbs */}
+        <CustomBreadCrumb
+          links={[
+            { label: "Quản lý giai đoạn", href: "/teacher/stages" },
+            { label: "Chỉnh sửa", href: `/teacher/stages/edit/${stageId}` },
+          ]}
+        />
         <Typography
           color="primary"
           className="text-center uppercase"

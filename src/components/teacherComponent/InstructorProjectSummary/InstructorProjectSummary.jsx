@@ -43,6 +43,7 @@ import {
 
 import * as XLSX from "xlsx-js-style";
 import { saveAs } from "file-saver";
+import CustomBreadCrumb from "../../BreadCrumb/CustomBreadCrumb";
 
 // Table header data:
 const tableHeaderDatas = [
@@ -292,7 +293,16 @@ const InstructorProjectSummary = () => {
 
   return (
     <>
-      <Container className="my-10">
+      <Container className="my-10 py-10" component={Paper}>
+        {/* Breadcrumbs */}
+        <CustomBreadCrumb
+          links={[
+            {
+              label: "Tổng hợp đề tài đồ án tốt nghiệp",
+              href: "/teacher/projects/summary",
+            },
+          ]}
+        />
         <Typography
           color="primary"
           className="uppercase text-center"

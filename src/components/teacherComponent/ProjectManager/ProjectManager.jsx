@@ -53,6 +53,7 @@ import {
   getAllProjectsByInstructorAction,
   getProjectByStudentCodeAction,
 } from "../../../redux/InstructorProject/Action";
+import CustomBreadCrumb from "../../BreadCrumb/CustomBreadCrumb";
 
 // Style for MODAL Project Details:
 const style = {
@@ -338,7 +339,11 @@ const ProjectManager = () => {
 
   return (
     <>
-      <Container className="my-10">
+      <Container className="my-10 py-10" component={Paper}>
+        {/* Breadcrumbs */}
+        <CustomBreadCrumb
+          links={[{ label: "Danh sách đề tài", href: "/teacher/projects" }]}
+        />
         <Typography
           color="primary"
           className="uppercase text-center"
