@@ -33,6 +33,7 @@ import {
   updateTeacherAction,
 } from "../../../redux/Teacher/Action";
 import { formEditTeacherValidation } from "./validation/formEditTeacherValidation";
+import AdminBreadCrumbs from "../AdminBreadCrumbs/AdminBreadCrumbs";
 
 const FormEditTeacher = () => {
   const { teacherCodeParam } = useParams();
@@ -128,16 +129,19 @@ const FormEditTeacher = () => {
 
   return (
     <>
-      <div className="mb-5">
-        <Button
-          variant="outlined"
-          color="info"
-          startIcon={<ArrowBackIcon />}
-          onClick={() => navigate("/admin/manage-teacher")}
-        >
-          Quay lại
-        </Button>
-      </div>
+      {/* Breadcrumbs */}
+      <AdminBreadCrumbs
+        links={[
+          {
+            label: "Quản lý tài khoản giảng viên",
+            href: "/admin/manage-teacher",
+          },
+          {
+            label: "Chỉnh sửa tài khoản",
+            href: `/admin/manage-teacher/edit/${teacherCodeParam}`,
+          },
+        ]}
+      />
       <Paper className="p-5">
         <h2 className="text-center uppercase text-xl font-bold mb-5">
           Chỉnh sửa giảng viên

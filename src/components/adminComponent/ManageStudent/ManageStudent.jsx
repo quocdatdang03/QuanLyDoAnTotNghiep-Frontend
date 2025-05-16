@@ -42,6 +42,7 @@ import {
   updateEnableStatusOfStudentAction,
 } from "../../../redux/Student/Action";
 import noResultImage from "../../../assets/images/no-result-img.png";
+import AdminBreadCrumbs from "../AdminBreadCrumbs/AdminBreadCrumbs";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -224,6 +225,15 @@ const ManageStudent = () => {
 
   return (
     <Container className="my-10">
+      {/* Breadcrumbs */}
+      <AdminBreadCrumbs
+        links={[
+          {
+            label: "Quản lý tài khoản sinh viên",
+            href: "/admin/manage-student",
+          },
+        ]}
+      />
       <Typography
         color="primary"
         className="uppercase text-center"

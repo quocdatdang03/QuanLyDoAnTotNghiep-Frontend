@@ -32,6 +32,7 @@ import {
   updateStudentAccountAction,
 } from "../../../redux/Student/Action";
 import { formEditStudentAccountValidation } from "./validation/formEditStudentAccountValidation";
+import AdminBreadCrumbs from "../AdminBreadCrumbs/AdminBreadCrumbs";
 
 const FormEditStudent = () => {
   const { studentCodeParam } = useParams();
@@ -123,16 +124,19 @@ const FormEditStudent = () => {
 
   return (
     <>
-      <div className="mb-5">
-        <Button
-          variant="outlined"
-          color="info"
-          startIcon={<ArrowBackIcon />}
-          onClick={() => navigate("/admin/manage-student")}
-        >
-          Quay lại
-        </Button>
-      </div>
+      {/* Breadcrumbs */}
+      <AdminBreadCrumbs
+        links={[
+          {
+            label: "Quản lý tài khoản sinh viên",
+            href: "/admin/manage-student",
+          },
+          {
+            label: "Chỉnh sửa tài khoản",
+            href: `/admin/manage-student/edit/${studentCodeParam}`,
+          },
+        ]}
+      />
       <Paper className="p-5">
         <h2 className="text-center uppercase text-xl font-bold mb-5">
           Chỉnh sửa tài khoản sinh viên

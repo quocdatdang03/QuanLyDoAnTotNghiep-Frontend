@@ -40,6 +40,7 @@ import {
   getSemesterByIdAction,
 } from "../../../redux/Semester/Action";
 import { formSemesterValidation } from "./validation/formSemesterValidation";
+import AdminBreadCrumbs from "../AdminBreadCrumbs/AdminBreadCrumbs";
 
 const style = {
   position: "absolute",
@@ -220,6 +221,10 @@ const ManageSemester = () => {
   return (
     <>
       <div>
+        {/* Breadcrumbs */}
+        <AdminBreadCrumbs
+          links={[{ label: "Quản lý học kỳ", href: "/admin/manage-semester" }]}
+        />
         <h1 className="text-center uppercase text-2xl font-bold mb-5">
           Quản lý học kỳ đồ án
         </h1>

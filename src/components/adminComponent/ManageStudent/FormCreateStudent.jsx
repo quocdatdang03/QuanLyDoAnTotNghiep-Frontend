@@ -29,6 +29,7 @@ import dayjs from "dayjs";
 import { getAllClassesAction } from "../../../redux/Class/Action";
 import { formCreateStudentAccountValidation } from "./validation/formCreateStudentAccountValidation";
 import { createStudentAccountAction } from "../../../redux/Student/Action";
+import AdminBreadCrumbs from "../AdminBreadCrumbs/AdminBreadCrumbs";
 
 const FormCreateStudent = () => {
   const navigate = useNavigate();
@@ -108,16 +109,19 @@ const FormCreateStudent = () => {
 
   return (
     <>
-      <div className="mb-5">
-        <Button
-          variant="outlined"
-          color="info"
-          startIcon={<ArrowBackIcon />}
-          onClick={() => navigate("/admin/manage-student")}
-        >
-          Quay lại
-        </Button>
-      </div>
+      {/* Breadcrumbs */}
+      <AdminBreadCrumbs
+        links={[
+          {
+            label: "Quản lý tài khoản sinh viên",
+            href: "/admin/manage-student",
+          },
+          {
+            label: "Thêm tài khoản",
+            href: "/admin/manage-student/create",
+          },
+        ]}
+      />
       <Paper className="p-5">
         <h2 className="text-center uppercase text-xl font-bold mb-5">
           Thêm tài khoản sinh viên

@@ -41,6 +41,7 @@ import {
 } from "../../../redux/Teacher/Action";
 
 import { getAllFacultiesAction } from "../../../redux/Faculty/Action";
+import AdminBreadCrumbs from "../AdminBreadCrumbs/AdminBreadCrumbs";
 
 // Table header data:
 const tableHeaderDatas = [
@@ -194,6 +195,15 @@ const ManageTeacher = () => {
 
   return (
     <Container className="my-10">
+      {/* Breadcrumbs */}
+      <AdminBreadCrumbs
+        links={[
+          {
+            label: "Quản lý tài khoản giảng viên",
+            href: "/admin/manage-teacher",
+          },
+        ]}
+      />
       <Typography
         color="primary"
         className="uppercase text-center"

@@ -52,6 +52,7 @@ import {
   getAllClassesByFacultyAction,
 } from "../../../redux/Class/Action";
 import { getCurrentSemesterAction } from "../../../redux/Semester/Action";
+import AdminBreadCrumbs from "../AdminBreadCrumbs/AdminBreadCrumbs";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -315,14 +316,19 @@ const FormCreateStudentSemester = () => {
   return (
     <>
       <Container className="my-10">
-        <Button
-          variant="outlined"
-          color="info"
-          startIcon={<ArrowBackIcon />}
-          onClick={() => navigate("/admin/manage-registerStudent")}
-        >
-          Quay lại
-        </Button>
+        {/* Breadcrumbs */}
+        <AdminBreadCrumbs
+          links={[
+            {
+              label: "Quản lý sinh viên đăng ký đồ án tốt nghiệp",
+              href: "/admin/manage-registerStudent",
+            },
+            {
+              label: "Thêm sinh viên",
+              href: "/admin/manage-registerStudent/create",
+            },
+          ]}
+        />
         <Typography
           color="primary"
           className="uppercase text-center"

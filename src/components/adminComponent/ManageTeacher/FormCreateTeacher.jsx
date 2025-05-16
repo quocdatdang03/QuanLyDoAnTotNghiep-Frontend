@@ -30,6 +30,7 @@ import { uploadImageToCloudinary } from "../../../util/UploadImageToCloudinary";
 import { formTeacherValidation } from "./validation/formTeacherValidation";
 import dayjs from "dayjs";
 import { createTeacherAction } from "../../../redux/Teacher/Action";
+import AdminBreadCrumbs from "../AdminBreadCrumbs/AdminBreadCrumbs";
 
 const FormCreateTeacher = () => {
   const navigate = useNavigate();
@@ -112,16 +113,19 @@ const FormCreateTeacher = () => {
 
   return (
     <>
-      <div className="mb-5">
-        <Button
-          variant="outlined"
-          color="info"
-          startIcon={<ArrowBackIcon />}
-          onClick={() => navigate("/admin/manage-teacher")}
-        >
-          Quay lại
-        </Button>
-      </div>
+      {/* Breadcrumbs */}
+      <AdminBreadCrumbs
+        links={[
+          {
+            label: "Quản lý tài khoản giảng viên",
+            href: "/admin/manage-teacher",
+          },
+          {
+            label: "Thêm tài khoản",
+            href: "/admin/manage-teacher/create",
+          },
+        ]}
+      />
       <Paper className="p-5">
         <h2 className="text-center uppercase text-xl font-bold mb-5">
           Thêm giảng viên

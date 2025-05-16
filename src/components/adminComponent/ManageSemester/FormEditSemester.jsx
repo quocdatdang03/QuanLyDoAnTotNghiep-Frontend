@@ -22,6 +22,7 @@ import {
 } from "../../../redux/Semester/Action";
 import toast from "react-hot-toast";
 import { getAllSchoolYearAction } from "../../../redux/SchoolYear/Action";
+import AdminBreadCrumbs from "../AdminBreadCrumbs/AdminBreadCrumbs";
 
 const FormEditSemester = () => {
   const { semesterIdParam } = useParams();
@@ -71,14 +72,16 @@ const FormEditSemester = () => {
   return (
     <>
       <div className="mb-5">
-        <Button
-          variant="outlined"
-          color="info"
-          startIcon={<ArrowBackIcon />}
-          onClick={() => navigate("/admin/manage-semester")}
-        >
-          Quay lại
-        </Button>
+        {/* Breadcrumbs */}
+        <AdminBreadCrumbs
+          links={[
+            { label: "Quản lý học kỳ", href: "/admin/manage-semester" },
+            {
+              label: "Chỉnh sửa học kỳ",
+              href: `/admin/manage-semester/semester/edit/${semesterIdParam}`,
+            },
+          ]}
+        />
       </div>
       <Paper className="p-5">
         <h2 className="text-center uppercase text-xl font-bold">

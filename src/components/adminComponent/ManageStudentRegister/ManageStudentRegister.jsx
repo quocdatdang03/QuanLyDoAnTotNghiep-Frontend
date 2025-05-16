@@ -50,6 +50,7 @@ import {
 } from "../../../redux/Student/Action";
 import noResultImage from "../../../assets/images/no-result-img.png";
 import toast from "react-hot-toast";
+import AdminBreadCrumbs from "../AdminBreadCrumbs/AdminBreadCrumbs";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -281,6 +282,16 @@ const ManageStudentRegister = () => {
   return (
     <>
       <Container className="my-10">
+        {/* Breadcrumbs */}
+        <AdminBreadCrumbs
+          links={[
+            {
+              label: "Quản lý sinh viên đăng ký đồ án tốt nghiệp",
+              href: "/admin/manage-student-register",
+            },
+          ]}
+        />
+
         <Typography
           color="primary"
           className="uppercase text-center"

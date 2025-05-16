@@ -10,6 +10,7 @@ import {
   updateSchoolYearAction,
 } from "../../../redux/SchoolYear/Action";
 import toast from "react-hot-toast";
+import AdminBreadCrumbs from "../AdminBreadCrumbs/AdminBreadCrumbs";
 
 const FormEditSchoolYear = () => {
   const { schoolYearIdParam } = useParams();
@@ -69,16 +70,16 @@ const FormEditSchoolYear = () => {
 
   return (
     <>
-      <div className="mb-5">
-        <Button
-          variant="outlined"
-          color="info"
-          startIcon={<ArrowBackIcon />}
-          onClick={() => navigate("/admin/manage-semester")}
-        >
-          Quay lại
-        </Button>
-      </div>
+      {/* Breadcrumbs */}
+      <AdminBreadCrumbs
+        links={[
+          { label: "Quản lý học kỳ", href: "/admin/manage-semester" },
+          {
+            label: "Chỉnh sửa năm học",
+            href: `/admin/manage-semester/schoolYear/edit/${schoolYearIdParam}`,
+          },
+        ]}
+      />
       <Paper className="p-5">
         <h2 className="text-center uppercase text-xl font-bold mb-5">
           Chỉnh sửa năm học
