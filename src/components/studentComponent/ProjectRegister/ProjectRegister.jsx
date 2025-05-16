@@ -45,6 +45,7 @@ import {
   getProjectByStudentCodeAction,
 } from "../../../redux/Project/Action";
 import { useNavigate } from "react-router-dom";
+import CustomBreadCrumb from "../../BreadCrumb/CustomBreadCrumb";
 
 const ProjectRegister = () => {
   const dispatch = useDispatch();
@@ -201,6 +202,13 @@ const ProjectRegister = () => {
   return (
     <div>
       <Container className="my-10 py-10" component={Paper}>
+        {/* Breadcrumbs */}
+        <CustomBreadCrumb
+          links={[
+            { label: "Đăng ký đề tài", href: "/student/project/register" },
+          ]}
+        />
+
         <Typography
           color="primary"
           className="uppercase text-center"

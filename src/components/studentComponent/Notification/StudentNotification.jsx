@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Container,
-  Pagination,
-  Paper,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Container, Pagination, Paper, Typography } from "@mui/material";
 
 import defaultAvatar from "../../../assets/images/default-avatar.png"; // Adjust the path as necessary
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +8,7 @@ import SockJS from "sockjs-client/dist/sockjs";
 import { over } from "stompjs";
 import { getCurrentSemesterAction } from "../../../redux/Semester/Action";
 import { getInstructorByStudentIdAction } from "../../../redux/Student/Action";
+import CustomBreadCrumb from "../../BreadCrumb/CustomBreadCrumb";
 
 var client = null;
 const StudentNotification = () => {
@@ -142,6 +136,11 @@ const StudentNotification = () => {
 
   return (
     <Container className="my-10 py-10" component={Paper}>
+      {/* Breadcrumbs */}
+      <CustomBreadCrumb
+        links={[{ label: "Thông báo", href: "/student/notifications" }]}
+      />
+
       <Typography
         color="primary"
         className="uppercase text-center"

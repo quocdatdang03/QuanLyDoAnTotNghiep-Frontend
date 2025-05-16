@@ -33,6 +33,7 @@ import {
 } from "../../../redux/RecommendedTeacher/Action";
 import { isTeacherPresentInList } from "../../../config/logic";
 import { getInstructorOfProjectByStudentCodeAction } from "../../../redux/Project/Action";
+import CustomBreadCrumb from "../../BreadCrumb/CustomBreadCrumb";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -241,7 +242,12 @@ const RecommendTeacher = () => {
 
   return (
     <>
-      <Container className="my-10">
+      <Container className="my-10 py-10" component={Paper}>
+        {/* Breadcrumbs */}
+        <CustomBreadCrumb
+          links={[{ label: "Đề xuất GVHD", href: "/student/recommendTeacher" }]}
+        />
+
         <Typography
           color="primary"
           className="uppercase text-center"

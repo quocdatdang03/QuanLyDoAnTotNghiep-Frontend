@@ -32,6 +32,7 @@ import {
   getAllStagesByProjectAction,
   getStageByIdAction,
 } from "../../../redux/ProgressReport/Action";
+import CustomBreadCrumb from "../../BreadCrumb/CustomBreadCrumb";
 
 const StudentProgressManager = () => {
   const dispatch = useDispatch();
@@ -151,6 +152,11 @@ const StudentProgressManager = () => {
 
   return (
     <Container className="my-10 py-10" component={Paper}>
+      {/* Breadcrumbs */}
+      <CustomBreadCrumb
+        links={[{ label: "Quản lý tiến độ", href: "/student/progress/manage" }]}
+      />
+
       <Typography
         color="primary"
         className="uppercase text-center"

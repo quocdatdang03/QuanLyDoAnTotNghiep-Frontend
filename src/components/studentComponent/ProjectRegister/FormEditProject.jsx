@@ -1,20 +1,14 @@
 import {
-  Badge,
-  Box,
   Button,
   Card,
-  CardActions,
   CardContent,
-  CardHeader,
   CardMedia,
   CircularProgress,
   Container,
-  FormControl,
   IconButton,
   Menu,
   MenuItem,
   Paper,
-  Skeleton,
   TextField,
   Typography,
 } from "@mui/material";
@@ -26,9 +20,7 @@ import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import toast from "react-hot-toast";
 import defaultImage from "../../../assets/images/default-avatar.png";
@@ -38,16 +30,14 @@ import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { projectRegisterValidation } from "./validation/projectRegisterValidation";
 import { uploadFileToCloudinary } from "../../../util/UploadFileToCloudinary";
-import { store } from "../../../redux/store";
 import {
-  createProjectAction,
   deleteProjectFileByIdAction,
   getInstructorOfProjectByStudentCodeAction,
   getProjectByStudentCodeAction,
   updateProjectAction,
 } from "../../../redux/Project/Action";
-import { ChevronLeftOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import CustomBreadCrumb from "../../BreadCrumb/CustomBreadCrumb";
 
 const FormEditProject = () => {
   const dispatch = useDispatch();
@@ -203,15 +193,13 @@ const FormEditProject = () => {
   return (
     <div>
       <Container className="my-10 py-10" component={Paper}>
-        <div className="mb-10">
-          <Button
-            variant="outlined"
-            startIcon={<ChevronLeftOutlined />}
-            onClick={() => navigate("/student/project/register")}
-          >
-            Quay lại trang đăng ký
-          </Button>
-        </div>
+        {/* Breadcrumbs */}
+        <CustomBreadCrumb
+          links={[
+            { label: "Đăng ký đề tài", href: "/student/project/register" },
+            { label: "Chỉnh sửa", href: "/student/project/edit" },
+          ]}
+        />
         <Typography
           color="primary"
           className="uppercase text-center"

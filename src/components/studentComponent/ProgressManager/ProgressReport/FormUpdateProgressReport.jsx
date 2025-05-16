@@ -10,7 +10,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -25,10 +24,8 @@ import { uploadFileToCloudinary } from "../../../../util/UploadFileToCloudinary"
 import toast from "react-hot-toast";
 import { useFormik } from "formik";
 import { createProgressReportValidation } from "./validation/createProgressReportValidation";
-import {
-  createProgressReportAction,
-  updateProgressReportAction,
-} from "../../../../redux/ProgressReport/Action";
+import { updateProgressReportAction } from "../../../../redux/ProgressReport/Action";
+import CustomBreadCrumb from "../../../BreadCrumb/CustomBreadCrumb";
 
 const FormUpdateProgressReport = () => {
   const navigate = useNavigate();
@@ -37,7 +34,7 @@ const FormUpdateProgressReport = () => {
   const [uploadFile, setUploadFile] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
 
-  const { authReducer, projectReducer, progressReportReducer } = useSelector(
+  const { projectReducer, progressReportReducer } = useSelector(
     (store) => store
   );
 
@@ -174,14 +171,13 @@ const FormUpdateProgressReport = () => {
 
   return (
     <Container className="my-10 py-10" component={Paper}>
-      <Button
-        variant="outlined"
-        color="info"
-        startIcon={<ArrowBackIcon />}
-        onClick={() => navigate("/student/progress/manage")}
-      >
-        Quay lại trang tiến độ
-      </Button>
+      {/* Breadcrumbs */}
+      <CustomBreadCrumb
+        links={[
+          { label: "Quản lý tiến độ", href: "/student/progress/manage" },
+          { label: "Chỉnh sửa báo cáo", href: "/student/progress/edit" },
+        ]}
+      />
       <Typography
         color="primary"
         className="uppercase text-center"

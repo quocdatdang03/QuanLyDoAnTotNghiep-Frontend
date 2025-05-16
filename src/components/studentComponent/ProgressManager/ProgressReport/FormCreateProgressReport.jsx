@@ -10,7 +10,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -18,7 +17,7 @@ import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { uploadFileToCloudinary } from "../../../../util/UploadFileToCloudinary";
@@ -26,6 +25,7 @@ import toast from "react-hot-toast";
 import { useFormik } from "formik";
 import { createProgressReportValidation } from "./validation/createProgressReportValidation";
 import { createProgressReportAction } from "../../../../redux/ProgressReport/Action";
+import CustomBreadCrumb from "../../../BreadCrumb/CustomBreadCrumb";
 
 const FormCreateProgressReport = () => {
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ const FormCreateProgressReport = () => {
   const [uploadFile, setUploadFile] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
 
-  const { authReducer, projectReducer, progressReportReducer } = useSelector(
+  const { projectReducer, progressReportReducer } = useSelector(
     (store) => store
   );
 
@@ -170,14 +170,13 @@ const FormCreateProgressReport = () => {
 
   return (
     <Container className="my-10 py-10" component={Paper}>
-      <Button
-        variant="outlined"
-        color="info"
-        startIcon={<ArrowBackIcon />}
-        onClick={() => navigate("/student/progress/manage")}
-      >
-        Quay lại trang tiến độ
-      </Button>
+      {/* Breadcrumbs */}
+      <CustomBreadCrumb
+        links={[
+          { label: "Quản lý tiến độ", href: "/student/progress/manage" },
+          { label: "Tạo báo cáo", href: "/student/progress/create" },
+        ]}
+      />
       <Typography
         color="primary"
         className="uppercase text-center"
