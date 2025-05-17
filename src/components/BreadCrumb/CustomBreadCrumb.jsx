@@ -6,10 +6,10 @@ const CustomBreadCrumb = ({ links }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="mb-4 flex items-center text-md text-gray-600 space-x-1">
+    <div className="mb-4 flex items-center text-sm text-gray-600 space-x-1">
       <span
         onClick={() => navigate("/")}
-        className="text-blue-600 hover:underline cursor-pointer transition-colors duration-150"
+        className="hover:bg-gray-300 cursor-pointer transition-colors duration-150 bg-gray-200 py-1 px-3 rounded-full"
       >
         Trang chủ
       </span>
@@ -39,7 +39,7 @@ const CustomBreadCrumb = ({ links }) => {
             ) : (
               <span
                 onClick={() => navigate(item.href)}
-                className="text-blue-500 hover:underline cursor-pointer transition-colors duration-200"
+                className="hover:bg-gray-300 cursor-pointer transition-colors duration-150 bg-gray-200 py-1 px-3 rounded-full"
               >
                 {item.label}
               </span>
