@@ -292,9 +292,8 @@ const ManageStudent = () => {
               </IconButton>
             </Paper>
             {/* END INPUT SEARCH */}
-
-            {/* FILTER SELECT */}
           </div>
+          {/* FILTER SELECT */}
           <div className="flex gap-5 w-full">
             {/* FILTER BY FACULTY */}
             <FormControl fullWidth size="small">

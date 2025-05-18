@@ -18,6 +18,7 @@ import instructorProgressReducer from "./InstructorProgress/Reducer";
 import notificationReducer from "./Notification/Reducer";
 import degreeReducer from "./Degree/Reducer";
 import { recommendedTeacherReducer } from "./RecommendedTeacher/Reducer";
+import dashboardReducer from "./Dashboard/Reducer";
 
 const rootReducer = combineReducers({
   authReducer: authReducer,
@@ -38,6 +39,7 @@ const rootReducer = combineReducers({
   notificationReducer: notificationReducer,
   degreeReducer: degreeReducer,
   recommendedTeacherReducer: recommendedTeacherReducer,
+  dashboardReducer: dashboardReducer,
 });
 
 export const store = legacy_createStore(rootReducer, applyMiddleware(thunk));

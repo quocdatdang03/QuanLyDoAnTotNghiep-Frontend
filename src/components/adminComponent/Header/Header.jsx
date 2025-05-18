@@ -61,7 +61,10 @@ const Header = () => {
   return (
     <div className="w-full flex items-center justify-between">
       {/* Logo */}
-      <div className="flex items-center gap-1">
+      <div
+        className="flex items-center gap-1 cursor-pointer"
+        onClick={() => navigate("/admin")}
+      >
         <img src={logoUTE} width="55" height="55" />
         <p className="font-bold tracking-wide">ADMIN</p>
       </div>

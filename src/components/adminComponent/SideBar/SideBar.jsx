@@ -34,6 +34,7 @@ import ManageStudent from "../ManageStudent/ManageStudent";
 import FormCreateStudent from "../ManageStudent/FormCreateStudent";
 import FormEditStudent from "../ManageStudent/FormEditStudent";
 import FormCreateStudentSemester from "../ManageStudentRegister/FormCreateStudentSemester";
+import Dashboard from "../Dashboard/Dashboard";
 
 // +++++++++++++  start for drawer
 const drawerWidth = 320;
@@ -248,6 +249,7 @@ export const SideBar = () => {
         <DrawerHeader />
         {/* CONTENT */}
         <Routes>
+          <Route path="/" element={<Dashboard />} />
           <Route path="/profile/*" element={<AdminProfile />} />
           <Route path="/manage-semester" element={<ManageSemester />} />
           <Route
