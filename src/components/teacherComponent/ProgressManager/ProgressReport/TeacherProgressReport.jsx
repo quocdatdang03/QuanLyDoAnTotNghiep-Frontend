@@ -42,6 +42,8 @@ const TeacherProgressReport = () => {
   const [openId, setOpenId] = useState(null);
   const [sortOrder, setSortOrder] = useState("desc");
   const [stageId, setStageId] = useState("");
+  const [progressReportStatus, setProgressReportStatus] = useState("");
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
 
@@ -61,6 +63,7 @@ const TeacherProgressReport = () => {
     // clear filter:
     setSortOrder("desc");
     setStageId("");
+    setProgressReportStatus("");
   };
 
   // get all progressReports of project
@@ -70,9 +73,15 @@ const TeacherProgressReport = () => {
         projectId: instructorProgressReducer.project?.projectId,
         sortOrder: sortOrder,
         stageId: stageId,
+        progressReportStatus: progressReportStatus,
       })
     );
-  }, [instructorProgressReducer.project, sortOrder, stageId]);
+  }, [
+    instructorProgressReducer.project,
+    sortOrder,
+    stageId,
+    progressReportStatus,
+  ]);
 
   // ++++++++++++++++++++++++++++++ START LOGIC CODE RELATED FILE:
   // handle Open Menu Option File:
@@ -176,6 +185,20 @@ const TeacherProgressReport = () => {
                   </MenuItem>
                 );
               })}
+            </Select>
+          </FormControl>
+
+          {/* Dropdown lọc theo progressReport status*/}
+          <FormControl size="small" className="w-60 bg-white rounded-md">
+            <InputLabel>Trạng thái giai đoạn</InputLabel>
+            <Select
+              value={progressReportStatus}
+              onChange={(e) => setProgressReportStatus(e.target.value)}
+              label="Trạng thái giai đoạn"
+            >
+              <MenuItem value="">Tất cả</MenuItem>
+              <MenuItem value="true">Đã duyệt</MenuItem>
+              <MenuItem value="false">Chưa duyệt</MenuItem>
             </Select>
           </FormControl>
 

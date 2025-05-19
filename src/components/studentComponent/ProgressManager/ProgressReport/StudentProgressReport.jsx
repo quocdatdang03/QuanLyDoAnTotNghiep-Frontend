@@ -65,6 +65,7 @@ const StudentProgressReport = ({ projectId }) => {
   const [openId, setOpenId] = useState(null);
   const [sortOrder, setSortOrder] = useState("desc");
   const [stageId, setStageId] = useState("");
+  const [progressReportStatus, setProgressReportStatus] = useState("");
 
   const [selectedProgressReport, setSelectedProgressReport] = useState(null);
   const [openDeleteProgressReportModal, setOpenDeleteProgressReportModal] =
@@ -192,6 +193,7 @@ const StudentProgressReport = ({ projectId }) => {
     // clear filter
     setSortOrder("desc");
     setStageId("");
+    setProgressReportStatus("");
   };
 
   // get all progressReports of project
@@ -201,9 +203,10 @@ const StudentProgressReport = ({ projectId }) => {
         projectId: projectId,
         sortOrder: sortOrder,
         stageId: stageId,
+        progressReportStatus: progressReportStatus,
       })
     );
-  }, [projectId, sortOrder, stageId]);
+  }, [projectId, sortOrder, stageId, progressReportStatus]);
 
   return (
     <>
@@ -248,6 +251,20 @@ const StudentProgressReport = ({ projectId }) => {
                     </MenuItem>
                   );
                 })}
+              </Select>
+            </FormControl>
+
+            {/* Dropdown lọc theo progressReport status*/}
+            <FormControl size="small" className="w-60 bg-white rounded-md">
+              <InputLabel>Trạng thái giai đoạn</InputLabel>
+              <Select
+                value={progressReportStatus}
+                onChange={(e) => setProgressReportStatus(e.target.value)}
+                label="Trạng thái giai đoạn"
+              >
+                <MenuItem value="">Tất cả</MenuItem>
+                <MenuItem value="true">Đã duyệt</MenuItem>
+                <MenuItem value="false">Chưa duyệt</MenuItem>
               </Select>
             </FormControl>
 
