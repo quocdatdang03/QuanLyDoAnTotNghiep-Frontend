@@ -11,6 +11,8 @@ import ResetPasswordForm from "./ResetPasswordForm";
 // import SendEmailForgotPasswordSuccess from "./SendEmailForgotPasswordSuccess";
 // import ResetPasswordForm from "./ResetPasswordForm";
 
+import logoUTE from "../../assets/images/logo-ute.png";
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -34,11 +36,7 @@ const Auth = () => {
         className="flex items-center mb-6 text-2xl font-semibold text-[#003b4f] cursor-pointer"
         onClick={() => navigate("/")}
       >
-        <img
-          className="w-8 h-8 mr-2"
-          src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
-          alt="logo"
-        />
+        <img className="w-8 h-8 mr-2" src={logoUTE} alt="logo" />
         UTE
       </div>
       {/* {location.pathname === "/account/register" && <RegisterForm />} */}

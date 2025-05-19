@@ -5,7 +5,7 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-200 flex flex-col items-center">
       {/* Banner */}
-      <div className="w-full bg-blue-500 py-16 flex flex-col items-center shadow-md">
+      <div className="w-full bg-gradient-to-tr from-blue-600 to-blue-500 py-16 flex flex-col items-center shadow-md">
         <img
           src={logoUte}
           alt="UTE Logo"
