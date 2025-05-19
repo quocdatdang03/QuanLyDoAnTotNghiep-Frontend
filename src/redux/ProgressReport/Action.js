@@ -202,6 +202,9 @@ export const getAllProgressReportsByProjectAction =
         params.append("stageId", requestData.stageId);
       }
 
+      if (requestData.progressReportStatus)
+        params.append("status", requestData.progressReportStatus);
+
       const response = await axiosAPI.get(
         `/student/progressReports?${params.toString()}`
       );
