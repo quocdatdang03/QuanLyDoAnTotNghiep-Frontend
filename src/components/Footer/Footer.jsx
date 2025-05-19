@@ -10,11 +10,10 @@ import { Divider, IconButton, Link } from "@mui/material";
 
 const Footer = () => {
   return (
-    <div className="w-full bg-[#003b4f]">
-      <div className=" text-white grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 p-5">
-        {" "}
+    <div className="w-full bg-gradient-to-r from-blue-900 via-blue-950 to-blue-900">
+      <div className="text-white grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 p-5">
         <div>
-          <h1 className="font-bold text-2xl text-[#1ca3aa] mb-5">
+          <h1 className="font-bold text-2xl text-cyan-400 mb-5">
             Quản lý đồ án tốt nghiệp
           </h1>
           <p className="text-justify">
@@ -30,7 +29,7 @@ const Footer = () => {
               rel="noopener"
             >
               <IconButton>
-                <YouTubeIcon fontSize="large" className="text-[#1ca3aa]" />
+                <YouTubeIcon fontSize="large" className="text-cyan-400" />
               </IconButton>
             </Link>
             <Link
@@ -39,16 +38,16 @@ const Footer = () => {
               rel="noopener"
             >
               <IconButton>
-                <FacebookIcon fontSize="large" className="text-[#1ca3aa]" />
+                <FacebookIcon fontSize="large" className="text-cyan-400" />
               </IconButton>
             </Link>
           </div>
         </div>
         <div>
-          <h1 className="font-bold text-2xl text-[#1ca3aa] mb-5">Liên Hệ</h1>
+          <h1 className="font-bold text-2xl text-cyan-400 mb-5">Liên Hệ</h1>
           <div className="flex flex-col gap-y-3">
             <div className="flex gap-2">
-              <LocationOnIcon className="text-[#1ca3aa]" />
+              <LocationOnIcon className="text-cyan-400" />
               <div className="flex flex-col gap-y-2">
                 <h3 className="font-semibold text-xl">Địa chỉ</h3>
                 <p className="leading-5">
@@ -57,14 +56,14 @@ const Footer = () => {
               </div>
             </div>
             <div className="flex gap-2">
-              <MailIcon className="text-[#1ca3aa]" />
+              <MailIcon className="text-cyan-400" />
               <div className="flex flex-col gap-y-2">
                 <h3 className="font-semibold text-xl">Email</h3>
                 <p className="leading-5">dat09441293@gmail.com</p>
               </div>
             </div>
             <div className="flex gap-2">
-              <PhoneIcon className="text-[#1ca3aa]" />
+              <PhoneIcon className="text-cyan-400" />
               <div className="flex flex-col gap-y-2">
                 <h3 className="font-semibold text-xl">Số điện thoại</h3>
                 <p className="leading-5">+84 944198125</p>
@@ -74,10 +73,10 @@ const Footer = () => {
         </div>
       </div>
 
-      <Divider color="white" />
+      <Divider sx={{ bgcolor: "white", opacity: 0.2 }} />
       <p className="flex items-center justify-center p-2">
         <CopyrightIcon fontSize="small" className="text-white pr-1" />
-        <span className="font-medium text-[#1ca3aa]">DatCoDev@2025</span>
+        <span className="font-medium text-cyan-400">DatCoDev@2025</span>
       </p>
     </div>
   );

@@ -29,6 +29,8 @@ export default function App() {
         <CssBaseline />
         <BrowserRouter>
           <Toaster />
+          {/* Spacer for fixed navbar */}
+          <div style={{ height: 64 }} />
           <Routers />
         </BrowserRouter>
       </ThemeProvider>

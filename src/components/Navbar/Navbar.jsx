@@ -53,15 +53,17 @@ const pages = [
   {
     icon: <HomeIcon />,
     title: "Trang Chủ",
-    path: "",
+    path: "/",
   },
   {
     icon: <NewspaperIcon />,
     title: "Tin Tức",
+    path: "/news",
   },
   {
     icon: <ContactPageIcon />,
     title: "Liên Hệ",
+    path: "/contact",
   },
   {
     icon: <PersonIcon />,
@@ -199,7 +201,14 @@ function Navbar() {
     }
   }, [isAuthLoading]);
   return (
-    <AppBar position="static">
+    <AppBar
+      position="fixed"
+      sx={{
+        background: "linear-gradient(90deg, #1e3a8a 0%, #2563eb 100%)",
+        boxShadow: "0 2px 5px 2 rgba(0,0,0,0.3)",
+        color: "#fff",
+      }}
+    >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* START LOGO ON LARGE SCREEN*/}
@@ -342,6 +351,7 @@ function Navbar() {
                     display: "block",
                     textTransform: "none",
                   }}
+                  onClick={() => navigate(page.path)}
                 >
                   {page.title}
                 </Button>
@@ -487,7 +497,10 @@ function Navbar() {
                     )
                   ) : (
                     <ListItem key={page.title} disablePadding>
-                      <ListItemButton sx={{ paddingRight: 8 }}>
+                      <ListItemButton
+                        sx={{ paddingRight: 8 }}
+                        onClick={() => handleNavigateToPathOnDrawer(page.path)}
+                      >
                         <ListItemIcon>{page.icon}</ListItemIcon>
                         <ListItemText primary={page.title} />
                       </ListItemButton>

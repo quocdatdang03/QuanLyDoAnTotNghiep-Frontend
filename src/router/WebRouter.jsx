@@ -11,6 +11,8 @@ import NotFound from "../components/errors/NotFound";
 import Unauthenticated from "../components/errors/Unauthenticated";
 import Forbidden from "../components/errors/Forbidden";
 import TeacherRoutes from "../components/teacherComponent/TeacherRoutes";
+import News from "../components/News/News";
+import Contact from "../components/Contact/Contact";
 
 const WebRouter = () => {
   const { authReducer } = useSelector((store) => store);
@@ -21,6 +23,8 @@ const WebRouter = () => {
       <Routes>
         <Route path="/account/:siteName" element={<Auth />} />
         <Route path="/" element={<Home />} />
+        <Route path="/news" element={<News />} />
+        <Route path="/contact" element={<Contact />} />
         <Route
           path="/user/profile/*"
           element={authReducer.user ? <Profile /> : <Unauthenticated />}
