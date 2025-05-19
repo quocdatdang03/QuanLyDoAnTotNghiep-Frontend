@@ -84,19 +84,6 @@ const tableInstructorHeaderDatas = [
   },
 ];
 
-// Style for MODAL Instructor:
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  bgcolor: "background.paper",
-  boxShadow: 24,
-  paddingTop: 6,
-  paddingX: 4,
-  paddingBottom: 4,
-};
-
 const RecommendTeacher = () => {
   const dispatch = useDispatch();
   const [keyword, setKeyword] = useState("");
@@ -327,11 +314,15 @@ const RecommendTeacher = () => {
               <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 700 }} aria-label="customized table">
                   <TableHead>
-                    <TableRow>
+                    <TableRow className="bg-blue-900">
                       {/* TABLE HEADER */}
                       {tableInstructorHeaderDatas.map((item, index) => {
                         return (
-                          <TableCell key={index} align="left">
+                          <TableCell
+                            key={index}
+                            align="left"
+                            sx={{ color: "white" }}
+                          >
                             <div
                               className={`flex items-center gap-3 ${item.sortByField && "cursor-pointer hover:underline"}`}
                               onClick={() =>

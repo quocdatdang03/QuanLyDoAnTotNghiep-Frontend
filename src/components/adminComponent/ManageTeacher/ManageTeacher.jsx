@@ -210,7 +210,7 @@ const ManageTeacher = () => {
         component="h2"
         sx={{ fontSize: 30, fontWeight: "bold" }}
       >
-        Danh sách giảng viên
+        Quản lý tài khoản giảng viên
       </Typography>
 
       <div>
@@ -313,12 +313,16 @@ const ManageTeacher = () => {
         ) : (
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 700 }} aria-label="customized table">
-              <TableHead>
+              <TableHead className="bg-blue-900">
                 <TableRow>
                   {/* TABLE HEADER */}
                   {tableHeaderDatas.map((item, index) => {
                     return (
-                      <TableCell key={index} align="center">
+                      <TableCell
+                        key={index}
+                        align="center"
+                        sx={{ color: "white" }}
+                      >
                         <div
                           className={`flex items-center gap-3 ${item.sortByField && "cursor-pointer hover:underline"}`}
                           onClick={() =>

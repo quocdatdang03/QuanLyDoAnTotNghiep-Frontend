@@ -476,13 +476,17 @@ const InstructorDivision = () => {
             </div>
           ) : (
             <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                <TableHead>
+              <Table sx={{ minWidth: 700 }}>
+                <TableHead className="bg-blue-900">
                   <TableRow>
                     {/* TABLE HEADER */}
                     {tableHeaderDatas.map((item, index) => {
                       return (
-                        <TableCell key={index} align="left">
+                        <TableCell
+                          key={index}
+                          align="left"
+                          sx={{ color: "white" }}
+                        >
                           <div
                             className={`flex items-center gap-3 ${item.sortByField && "cursor-pointer hover:underline"}`}
                             onClick={() =>

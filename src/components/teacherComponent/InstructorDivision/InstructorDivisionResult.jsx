@@ -459,13 +459,17 @@ const InstructorDivisionResult = () => {
             </div>
           ) : (
             <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                <TableHead>
+              <Table sx={{ minWidth: 700 }}>
+                <TableHead className="bg-blue-900">
                   <TableRow>
                     {/* TABLE HEADER */}
                     {tableHeaderDatas.map((item, index) => {
                       return (
-                        <TableCell key={index} align="left">
+                        <TableCell
+                          key={index}
+                          align="left"
+                          sx={{ color: "white" }}
+                        >
                           <div
                             className={`flex items-center gap-3 ${item.sortByField && "cursor-pointer hover:underline"}`}
                             onClick={() =>
@@ -610,13 +614,17 @@ const InstructorDivisionResult = () => {
               THÔNG TIN SINH VIÊN ĐANG CHỌN
             </Typography>
             <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                <TableHead>
+              <Table sx={{ minWidth: 700 }}>
+                <TableHead className="bg-blue-900">
                   <TableRow>
                     {/* TABLE HEADER */}
                     {tableSelectedStudentHeaderDatas.map((item, index) => {
                       return (
-                        <TableCell key={index} align="left">
+                        <TableCell
+                          key={index}
+                          align="left"
+                          sx={{ color: "white" }}
+                        >
                           <div className="flex items-center gap-3">
                             <span className="select-none">{item.title}</span>
                           </div>
@@ -690,13 +698,17 @@ const InstructorDivisionResult = () => {
               className="w-full overflow-x-auto"
               component={Paper}
             >
-              <Table aria-label="customized table">
-                <TableHead>
+              <Table>
+                <TableHead className="bg-gray-800">
                   <TableRow>
                     {/* TABLE HEADER */}
                     {tableInstructorHeaderDatas.map((item, index) => {
                       return (
-                        <TableCell key={index} align="left">
+                        <TableCell
+                          key={index}
+                          align="left"
+                          sx={{ color: "white" }}
+                        >
                           {item.title}
                         </TableCell>
                       );
