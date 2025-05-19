@@ -21,6 +21,8 @@ import GroupIcon from "@mui/icons-material/Group";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import Groups3Icon from "@mui/icons-material/Groups3";
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+
 import { Route, Routes, useNavigate } from "react-router-dom";
 import ManageStudentRegister from "../ManageStudentRegister/ManageStudentRegister";
 import ManageSemester from "../ManageSemester/ManageSemester";
@@ -120,6 +122,11 @@ const Drawer = styled(MuiDrawer, {
 // +++++++++++++  End for drawer
 
 const sidebarAdminOptions = [
+  {
+    text: "Bảng điều khiển",
+    icon: <DashboardIcon />,
+    path: "/admin/",
+  },
   {
     text: "Quản lý học kỳ đồ án",
     icon: <EventNoteIcon />,
