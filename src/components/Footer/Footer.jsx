@@ -7,6 +7,7 @@ import MailIcon from "@mui/icons-material/Mail";
 import PhoneIcon from "@mui/icons-material/Phone";
 import CopyrightIcon from "@mui/icons-material/Copyright";
 import { Divider, IconButton, Link } from "@mui/material";
+import logoUte from "../../assets/images/logo-ute.png";
 
 const Footer = () => {
   return (
@@ -48,10 +49,11 @@ const Footer = () => {
           <div className="flex flex-col gap-y-3">
             <div className="flex gap-2">
               <LocationOnIcon className="text-cyan-400" />
-              <div className="flex flex-col gap-y-2">
+              <div className="flex flex-col gap-y-1">
                 <h3 className="font-semibold text-xl">Địa chỉ</h3>
-                <p className="leading-5">
-                  K72/29/10 Đinh Tiên Hoàng, Hải Châu, Đà Nẵng
+                <p>cơ sở 1 số 48 Cao Thắng, TP. Đà Nẵng</p>
+                <p>
+                  Cơ sở 2 khu Đô thị đại học, Hòa Quý, Ngũ Hành Sơn, Đà Nẵng
                 </p>
               </div>
             </div>
@@ -59,17 +61,24 @@ const Footer = () => {
               <MailIcon className="text-cyan-400" />
               <div className="flex flex-col gap-y-2">
                 <h3 className="font-semibold text-xl">Email</h3>
-                <p className="leading-5">dat09441293@gmail.com</p>
+                <p className="leading-5">dhspktdn@ute.udn.vn</p>
               </div>
             </div>
             <div className="flex gap-2">
               <PhoneIcon className="text-cyan-400" />
               <div className="flex flex-col gap-y-2">
                 <h3 className="font-semibold text-xl">Số điện thoại</h3>
-                <p className="leading-5">+84 944198125</p>
+                <p className="leading-5">(0236) 382257</p>
               </div>
             </div>
           </div>
+        </div>
+        <div className="flex items-center justify-end lg:col-span-2 mt-6 lg:mt-0">
+          <img
+            src={logoUte}
+            alt="UTE Logo"
+            className="w-56 h-56 object-contain p-3 bg-white rounded-full shadow-lg"
+          />
         </div>
       </div>
 

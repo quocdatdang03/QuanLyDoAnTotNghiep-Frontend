@@ -37,6 +37,7 @@ import FormCreateStudent from "../ManageStudent/FormCreateStudent";
 import FormEditStudent from "../ManageStudent/FormEditStudent";
 import FormCreateStudentSemester from "../ManageStudentRegister/FormCreateStudentSemester";
 import Dashboard from "../Dashboard/Dashboard";
+import AdminFooter from "../Footer/AdminFooter";
 
 // +++++++++++++  start for drawer
 const drawerWidth = 320;
@@ -252,48 +253,53 @@ export const SideBar = () => {
       </Drawer>
       {/* END SIDE BAR */}
 
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box component="main" sx={{ flexGrow: 1 }}>
         <DrawerHeader />
         {/* CONTENT */}
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/profile/*" element={<AdminProfile />} />
-          <Route path="/manage-semester" element={<ManageSemester />} />
-          <Route
-            path="/manage-semester/schoolYear/edit/:schoolYearIdParam"
-            element={<FormEditSchoolYear />}
-          />
-          <Route
-            path="/manage-semester/semester/edit/:semesterIdParam"
-            element={<FormEditSemester />}
-          />
-          <Route
-            path="/manage-registerStudent"
-            element={<ManageStudentRegister />}
-          />
-          <Route
-            path="/manage-registerStudent/create"
-            element={<FormCreateStudentSemester />}
-          />
-          <Route path="/manage-student" element={<ManageStudent />} />
-          <Route
-            path="/manage-student/create"
-            element={<FormCreateStudent />}
-          />
-          <Route
-            path="/manage-student/edit/:studentCodeParam"
-            element={<FormEditStudent />}
-          />
-          <Route path="/manage-teacher" element={<ManageTeacher />} />
-          <Route
-            path="/manage-teacher/create"
-            element={<FormCreateTeacher />}
-          />
-          <Route
-            path="/manage-teacher/edit/:teacherCodeParam"
-            element={<FormEditTeacher />}
-          />
-        </Routes>
+        <div className="p-3">
+          {" "}
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/profile/*" element={<AdminProfile />} />
+            <Route path="/manage-semester" element={<ManageSemester />} />
+            <Route
+              path="/manage-semester/schoolYear/edit/:schoolYearIdParam"
+              element={<FormEditSchoolYear />}
+            />
+            <Route
+              path="/manage-semester/semester/edit/:semesterIdParam"
+              element={<FormEditSemester />}
+            />
+            <Route
+              path="/manage-registerStudent"
+              element={<ManageStudentRegister />}
+            />
+            <Route
+              path="/manage-registerStudent/create"
+              element={<FormCreateStudentSemester />}
+            />
+            <Route path="/manage-student" element={<ManageStudent />} />
+            <Route
+              path="/manage-student/create"
+              element={<FormCreateStudent />}
+            />
+            <Route
+              path="/manage-student/edit/:studentCodeParam"
+              element={<FormEditStudent />}
+            />
+            <Route path="/manage-teacher" element={<ManageTeacher />} />
+            <Route
+              path="/manage-teacher/create"
+              element={<FormCreateTeacher />}
+            />
+            <Route
+              path="/manage-teacher/edit/:teacherCodeParam"
+              element={<FormEditTeacher />}
+            />
+          </Routes>
+        </div>
+        {/* Footer */}
+        <AdminFooter />
       </Box>
     </Box>
   );
