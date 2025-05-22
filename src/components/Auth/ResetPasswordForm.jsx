@@ -177,10 +177,10 @@ const ResetPasswordForm = () => {
               htmlFor="password"
               className="block mb-2 text-sm font-medium"
             >
-              Confirm new password
+              Nhập lại mật khẩu mới
             </label>
             <TextField
-              label="Confirm new password"
+              label="Nhập lại mật khẩu mới"
               variant="outlined"
               fullWidth
               sx={{ marginBottom: 2 }}
