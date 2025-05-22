@@ -1,6 +1,7 @@
 import {
   Button,
   Chip,
+  CircularProgress,
   Container,
   Divider,
   FormControl,
@@ -215,7 +216,7 @@ const StudentManager = () => {
     } else {
       const timer = setTimeout(() => {
         setIsDelayedLoading(false);
-      }, 800);
+      }, 500);
 
       return () => clearTimeout(timer);
     }
@@ -364,7 +365,8 @@ const StudentManager = () => {
         )}
 
         {/* TABLE */}
-        {teacherReducer.studentsOfInstructorPagination?.content.length <= 0 ? (
+        {teacherReducer.studentsOfInstructorPagination?.content.length <= 0 &&
+        !isDelayedLoading ? (
           <div className="flex flex-col justify-center items-center">
             <img
               className="w-52 h-52"
@@ -410,69 +412,79 @@ const StudentManager = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {teacherReducer.studentsOfInstructorPagination?.content.map(
-                  (item, index) => {
-                    return (
-                      <TableRow key={item.studentCode}>
-                        <TableCell align="left">{index + 1}</TableCell>
-                        <TableCell align="left">
-                          <img
-                            className="w-16 h-16 object-cover object-center rounded-"
-                            src={item.image}
-                            alt={item.fullName}
-                          />
-                        </TableCell>
-                        <TableCell align="left">{item.studentCode}</TableCell>
-                        <TableCell align="left">{item.fullName}</TableCell>
-                        <TableCell align="left">
-                          {item.studentClass.className}
-                        </TableCell>
-                        <TableCell align="left">
-                          {item.studentClass.faculty.facultyName}
-                        </TableCell>
-                        <TableCell align="left">
-                          <div className="flex items-center gap-3">
-                            <p
-                              className="flex items-center"
-                              key={item.semester.semesterId}
-                            >
-                              {item.semester.semesterName}
-                            </p>
-                          </div>
-                        </TableCell>
-                        <TableCell align="left">
-                          <div className="flex flex-wrap items-center gap-3">
+                {isDelayedLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={tableHeaderDatas.length} align="center">
+                      <div className="w-full flex items-center justify-center min-h-36">
+                        <CircularProgress />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  teacherReducer.studentsOfInstructorPagination?.content.map(
+                    (item, index) => {
+                      return (
+                        <TableRow key={item.studentCode}>
+                          <TableCell align="left">{index + 1}</TableCell>
+                          <TableCell align="left">
+                            <img
+                              className="w-16 h-16 object-cover object-center rounded-"
+                              src={item.image}
+                              alt={item.fullName}
+                            />
+                          </TableCell>
+                          <TableCell align="left">{item.studentCode}</TableCell>
+                          <TableCell align="left">{item.fullName}</TableCell>
+                          <TableCell align="left">
+                            {item.studentClass.className}
+                          </TableCell>
+                          <TableCell align="left">
+                            {item.studentClass.faculty.facultyName}
+                          </TableCell>
+                          <TableCell align="left">
+                            <div className="flex items-center gap-3">
+                              <p
+                                className="flex items-center"
+                                key={item.semester.semesterId}
+                              >
+                                {item.semester.semesterName}
+                              </p>
+                            </div>
+                          </TableCell>
+                          <TableCell align="left">
                             <div className="flex flex-wrap items-center gap-3">
-                              <Chip
-                                label={item.instructor.fullName}
-                                variant="filled"
-                                color="info"
-                              />
+                              <div className="flex flex-wrap items-center gap-3">
+                                <Chip
+                                  label={item.instructor.fullName}
+                                  variant="filled"
+                                  color="info"
+                                />
+                              </div>
                             </div>
-                          </div>
-                        </TableCell>
-                        <TableCell align="left">
-                          {item.project ? (
-                            <div>
-                              <p className="text-green-500 font-semibold italic">
-                                Đã đăng ký đề tài
+                          </TableCell>
+                          <TableCell align="left">
+                            {item.project ? (
+                              <div>
+                                <p className="text-green-500 font-semibold italic">
+                                  Đã đăng ký đề tài
+                                </p>
+                                <p className="mt-1 italic text-gray-500">
+                                  {item.project.createdAt &&
+                                    new Date(
+                                      item.project.createdAt
+                                    ).toLocaleString("en-GB")}
+                                </p>
+                              </div>
+                            ) : (
+                              <p className="text-red-500 font-semibold italic">
+                                Chưa đăng ký đề tài
                               </p>
-                              <p className="mt-1 italic text-gray-500">
-                                {item.project.createdAt &&
-                                  new Date(
-                                    item.project.createdAt
-                                  ).toLocaleString("en-GB")}
-                              </p>
-                            </div>
-                          ) : (
-                            <p className="text-red-500 font-semibold italic">
-                              Chưa đăng ký đề tài
-                            </p>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  }
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    }
+                  )
                 )}
               </TableBody>
             </Table>
@@ -482,16 +494,17 @@ const StudentManager = () => {
         {/* END TABLE */}
 
         {/* Pagination */}
-        {teacherReducer.studentsOfInstructorPagination?.content.length > 0 && (
-          <div className="flex items-center justify-center mt-10">
-            <Pagination
-              count={Math.ceil(totalElements / pageSize)}
-              page={pageNumber}
-              color="primary"
-              onChange={handleChangePage}
-            />
-          </div>
-        )}
+        {teacherReducer.studentsOfInstructorPagination?.content.length > 0 &&
+          !isDelayedLoading && (
+            <div className="flex items-center justify-center mt-10">
+              <Pagination
+                count={Math.ceil(totalElements / pageSize)}
+                page={pageNumber}
+                color="primary"
+                onChange={handleChangePage}
+              />
+            </div>
+          )}
       </div>
     </Container>
   );
