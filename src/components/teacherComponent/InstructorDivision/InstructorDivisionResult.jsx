@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Chip,
+  CircularProgress,
   Container,
   Divider,
   Fade,
@@ -166,7 +167,8 @@ const InstructorDivisionResult = () => {
 
   const { teacherLeaderReducer } = useSelector((store) => store);
 
-  const isInstructorLoading = teacherLeaderReducer.isLoading;
+  const isStudentHavingInstructorLoading =
+    teacherLeaderReducer.loading.students;
 
   // get all info for pagination:
   const totalElements =
@@ -310,16 +312,16 @@ const InstructorDivisionResult = () => {
 
   // handle loading :
   useEffect(() => {
-    if (isInstructorLoading) {
+    if (isStudentHavingInstructorLoading) {
       setIsDelayedLoading(true);
     } else {
       const timer = setTimeout(() => {
         setIsDelayedLoading(false);
-      }, 800);
+      }, 200);
 
       return () => clearTimeout(timer);
     }
-  }, [isInstructorLoading]);
+  }, [isStudentHavingInstructorLoading]);
 
   return (
     <>
@@ -448,7 +450,7 @@ const InstructorDivisionResult = () => {
 
           {/* TABLE */}
           {teacherLeaderReducer.studentHavingInstructorPagination?.content
-            ?.length <= 0 ? (
+            ?.length <= 0 && !isDelayedLoading ? (
             <div className="flex flex-col justify-center items-center">
               <img
                 className="w-52 h-52"
@@ -495,60 +497,75 @@ const InstructorDivisionResult = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {teacherLeaderReducer.studentHavingInstructorPagination?.content.map(
-                    (item, index) => {
-                      const instructorColor =
-                        colors[item.instructor.accountId % colors.length];
+                  {isDelayedLoading ? (
+                    <TableRow>
+                      <TableCell
+                        colSpan={tableHeaderDatas.length}
+                        align="center"
+                      >
+                        <div className="w-full flex items-center justify-center min-h-36">
+                          <CircularProgress />
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    teacherLeaderReducer.studentHavingInstructorPagination?.content.map(
+                      (item, index) => {
+                        const instructorColor =
+                          colors[item.instructor.accountId % colors.length];
 
-                      return (
-                        <TableRow key={item.studentCode}>
-                          <TableCell align="left">{index + 1}</TableCell>
-                          <TableCell align="left">
-                            <img
-                              className="w-16 h-16 object-cover object-center rounded-"
-                              src={item.image}
-                              alt={item.fullName}
-                            />
-                          </TableCell>
-                          <TableCell align="left">{item.studentCode}</TableCell>
-                          <TableCell align="left">{item.fullName}</TableCell>
-                          <TableCell align="left">
-                            {item.studentClass.className}
-                          </TableCell>
-                          <TableCell align="left">
-                            {item.studentClass.faculty.facultyName}
-                          </TableCell>
-                          <TableCell align="left">
-                            <div className="flex items-center gap-3">
-                              <p
-                                className="flex items-center"
-                                key={item.semester.semesterId}
-                              >
-                                {item.semester.semesterName}
-                              </p>
-                            </div>
-                          </TableCell>
-                          <TableCell align="left">
-                            <div className="flex flex-wrap items-center gap-3">
-                              <Chip
-                                label={item.instructor.fullName}
-                                variant="filled"
-                                color={instructorColor}
+                        return (
+                          <TableRow key={item.studentCode}>
+                            <TableCell align="left">{index + 1}</TableCell>
+                            <TableCell align="left">
+                              <img
+                                className="w-16 h-16 object-cover object-center rounded-"
+                                src={item.image}
+                                alt={item.fullName}
                               />
-                            </div>
-                          </TableCell>
-                          <TableCell align="left">
-                            <Button
-                              variant="contained"
-                              color="warning"
-                              onClick={() => handleOpenModalInstructor(item)}
-                            >
-                              Thay đổi GVHD
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    }
+                            </TableCell>
+                            <TableCell align="left">
+                              {item.studentCode}
+                            </TableCell>
+                            <TableCell align="left">{item.fullName}</TableCell>
+                            <TableCell align="left">
+                              {item.studentClass.className}
+                            </TableCell>
+                            <TableCell align="left">
+                              {item.studentClass.faculty.facultyName}
+                            </TableCell>
+                            <TableCell align="left">
+                              <div className="flex items-center gap-3">
+                                <p
+                                  className="flex items-center"
+                                  key={item.semester.semesterId}
+                                >
+                                  {item.semester.semesterName}
+                                </p>
+                              </div>
+                            </TableCell>
+                            <TableCell align="left">
+                              <div className="flex flex-wrap items-center gap-3">
+                                <Chip
+                                  label={item.instructor.fullName}
+                                  variant="filled"
+                                  color={instructorColor}
+                                />
+                              </div>
+                            </TableCell>
+                            <TableCell align="left">
+                              <Button
+                                variant="contained"
+                                color="warning"
+                                onClick={() => handleOpenModalInstructor(item)}
+                              >
+                                Thay đổi GVHD
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      }
+                    )
                   )}
                 </TableBody>
               </Table>
@@ -559,16 +576,17 @@ const InstructorDivisionResult = () => {
 
           {/* Pagination */}
           {teacherLeaderReducer.studentHavingInstructorPagination?.content
-            .length > 0 && (
-            <div className="flex items-center justify-center mt-10">
-              <Pagination
-                count={Math.ceil(totalElements / pageSize)}
-                page={pageNumber}
-                color="primary"
-                onChange={handleChangePage}
-              />
-            </div>
-          )}
+            .length > 0 &&
+            !isDelayedLoading && (
+              <div className="flex items-center justify-center mt-10">
+                <Pagination
+                  count={Math.ceil(totalElements / pageSize)}
+                  page={pageNumber}
+                  color="primary"
+                  onChange={handleChangePage}
+                />
+              </div>
+            )}
         </div>
       </Container>
 

@@ -1,6 +1,7 @@
 import {
   Button,
   Chip,
+  CircularProgress,
   Container,
   Divider,
   FormControl,
@@ -98,7 +99,7 @@ const InstructorProjectSummary = () => {
   const { teacherLeaderReducer, teacherReducer, semesterReducer, authReducer } =
     useSelector((store) => store);
 
-  const isInstructorLoading = teacherReducer.isLoading;
+  const isProjectsLoading = teacherLeaderReducer.loading.projects;
 
   // get all info for pagination:
   const totalElements =
@@ -280,16 +281,16 @@ const InstructorProjectSummary = () => {
 
   // handle loading :
   useEffect(() => {
-    if (isInstructorLoading) {
+    if (isProjectsLoading) {
       setIsDelayedLoading(true);
     } else {
       const timer = setTimeout(() => {
         setIsDelayedLoading(false);
-      }, 800);
+      }, 200);
 
       return () => clearTimeout(timer);
     }
-  }, [isInstructorLoading]);
+  }, [isProjectsLoading]);
 
   return (
     <>
@@ -441,11 +442,11 @@ const InstructorProjectSummary = () => {
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   value={projectStatusId}
-                  label="Giảng viên hướng dẫn"
+                  label="Trạng thái đề tài"
                   onChange={(e) => setProjectStatusId(e.target.value)}
                 >
                   <MenuItem value="">
-                    <em> Trạng thái đề tài</em>
+                    <em>Trạng thái đề tài</em>
                     {/* Giá trị rỗng để hiển thị khi chưa chọn */}
                   </MenuItem>
                   <MenuItem value={1}>Chờ duyệt</MenuItem>
@@ -525,8 +526,8 @@ const InstructorProjectSummary = () => {
             </div>
           )}
           {/* TABLE PROJECTS*/}
-          {teacherLeaderReducer.projectSummaryPagination?.content.length <=
-          0 ? (
+          {teacherLeaderReducer.projectSummaryPagination?.content.length <= 0 &&
+          !isDelayedLoading ? (
             <div className="flex flex-col justify-center items-center">
               <img
                 className="w-52 h-52"
@@ -573,54 +574,67 @@ const InstructorProjectSummary = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {teacherLeaderReducer.projectSummaryPagination?.content.map(
-                    (item, index) => {
-                      return (
-                        <TableRow key={item.projectId}>
-                          <TableCell align="left">{index + 1}</TableCell>
-                          <TableCell align="left" title={item.projectName}>
-                            {item.projectName.length > 50
-                              ? item.projectName.substring(0, 50) + "..."
-                              : item.projectName}
-                          </TableCell>
-                          <TableCell align="left">
-                            {item.student.fullName}
-                          </TableCell>
-                          <TableCell align="left">
-                            {item.student.studentCode}
-                          </TableCell>
-                          <TableCell align="left">
-                            {item.student.studentClass.className}
-                          </TableCell>
-                          <TableCell align="left">
-                            {item.semester.semesterName}
-                          </TableCell>
+                  {isDelayedLoading ? (
+                    <TableRow>
+                      <TableCell
+                        colSpan={tableHeaderDatas.length}
+                        align="center"
+                      >
+                        <div className="w-full flex items-center justify-center min-h-40">
+                          <CircularProgress />
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    teacherLeaderReducer.projectSummaryPagination?.content.map(
+                      (item, index) => {
+                        return (
+                          <TableRow key={item.projectId}>
+                            <TableCell align="left">{index + 1}</TableCell>
+                            <TableCell align="left" title={item.projectName}>
+                              {item.projectName.length > 50
+                                ? item.projectName.substring(0, 50) + "..."
+                                : item.projectName}
+                            </TableCell>
+                            <TableCell align="left">
+                              {item.student.fullName}
+                            </TableCell>
+                            <TableCell align="left">
+                              {item.student.studentCode}
+                            </TableCell>
+                            <TableCell align="left">
+                              {item.student.studentClass.className}
+                            </TableCell>
+                            <TableCell align="left">
+                              {item.semester.semesterName}
+                            </TableCell>
 
-                          <TableCell align="left">
-                            <div className="flex flex-wrap items-center gap-3">
+                            <TableCell align="left">
                               <div className="flex flex-wrap items-center gap-3">
-                                <Chip
-                                  label={item.student.instructor.fullName}
-                                  variant="filled"
-                                  color="info"
-                                />
+                                <div className="flex flex-wrap items-center gap-3">
+                                  <Chip
+                                    label={item.student.instructor.fullName}
+                                    variant="filled"
+                                    color="info"
+                                  />
+                                </div>
                               </div>
-                            </div>
-                          </TableCell>
-                          {/* <TableCell align="left">
+                            </TableCell>
+                            {/* <TableCell align="left">
                           {item.createdAt &&
                             new Date(item.createdAt).toLocaleString("en-GB")}
                         </TableCell> */}
-                          <TableCell align="left">
-                            <Chip
-                              label={item.projectStatus.projectStatusName}
-                              variant="filled"
-                              color={`${item.projectStatus.projectStatusId === 1 ? "warning" : item.projectStatus.projectStatusId === 2 ? "primary" : item.projectStatus.projectStatusId === 3 ? "success" : "error"}`}
-                            />
-                          </TableCell>
-                        </TableRow>
-                      );
-                    }
+                            <TableCell align="left">
+                              <Chip
+                                label={item.projectStatus.projectStatusName}
+                                variant="filled"
+                                color={`${item.projectStatus.projectStatusId === 1 ? "warning" : item.projectStatus.projectStatusId === 2 ? "primary" : item.projectStatus.projectStatusId === 3 ? "success" : "error"}`}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        );
+                      }
+                    )
                   )}
                 </TableBody>
               </Table>
@@ -630,17 +644,17 @@ const InstructorProjectSummary = () => {
           {/* END TABLE */}
 
           {/* Pagination */}
-          {teacherLeaderReducer.projectSummaryPagination?.content.length >
-            0 && (
-            <div className="flex items-center justify-center mt-10">
-              <Pagination
-                count={Math.ceil(totalElements / pageSize)}
-                page={pageNumber}
-                color="primary"
-                onChange={handleChangePage}
-              />
-            </div>
-          )}
+          {teacherLeaderReducer.projectSummaryPagination?.content.length > 0 &&
+            !isDelayedLoading && (
+              <div className="flex items-center justify-center mt-10">
+                <Pagination
+                  count={Math.ceil(totalElements / pageSize)}
+                  page={pageNumber}
+                  color="primary"
+                  onChange={handleChangePage}
+                />
+              </div>
+            )}
         </div>
       </Container>
     </>

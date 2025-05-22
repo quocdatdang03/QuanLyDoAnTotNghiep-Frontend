@@ -12,59 +12,106 @@ const initialState = {
   choosenInstructor: null,
   error: null,
   success: null,
-  isLoading: false,
-  isStudentsLoading: false,
+
+  loading: {
+    students: false,
+    instructors: false,
+    classes: false,
+    assign: false,
+    projects: false,
+  },
 };
 
 const teacherLeaderReducer = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.GET_ALL_CLASSES_BY_FACULTY_OF_TEACHER_LEADER_REQUEST:
-    case actionTypes.CHOOSE_STUDENT_REQUEST:
-    case actionTypes.CHOOSE_INSTRUCTOR_REQUEST:
-    case actionTypes.REMOVE_STUDENT_FROM_TEMPORARY_LIST_REQUEST:
-    case actionTypes.GET_ALL_INSTRUCTOS_BY_FACULTY_OF_TEACHER_LEADER_REQUEST:
-    case actionTypes.REMOVE_INSTRUCTOR_REQUEST:
-    case actionTypes.ASSIGN_INSTRUCTOR_REQUEST:
-    case actionTypes.GET_ALL_STUDENTS_HAVING_INSTRUCTOR_BY_FACULTY_REQUEST:
-    case actionTypes.REMOVE_INSTRUCTOR_FROM_STUDENT_REQUEST:
-    case actionTypes.CHANGE_INSTRUCTOR_OF_STUDENT_REQUEST:
-    case actionTypes.GET_ALL_PROJECTS_REQUEST:
-    case actionTypes.GET_ALL_PROJECTS_FOR_EXPORT_REQUEST:
-      return {
-        ...state,
-        isLoading: true,
-        success: null,
-        error: null,
-      };
-
+    // ===== STUDENTS WITHOUT INSTRUCTOR =====
     case actionTypes.GET_ALL_STUDENTS_WITHOUT_INSTRUCTOR_REQUEST:
       return {
         ...state,
-        isStudentsLoading: true,
-        success: null,
+        loading: { ...state.loading, students: true },
         error: null,
+        success: null,
       };
-
     case actionTypes.GET_ALL_STUDENTS_WITHOUT_INSTRUCTOR_SUCCESS:
       return {
         ...state,
-        isStudentsLoading: false,
+        loading: { ...state.loading, students: false },
         studentPagination: action.payload,
-        error: null,
+      };
+    case actionTypes.GET_ALL_STUDENTS_WITHOUT_INSTRUCTOR_FAILURE:
+      return {
+        ...state,
+        loading: { ...state.loading, students: false },
+        error: action.payload,
       };
 
+    // ===== INSTRUCTORS =====
+    case actionTypes.GET_ALL_INSTRUCTOS_BY_FACULTY_OF_TEACHER_LEADER_REQUEST:
+      return {
+        ...state,
+        loading: { ...state.loading, instructors: true },
+        error: null,
+      };
+    case actionTypes.GET_ALL_INSTRUCTOS_BY_FACULTY_OF_TEACHER_LEADER_SUCCESS:
+      return {
+        ...state,
+        loading: { ...state.loading, instructors: false },
+        instructors: action.payload,
+      };
+    case actionTypes.GET_ALL_INSTRUCTOS_BY_FACULTY_OF_TEACHER_LEADER_FAILURE:
+      return {
+        ...state,
+        loading: { ...state.loading, instructors: false },
+        error: action.payload,
+      };
+
+    // ===== CLASSES =====
+    case actionTypes.GET_ALL_CLASSES_BY_FACULTY_OF_TEACHER_LEADER_REQUEST:
+      return {
+        ...state,
+        loading: { ...state.loading, classes: true },
+        error: null,
+      };
     case actionTypes.GET_ALL_CLASSES_BY_FACULTY_OF_TEACHER_LEADER_SUCCESS:
       return {
         ...state,
-        isLoading: false,
+        loading: { ...state.loading, classes: false },
         classes: action.payload,
-        error: null,
+      };
+    case actionTypes.GET_ALL_CLASSES_BY_FACULTY_OF_TEACHER_LEADER_FAILURE:
+      return {
+        ...state,
+        loading: { ...state.loading, classes: false },
+        error: action.payload,
       };
 
+    // ===== ASSIGN INSTRUCTOR TO STUDENTS =====
+    case actionTypes.ASSIGN_INSTRUCTOR_REQUEST:
+      return {
+        ...state,
+        loading: { ...state.loading, assign: true },
+        error: null,
+        success: null,
+      };
+    case actionTypes.ASSIGN_INSTRUCTOR_SUCCESS:
+      return {
+        ...state,
+        loading: { ...state.loading, assign: false },
+        success: action.payload,
+        choosenInstructor: null,
+        choosenStudents: [],
+      };
+    case actionTypes.ASSIGN_INSTRUCTOR_FAILURE:
+      return {
+        ...state,
+        loading: { ...state.loading, assign: false },
+        error: action.payload,
+      };
+
+    // ===== CHOOSE/REMOVE STUDENTS TEMPORARILY =====
     case actionTypes.CHOOSE_STUDENT_SUCCESS:
       return {
         ...state,
-        isLoading: false,
         choosenStudents: isStudentPresentInList(
           action.payload,
           state.choosenStudents
@@ -72,78 +119,49 @@ const teacherLeaderReducer = (state = initialState, action) => {
           ? state.choosenStudents
           : [...state.choosenStudents, action.payload],
       };
-
     case actionTypes.REMOVE_STUDENT_FROM_TEMPORARY_LIST_SUCCESS:
       return {
         ...state,
-        isLoading: false,
         choosenStudents: state.choosenStudents.filter(
           (item) => item.studentCode !== action.payload
         ),
       };
 
-    case actionTypes.GET_ALL_INSTRUCTOS_BY_FACULTY_OF_TEACHER_LEADER_SUCCESS:
-      return {
-        ...state,
-        isLoading: false,
-        instructors: action.payload,
-        error: null,
-      };
-
+    // ===== CHOOSE/REMOVE INSTRUCTOR TEMPORARILY =====
     case actionTypes.CHOOSE_INSTRUCTOR_SUCCESS:
       return {
         ...state,
-        isLoading: false,
         choosenInstructor: action.payload,
-        error: null,
       };
-
     case actionTypes.REMOVE_INSTRUCTOR_SUCCESS:
       return {
         ...state,
-        isLoading: false,
         choosenInstructor: null,
-        error: null,
       };
 
-    case actionTypes.ASSIGN_INSTRUCTOR_SUCCESS:
+    // ===== STUDENTS HAVING INSTRUCTORS =====
+    case actionTypes.GET_ALL_STUDENTS_HAVING_INSTRUCTOR_BY_FACULTY_REQUEST:
       return {
         ...state,
-        isLoading: false,
-        success: action.payload,
-        choosenInstructor: null,
-        choosenStudents: [],
+        loading: { ...state.loading, students: true },
         error: null,
       };
-
     case actionTypes.GET_ALL_STUDENTS_HAVING_INSTRUCTOR_BY_FACULTY_SUCCESS:
       return {
         ...state,
-        isLoading: false,
+        loading: { ...state.loading, students: false },
         studentHavingInstructorPagination: action.payload,
-        error: null,
       };
-
-    // case actionTypes.REMOVE_INSTRUCTOR_FROM_STUDENT_SUCCESS:
-    //   return {
-    //     ...state,
-    //     isLoading: false,
-
-    //     studentHavingInstructorPagination: {
-    //       ...state.studentHavingInstructorPagination,
-    //       content: state.studentHavingInstructorPagination.content.filter(
-    //         (item) => item.studentCode !== action.payload.studentCode
-    //       ),
-    //     },
-
-    //     error: null,
-    //   };
+    case actionTypes.GET_ALL_STUDENTS_HAVING_INSTRUCTOR_BY_FACULTY_FAILURE:
+      return {
+        ...state,
+        loading: { ...state.loading, students: false },
+        error: action.payload,
+      };
 
     case actionTypes.CHANGE_INSTRUCTOR_OF_STUDENT_SUCCESS:
       return {
         ...state,
-        isLoading: false,
-
         studentHavingInstructorPagination: {
           ...state.studentHavingInstructorPagination,
           content: state.studentHavingInstructorPagination.content.map(
@@ -155,48 +173,35 @@ const teacherLeaderReducer = (state = initialState, action) => {
         },
       };
 
+    // ===== PROJECTS =====
+    case actionTypes.GET_ALL_PROJECTS_REQUEST:
+    case actionTypes.GET_ALL_PROJECTS_FOR_EXPORT_REQUEST:
+      return {
+        ...state,
+        loading: { ...state.loading, projects: true },
+        error: null,
+      };
     case actionTypes.GET_ALL_PROJECTS_SUCCESS:
       return {
         ...state,
-        isLoading: false,
+        loading: { ...state.loading, projects: false },
         projectSummaryPagination: action.payload,
-        error: null,
       };
-
     case actionTypes.GET_ALL_PROJECTS_FOR_EXPORT_SUCCESS:
       return {
         ...state,
-        isLoading: false,
+        loading: { ...state.loading, projects: false },
         projectsForExport: action.payload,
-        error: null,
       };
-
-    case actionTypes.GET_ALL_CLASSES_BY_FACULTY_OF_TEACHER_LEADER_FAILURE:
-    case actionTypes.CHOOSE_STUDENT_FAILURE:
-    case actionTypes.CHOOSE_INSTRUCTOR_FAILURE:
-    case actionTypes.REMOVE_STUDENT_FROM_TEMPORARY_LIST_FAILURE:
-    case actionTypes.GET_ALL_INSTRUCTOS_BY_FACULTY_OF_TEACHER_LEADER_FAILURE:
-    case actionTypes.REMOVE_INSTRUCTOR_FAILURE:
-    case actionTypes.ASSIGN_INSTRUCTOR_FAILURE:
-    case actionTypes.GET_ALL_STUDENTS_HAVING_INSTRUCTOR_BY_FACULTY_FAILURE:
-    case actionTypes.REMOVE_INSTRUCTOR_FROM_STUDENT_FAILURE:
-    case actionTypes.CHANGE_INSTRUCTOR_OF_STUDENT_FAILURE:
     case actionTypes.GET_ALL_PROJECTS_FAILURE:
     case actionTypes.GET_ALL_PROJECTS_FOR_EXPORT_FAILURE:
       return {
         ...state,
-        isLoading: false,
-        success: null,
+        loading: { ...state.loading, projects: false },
         error: action.payload,
       };
 
-    case actionTypes.GET_ALL_STUDENTS_WITHOUT_INSTRUCTOR_FAILURE:
-      return {
-        ...state,
-        isStudentsLoading: false,
-        success: null,
-        error: action.payload,
-      };
+    // ===== DEFAULT =====
     default:
       return state;
   }

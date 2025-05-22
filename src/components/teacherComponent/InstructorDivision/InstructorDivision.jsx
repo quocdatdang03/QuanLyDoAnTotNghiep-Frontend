@@ -170,7 +170,7 @@ const InstructorDivision = () => {
   const { teacherLeaderReducer } = useSelector((store) => store);
 
   const isStudentWithoutInstructorLoading =
-    teacherLeaderReducer.isStudentsLoading;
+    teacherLeaderReducer.loading.students;
 
   const colors = [
     "success",
