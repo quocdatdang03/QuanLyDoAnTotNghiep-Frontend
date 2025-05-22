@@ -1,5 +1,6 @@
 import {
   Button,
+  CircularProgress,
   Container,
   Divider,
   IconButton,
@@ -90,12 +91,19 @@ const RecommendTeacher = () => {
   const [currentPageNum, setCurrentPageNum] = useState(1);
   const [sortDir, setSortDir] = useState("asc");
   const [sortBy, setSortBy] = useState("account.fullName");
-  const [isDelayedLoading, setIsDelayedLoading] = useState(true);
+  const [
+    isDelayedRecommendedTeacherLoading,
+    setIsDelayedRecommendedTeacherLoading,
+  ] = useState(true);
+  const [isDelayedTeacherLoading, setIsDelayedTeacherLoading] = useState(true);
 
   const { recommendedTeacherReducer, authReducer, projectReducer } =
     useSelector((store) => store);
 
-  const isInstructorLoading = recommendedTeacherReducer.isLoading;
+  const isRecommendedTeacherLoading =
+    recommendedTeacherReducer.isRecommendedTeacherLoading;
+
+  const isTeacherLoading = recommendedTeacherReducer.isTeacherLoading;
 
   // get all info for pagination:
   const totalElements =
@@ -216,16 +224,28 @@ const RecommendTeacher = () => {
 
   // handle loading :
   useEffect(() => {
-    if (isInstructorLoading) {
-      setIsDelayedLoading(true);
+    if (isRecommendedTeacherLoading) {
+      setIsDelayedRecommendedTeacherLoading(true);
     } else {
       const timer = setTimeout(() => {
-        setIsDelayedLoading(false);
+        setIsDelayedRecommendedTeacherLoading(false);
       }, 800);
 
       return () => clearTimeout(timer);
     }
-  }, [isInstructorLoading]);
+  }, [isRecommendedTeacherLoading]);
+
+  useEffect(() => {
+    if (isTeacherLoading) {
+      setIsDelayedTeacherLoading(true);
+    } else {
+      const timer = setTimeout(() => {
+        setIsDelayedTeacherLoading(false);
+      }, 800);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isTeacherLoading]);
 
   return (
     <>
@@ -300,8 +320,8 @@ const RecommendTeacher = () => {
             )}
 
             {/* TABLE */}
-            {recommendedTeacherReducer.teacherPagination?.content.length <=
-            0 ? (
+            {recommendedTeacherReducer.teacherPagination?.content.length <= 0 &&
+            !isDelayedTeacherLoading ? (
               <div className="flex flex-col justify-center items-center">
                 <img
                   className="w-52 h-52"
@@ -348,53 +368,70 @@ const RecommendTeacher = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {recommendedTeacherReducer.teacherPagination?.content.map(
-                      (item, index) => {
-                        return (
-                          <TableRow key={item.teacherCode}>
-                            <TableCell align="left">{index + 1}</TableCell>
-                            <TableCell align="left">
-                              <img
-                                className="w-16 h-16 object-cover object-center rounded-"
-                                src={item.image}
-                                alt={item.fullName}
-                              />
-                            </TableCell>
-                            <TableCell align="left">
-                              {item.teacherCode}
-                            </TableCell>
-                            <TableCell align="left">{item.fullName}</TableCell>
+                    {isDelayedTeacherLoading ? (
+                      <TableRow>
+                        <TableCell
+                          colSpan={tableInstructorHeaderDatas.length}
+                          align="center"
+                        >
+                          <div className="w-full flex items-center justify-center min-h-36">
+                            <CircularProgress />
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      recommendedTeacherReducer.teacherPagination?.content.map(
+                        (item, index) => {
+                          return (
+                            <TableRow key={item.teacherCode}>
+                              <TableCell align="left">{index + 1}</TableCell>
+                              <TableCell align="left">
+                                <img
+                                  className="w-16 h-16 object-cover object-center rounded-"
+                                  src={item.image}
+                                  alt={item.fullName}
+                                />
+                              </TableCell>
+                              <TableCell align="left">
+                                {item.teacherCode}
+                              </TableCell>
+                              <TableCell align="left">
+                                {item.fullName}
+                              </TableCell>
 
-                            <TableCell align="left">
-                              {item.faculty.facultyName}
-                            </TableCell>
+                              <TableCell align="left">
+                                {item.faculty.facultyName}
+                              </TableCell>
 
-                            <TableCell align="left">
-                              {item.degree.degreeName}
-                            </TableCell>
-                            <TableCell align="left">
-                              {isTeacherPresentInList(
-                                item,
-                                recommendedTeacherReducer?.recommendedTeachers
-                              ) ? (
-                                <Button disabled variant="contained">
-                                  Đã đề xuất
-                                </Button>
-                              ) : (
-                                <Button
-                                  variant="contained"
-                                  color="success"
-                                  onClick={() =>
-                                    handleAddRecommendedTeacher(item.teacherId)
-                                  }
-                                >
-                                  Đề xuất
-                                </Button>
-                              )}
-                            </TableCell>
-                          </TableRow>
-                        );
-                      }
+                              <TableCell align="left">
+                                {item.degree.degreeName}
+                              </TableCell>
+                              <TableCell align="left">
+                                {isTeacherPresentInList(
+                                  item,
+                                  recommendedTeacherReducer?.recommendedTeachers
+                                ) ? (
+                                  <Button disabled variant="contained">
+                                    Đã đề xuất
+                                  </Button>
+                                ) : (
+                                  <Button
+                                    variant="contained"
+                                    color="success"
+                                    onClick={() =>
+                                      handleAddRecommendedTeacher(
+                                        item.teacherId
+                                      )
+                                    }
+                                  >
+                                    Đề xuất
+                                  </Button>
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          );
+                        }
+                      )
                     )}
                   </TableBody>
                 </Table>
@@ -404,17 +441,17 @@ const RecommendTeacher = () => {
             {/* END TABLE */}
 
             {/* Pagination */}
-            {recommendedTeacherReducer.teacherPagination?.content.length >
-              0 && (
-              <div className="flex items-center justify-center mt-10">
-                <Pagination
-                  count={Math.ceil(totalElements / pageSize)}
-                  page={pageNumber}
-                  color="primary"
-                  onChange={handleChangePage}
-                />
-              </div>
-            )}
+            {recommendedTeacherReducer.teacherPagination?.content.length > 0 &&
+              !isDelayedTeacherLoading && (
+                <div className="flex items-center justify-center mt-10">
+                  <Pagination
+                    count={Math.ceil(totalElements / pageSize)}
+                    page={pageNumber}
+                    color="primary"
+                    onChange={handleChangePage}
+                  />
+                </div>
+              )}
           </div>
         )}
 
@@ -446,48 +483,61 @@ const RecommendTeacher = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {recommendedTeacherReducer.recommendedTeachers?.map(
-                  (item, index) => (
-                    <StyledTableRow key={index}>
-                      <StyledTableCell align="center">
-                        {index + 1}
-                      </StyledTableCell>
-                      <TableCell align="center">
-                        <div className="flex justify-center">
-                          <img
-                            className="w-16 h-16 object-cover object-center rounded-"
-                            src={item.image}
-                            alt={item.fullName}
-                          />
-                        </div>
-                      </TableCell>
-                      <StyledTableCell align="center">
-                        {item.teacherCode}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {item.fullName}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {item.faculty.facultyName}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {item.degree.degreeName}
-                      </StyledTableCell>
-                      {!projectReducer.instructor && (
+                {isDelayedRecommendedTeacherLoading ? (
+                  <TableRow>
+                    <TableCell
+                      colSpan={projectReducer.instructor ? 6 : 7}
+                      align="center"
+                    >
+                      <div className="w-full flex items-center justify-center min-h-36">
+                        <CircularProgress />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  recommendedTeacherReducer.recommendedTeachers?.map(
+                    (item, index) => (
+                      <StyledTableRow key={index}>
                         <StyledTableCell align="center">
-                          <Button
-                            variant="contained"
-                            color="error"
-                            startIcon={<DeleteIcon />}
-                            onClick={() =>
-                              handleRemoveRecommendedTeacher(item.teacherId)
-                            }
-                          >
-                            Xóa
-                          </Button>
+                          {index + 1}
                         </StyledTableCell>
-                      )}
-                    </StyledTableRow>
+                        <TableCell align="center">
+                          <div className="flex justify-center">
+                            <img
+                              className="w-16 h-16 object-cover object-center rounded-"
+                              src={item.image}
+                              alt={item.fullName}
+                            />
+                          </div>
+                        </TableCell>
+                        <StyledTableCell align="center">
+                          {item.teacherCode}
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          {item.fullName}
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          {item.faculty.facultyName}
+                        </StyledTableCell>
+                        <StyledTableCell align="center">
+                          {item.degree.degreeName}
+                        </StyledTableCell>
+                        {!projectReducer.instructor && (
+                          <StyledTableCell align="center">
+                            <Button
+                              variant="contained"
+                              color="error"
+                              startIcon={<DeleteIcon />}
+                              onClick={() =>
+                                handleRemoveRecommendedTeacher(item.teacherId)
+                              }
+                            >
+                              Xóa
+                            </Button>
+                          </StyledTableCell>
+                        )}
+                      </StyledTableRow>
+                    )
                   )
                 )}
               </TableBody>

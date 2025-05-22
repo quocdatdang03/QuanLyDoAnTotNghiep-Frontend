@@ -4,14 +4,14 @@ const initialState = {
   teacherPagination: null,
   recommendedTeachers: [],
   isLoading: false,
+  isRecommendedTeacherLoading: false,
+  isTeacherLoading: false,
   error: null,
   success: null,
 };
 
 export const recommendedTeacherReducer = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.GET_ALL_TEACHERS_BY_FACULTY_REQUEST:
-    case actionTypes.GET_ALL_RECOMMENDED_TEACHER_REQUEST:
     case actionTypes.ADD_RECOMMENDED_TEACHER_REQUEST:
     case actionTypes.REMOVE_RECOMMENDED_TEACHER_REQUEST:
       return {
@@ -20,17 +20,31 @@ export const recommendedTeacherReducer = (state = initialState, action) => {
         error: null,
       };
 
+    case actionTypes.GET_ALL_TEACHERS_BY_FACULTY_REQUEST:
+      return {
+        ...state,
+        isTeacherLoading: true,
+        error: null,
+      };
+
+    case actionTypes.GET_ALL_RECOMMENDED_TEACHER_REQUEST:
+      return {
+        ...state,
+        isRecommendedTeacherLoading: true,
+        error: null,
+      };
+
     case actionTypes.GET_ALL_TEACHERS_BY_FACULTY_SUCCESS:
       return {
         ...state,
-        isLoading: false,
+        isTeacherLoading: false,
         teacherPagination: action.payload,
       };
 
     case actionTypes.GET_ALL_RECOMMENDED_TEACHER_SUCCESS:
       return {
         ...state,
-        isLoading: false,
+        isRecommendedTeacherLoading: false,
         recommendedTeachers: action.payload,
         error: null,
       };
@@ -53,13 +67,25 @@ export const recommendedTeacherReducer = (state = initialState, action) => {
         error: null,
       };
 
-    case actionTypes.GET_ALL_TEACHERS_BY_FACULTY_FAILURE:
-    case actionTypes.GET_ALL_RECOMMENDED_TEACHER_FAILURE:
     case actionTypes.ADD_RECOMMENDED_TEACHER_FAILURE:
     case actionTypes.REMOVE_RECOMMENDED_TEACHER_FAILURE:
       return {
         ...state,
         isLoading: false,
+        error: action.payload,
+      };
+
+    case actionTypes.GET_ALL_RECOMMENDED_TEACHER_FAILURE:
+      return {
+        ...state,
+        isRecommendedTeacherLoading: false,
+        error: action.payload,
+      };
+
+    case actionTypes.GET_ALL_TEACHERS_BY_FACULTY_FAILURE:
+      return {
+        ...state,
+        isTeacherLoading: false,
         error: action.payload,
       };
     default:
