@@ -6,6 +6,7 @@ import {
   Card,
   CardContent,
   Chip,
+  CircularProgress,
   Container,
   Divider,
   Fade,
@@ -117,7 +118,7 @@ const TeacherProgressManager = () => {
   const { instructorProjectReducer, teacherReducer, semesterReducer } =
     useSelector((store) => store);
 
-  const isInstructorLoading = teacherReducer.isLoading;
+  const isProjectLoading = instructorProjectReducer.isProjectLoading;
 
   // get all info for pagination:
   const totalElements =
@@ -228,16 +229,16 @@ const TeacherProgressManager = () => {
 
   // handle loading :
   useEffect(() => {
-    if (isInstructorLoading) {
+    if (isProjectLoading) {
       setIsDelayedLoading(true);
     } else {
       const timer = setTimeout(() => {
         setIsDelayedLoading(false);
-      }, 800);
+      }, 200);
 
       return () => clearTimeout(timer);
     }
-  }, [isInstructorLoading]);
+  }, [isProjectLoading]);
 
   return (
     <>
@@ -277,7 +278,7 @@ const TeacherProgressManager = () => {
                 <InputBase
                   // inputRef={inputSearchRef}
                   sx={{ ml: 1, flex: 1 }}
-                  placeholder="Tìm kiếm theo tên hoặc mã sinh viên"
+                  placeholder="Tìm kiếm theo tên/mã sinh viên hoặc tên đề tài"
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
                 />
@@ -362,7 +363,8 @@ const TeacherProgressManager = () => {
           )}
 
           {/* TABLE PROJECTS*/}
-          {instructorProjectReducer.projectPagination?.content.length <= 0 ? (
+          {instructorProjectReducer.projectPagination?.content.length <= 0 &&
+          !isDelayedLoading ? (
             <div className="flex flex-col justify-center items-center">
               <img
                 className="w-52 h-52"
@@ -409,67 +411,80 @@ const TeacherProgressManager = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {instructorProjectReducer.projectPagination?.content.map(
-                    (item, index) => {
-                      return (
-                        <TableRow key={item.projectId}>
-                          <TableCell align="left">{index + 1}</TableCell>
-                          <TableCell align="left" title={item.projectName}>
-                            {item.projectName.length > 50
-                              ? item.projectName.substring(0, 50) + "..."
-                              : item.projectName}
-                          </TableCell>
-                          <TableCell align="left">
-                            {item.student.studentCode}
-                          </TableCell>
-                          <TableCell align="left">
-                            {item.student.fullName}
-                          </TableCell>
-                          <TableCell align="left">
-                            {item.student.studentClass.className}
-                          </TableCell>
-                          <TableCell align="left">
-                            {item.semester.semesterName}
-                          </TableCell>
+                  {isDelayedLoading ? (
+                    <TableRow>
+                      <TableCell
+                        colSpan={tableHeaderDatas.length}
+                        align="center"
+                      >
+                        <div className="w-full flex items-center justify-center min-h-36">
+                          <CircularProgress />
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    instructorProjectReducer.projectPagination?.content.map(
+                      (item, index) => {
+                        return (
+                          <TableRow key={item.projectId}>
+                            <TableCell align="left">{index + 1}</TableCell>
+                            <TableCell align="left" title={item.projectName}>
+                              {item.projectName.length > 50
+                                ? item.projectName.substring(0, 50) + "..."
+                                : item.projectName}
+                            </TableCell>
+                            <TableCell align="left">
+                              {item.student.studentCode}
+                            </TableCell>
+                            <TableCell align="left">
+                              {item.student.fullName}
+                            </TableCell>
+                            <TableCell align="left">
+                              {item.student.studentClass.className}
+                            </TableCell>
+                            <TableCell align="left">
+                              {item.semester.semesterName}
+                            </TableCell>
 
-                          <TableCell align="left">
-                            <div className="flex flex-wrap items-center gap-3">
+                            <TableCell align="left">
                               <div className="flex flex-wrap items-center gap-3">
-                                <Chip
-                                  label={item.student.instructor.fullName}
-                                  variant="filled"
-                                  color="info"
-                                />
+                                <div className="flex flex-wrap items-center gap-3">
+                                  <Chip
+                                    label={item.student.instructor.fullName}
+                                    variant="filled"
+                                    color="info"
+                                  />
+                                </div>
                               </div>
-                            </div>
-                          </TableCell>
-                          {/* <TableCell align="left">
+                            </TableCell>
+                            {/* <TableCell align="left">
                           {item.createdAt &&
                             new Date(item.createdAt).toLocaleString("en-GB")}
                         </TableCell> */}
-                          <TableCell align="left">
-                            <Chip
-                              label={item.projectStatus.projectStatusName}
-                              variant="filled"
-                              color={`${item.projectStatus.projectStatusId === 1 ? "warning" : item.projectStatus.projectStatusId === 2 ? "primary" : item.projectStatus.projectStatusId === 3 ? "success" : "error"}`}
-                            />
-                          </TableCell>
-                          <TableCell align="left">
-                            <Button
-                              variant="contained"
-                              color="success"
-                              onClick={() =>
-                                handleNavigateToProgressManagerDetail(
-                                  item.projectId
-                                )
-                              }
-                            >
-                              Quản lý tiến độ
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    }
+                            <TableCell align="left">
+                              <Chip
+                                label={item.projectStatus.projectStatusName}
+                                variant="filled"
+                                color={`${item.projectStatus.projectStatusId === 1 ? "warning" : item.projectStatus.projectStatusId === 2 ? "primary" : item.projectStatus.projectStatusId === 3 ? "success" : "error"}`}
+                              />
+                            </TableCell>
+                            <TableCell align="left">
+                              <Button
+                                variant="contained"
+                                color="success"
+                                onClick={() =>
+                                  handleNavigateToProgressManagerDetail(
+                                    item.projectId
+                                  )
+                                }
+                              >
+                                Quản lý tiến độ
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      }
+                    )
                   )}
                 </TableBody>
               </Table>
@@ -479,16 +494,17 @@ const TeacherProgressManager = () => {
           {/* END TABLE */}
 
           {/* Pagination */}
-          {instructorProjectReducer.projectPagination?.content.length > 0 && (
-            <div className="flex items-center justify-center mt-10">
-              <Pagination
-                count={Math.ceil(totalElements / pageSize)}
-                page={pageNumber}
-                color="primary"
-                onChange={handleChangePage}
-              />
-            </div>
-          )}
+          {instructorProjectReducer.projectPagination?.content.length > 0 &&
+            !isDelayedLoading && (
+              <div className="flex items-center justify-center mt-10">
+                <Pagination
+                  count={Math.ceil(totalElements / pageSize)}
+                  page={pageNumber}
+                  color="primary"
+                  onChange={handleChangePage}
+                />
+              </div>
+            )}
         </div>
       </Container>
     </>
