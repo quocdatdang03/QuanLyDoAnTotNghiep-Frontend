@@ -1,22 +1,14 @@
 import {
-  Backdrop,
-  Badge,
-  Box,
   Button,
-  Card,
-  CardContent,
   Chip,
   CircularProgress,
   Container,
   Divider,
-  Fade,
   FormControl,
   IconButton,
   InputBase,
   InputLabel,
-  Menu,
   MenuItem,
-  Modal,
   Pagination,
   Paper,
   Select,
@@ -29,7 +21,6 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -45,21 +36,7 @@ import {
   getCurrentSemesterAction,
 } from "../../../redux/Semester/Action";
 import { getAllProjectsByInstructorAction } from "../../../redux/InstructorProject/Action";
-import { getProjectByIdAction } from "../../../redux/InstructorProgress/Action";
 import CustomBreadCrumb from "../../BreadCrumb/CustomBreadCrumb";
-
-// Style for MODAL Project Details:
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  bgcolor: "background.paper",
-  boxShadow: 24,
-  paddingTop: 6,
-  paddingX: 4,
-  paddingBottom: 4,
-};
 
 // Table header data:
 const tableHeaderDatas = [
