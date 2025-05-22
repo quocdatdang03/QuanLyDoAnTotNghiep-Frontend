@@ -7,6 +7,7 @@ import {
   CardContent,
   CardMedia,
   Chip,
+  CircularProgress,
   Container,
   Divider,
   Fade,
@@ -168,7 +169,8 @@ const InstructorDivision = () => {
 
   const { teacherLeaderReducer } = useSelector((store) => store);
 
-  const isInstructorLoading = teacherLeaderReducer.isLoading;
+  const isStudentWithoutInstructorLoading =
+    teacherLeaderReducer.isStudentsLoading;
 
   const colors = [
     "success",
@@ -357,16 +359,16 @@ const InstructorDivision = () => {
 
   // handle loading :
   useEffect(() => {
-    if (isInstructorLoading) {
+    if (isStudentWithoutInstructorLoading) {
       setIsDelayedLoading(true);
     } else {
       const timer = setTimeout(() => {
         setIsDelayedLoading(false);
-      }, 800);
+      }, 200);
 
       return () => clearTimeout(timer);
     }
-  }, [isInstructorLoading]);
+  }, [isStudentWithoutInstructorLoading]);
 
   return (
     <>
@@ -465,7 +467,8 @@ const InstructorDivision = () => {
           )}
 
           {/* TABLE */}
-          {teacherLeaderReducer.studentPagination?.content.length <= 0 ? (
+          {teacherLeaderReducer.studentPagination?.content.length <= 0 &&
+          !isDelayedLoading ? (
             <div className="flex flex-col justify-center items-center">
               <img
                 className="w-52 h-52"
@@ -512,91 +515,106 @@ const InstructorDivision = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {teacherLeaderReducer.studentPagination?.content.map(
-                    (item, index) => {
-                      return (
-                        <TableRow key={item.studentCode}>
-                          <TableCell align="left">{index + 1}</TableCell>
-                          <TableCell align="left">
-                            <img
-                              className="w-16 h-16 object-cover object-center rounded-"
-                              src={item.image}
-                              alt={item.fullName}
-                            />
-                          </TableCell>
-                          <TableCell align="left">{item.studentCode}</TableCell>
-                          <TableCell align="left">{item.fullName}</TableCell>
-                          <TableCell align="left">
-                            {item.studentClass.className}
-                          </TableCell>
-                          <TableCell align="left">
-                            {item.studentClass.faculty.facultyName}
-                          </TableCell>
-                          <TableCell align="left">
-                            <p
-                              className="flex items-center"
-                              key={item.semester.semesterId}
-                            >
-                              {item.semester.semesterName}
-                            </p>
-                          </TableCell>
-                          <TableCell align="left">
-                            <div className="flex flex-wrap items-center gap-3">
-                              {item.recommendedTeachers.length > 0 ? (
-                                item.recommendedTeachers?.map(
-                                  (recommendedInstructorItem) => {
-                                    const recommendedInstructorColor =
-                                      colors[
-                                        recommendedInstructorItem.teacherId %
-                                          colors.length
-                                      ];
-
-                                    return (
-                                      <Chip
-                                        key={
-                                          recommendedInstructorItem.teacherId
-                                        }
-                                        label={
-                                          recommendedInstructorItem.teacherName
-                                        }
-                                        variant="filled"
-                                        color={recommendedInstructorColor}
-                                      />
-                                    );
-                                  }
-                                )
-                              ) : (
-                                <i className="text-gray-400 text-center">
-                                  Không có đề xuất
-                                </i>
-                              )}
-                            </div>
-                          </TableCell>
-                          <TableCell align="left">
-                            {isStudentPresentInList(
-                              item,
-                              teacherLeaderReducer?.choosenStudents
-                            ) ? (
-                              <Button disabled variant="contained">
-                                Đang chọn
-                              </Button>
-                            ) : (
-                              <Button
-                                variant="contained"
-                                color="success"
-                                onClick={() =>
-                                  handleAddStudentToTemporaryList(
-                                    item.studentCode
-                                  )
-                                }
+                  {isDelayedLoading ? (
+                    <TableRow>
+                      <TableCell
+                        colSpan={tableHeaderDatas.length}
+                        align="center"
+                      >
+                        <div className="w-full flex items-center justify-center min-h-36">
+                          <CircularProgress />
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    teacherLeaderReducer.studentPagination?.content.map(
+                      (item, index) => {
+                        return (
+                          <TableRow key={item.studentCode}>
+                            <TableCell align="left">{index + 1}</TableCell>
+                            <TableCell align="left">
+                              <img
+                                className="w-16 h-16 object-cover object-center rounded-"
+                                src={item.image}
+                                alt={item.fullName}
+                              />
+                            </TableCell>
+                            <TableCell align="left">
+                              {item.studentCode}
+                            </TableCell>
+                            <TableCell align="left">{item.fullName}</TableCell>
+                            <TableCell align="left">
+                              {item.studentClass.className}
+                            </TableCell>
+                            <TableCell align="left">
+                              {item.studentClass.faculty.facultyName}
+                            </TableCell>
+                            <TableCell align="left">
+                              <p
+                                className="flex items-center"
+                                key={item.semester.semesterId}
                               >
-                                Chọn
-                              </Button>
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    }
+                                {item.semester.semesterName}
+                              </p>
+                            </TableCell>
+                            <TableCell align="left">
+                              <div className="flex flex-wrap items-center gap-3">
+                                {item.recommendedTeachers.length > 0 ? (
+                                  item.recommendedTeachers?.map(
+                                    (recommendedInstructorItem) => {
+                                      const recommendedInstructorColor =
+                                        colors[
+                                          recommendedInstructorItem.teacherId %
+                                            colors.length
+                                        ];
+
+                                      return (
+                                        <Chip
+                                          key={
+                                            recommendedInstructorItem.teacherId
+                                          }
+                                          label={
+                                            recommendedInstructorItem.teacherName
+                                          }
+                                          variant="filled"
+                                          color={recommendedInstructorColor}
+                                        />
+                                      );
+                                    }
+                                  )
+                                ) : (
+                                  <i className="text-gray-400 text-center">
+                                    Không có đề xuất
+                                  </i>
+                                )}
+                              </div>
+                            </TableCell>
+                            <TableCell align="left">
+                              {isStudentPresentInList(
+                                item,
+                                teacherLeaderReducer?.choosenStudents
+                              ) ? (
+                                <Button disabled variant="contained">
+                                  Đang chọn
+                                </Button>
+                              ) : (
+                                <Button
+                                  variant="contained"
+                                  color="success"
+                                  onClick={() =>
+                                    handleAddStudentToTemporaryList(
+                                      item.studentCode
+                                    )
+                                  }
+                                >
+                                  Chọn
+                                </Button>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      }
+                    )
                   )}
                 </TableBody>
               </Table>
@@ -606,16 +624,17 @@ const InstructorDivision = () => {
           {/* END TABLE */}
 
           {/* Pagination */}
-          {teacherLeaderReducer.studentPagination?.content.length > 0 && (
-            <div className="flex items-center justify-center mt-10">
-              <Pagination
-                count={Math.ceil(totalElements / pageSize)}
-                page={pageNumber}
-                color="primary"
-                onChange={handleChangePage}
-              />
-            </div>
-          )}
+          {teacherLeaderReducer.studentPagination?.content.length > 0 &&
+            !isDelayedLoading && (
+              <div className="flex items-center justify-center mt-10">
+                <Pagination
+                  count={Math.ceil(totalElements / pageSize)}
+                  page={pageNumber}
+                  color="primary"
+                  onChange={handleChangePage}
+                />
+              </div>
+            )}
         </div>
 
         <div>

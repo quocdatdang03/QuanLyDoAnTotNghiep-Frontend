@@ -13,11 +13,11 @@ const initialState = {
   error: null,
   success: null,
   isLoading: false,
+  isStudentsLoading: false,
 };
 
 const teacherLeaderReducer = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.GET_ALL_STUDENTS_WITHOUT_INSTRUCTOR_REQUEST:
     case actionTypes.GET_ALL_CLASSES_BY_FACULTY_OF_TEACHER_LEADER_REQUEST:
     case actionTypes.CHOOSE_STUDENT_REQUEST:
     case actionTypes.CHOOSE_INSTRUCTOR_REQUEST:
@@ -37,10 +37,18 @@ const teacherLeaderReducer = (state = initialState, action) => {
         error: null,
       };
 
+    case actionTypes.GET_ALL_STUDENTS_WITHOUT_INSTRUCTOR_REQUEST:
+      return {
+        ...state,
+        isStudentsLoading: true,
+        success: null,
+        error: null,
+      };
+
     case actionTypes.GET_ALL_STUDENTS_WITHOUT_INSTRUCTOR_SUCCESS:
       return {
         ...state,
-        isLoading: false,
+        isStudentsLoading: false,
         studentPagination: action.payload,
         error: null,
       };
@@ -163,7 +171,6 @@ const teacherLeaderReducer = (state = initialState, action) => {
         error: null,
       };
 
-    case actionTypes.GET_ALL_STUDENTS_WITHOUT_INSTRUCTOR_FAILURE:
     case actionTypes.GET_ALL_CLASSES_BY_FACULTY_OF_TEACHER_LEADER_FAILURE:
     case actionTypes.CHOOSE_STUDENT_FAILURE:
     case actionTypes.CHOOSE_INSTRUCTOR_FAILURE:
@@ -183,6 +190,13 @@ const teacherLeaderReducer = (state = initialState, action) => {
         error: action.payload,
       };
 
+    case actionTypes.GET_ALL_STUDENTS_WITHOUT_INSTRUCTOR_FAILURE:
+      return {
+        ...state,
+        isStudentsLoading: false,
+        success: null,
+        error: action.payload,
+      };
     default:
       return state;
   }
