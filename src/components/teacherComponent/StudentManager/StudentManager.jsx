@@ -91,19 +91,11 @@ const StudentManager = () => {
   const [sortDir, setSortDir] = useState("asc");
   const [sortBy, setSortBy] = useState("account.fullName");
   const [isDelayedLoading, setIsDelayedLoading] = useState(true);
+  const [pageSizeState, setPageSizeState] = useState(5);
 
   const { teacherReducer, semesterReducer } = useSelector((store) => store);
 
   const isInstructorLoading = teacherReducer.isLoading;
-
-  const colors = [
-    "success",
-    "primary",
-    "secondary",
-    "error",
-    "warning",
-    "info",
-  ];
 
   // get all info for pagination:
   const totalElements =
@@ -144,6 +136,7 @@ const StudentManager = () => {
         classId,
         havingProject,
         pageNumber: value,
+        pageSize: pageSizeState,
         sortDir,
         sortBy,
       },
@@ -164,6 +157,7 @@ const StudentManager = () => {
         classId,
         havingProject,
         pageNumber: pageNum,
+        pageSize: pageSizeState,
         sortDir,
         sortBy,
       },
@@ -178,11 +172,11 @@ const StudentManager = () => {
   useEffect(() => {
     // Nếu filter -> reset về pageNumber là 1
     handleFilterStudent(1);
-  }, [keyword, classId, semesterId, havingProject]);
+  }, [keyword, classId, semesterId, havingProject, pageSizeState]);
 
   // handle sort by and sort dir
   useEffect(() => {
-    // Nếu filter -> reset về pageNumber là 1
+    // Nếu filter -> vẫn giữ currentPage hiện tại
     handleFilterStudent(currentPageNum);
   }, [sortBy, sortDir]);
 
@@ -195,6 +189,7 @@ const StudentManager = () => {
     setCurrentPageNum(1);
     setSortDir("asc");
     setSortBy("account.fullName");
+    setPageSizeState(5);
   };
 
   // handle sort dir:
@@ -207,6 +202,11 @@ const StudentManager = () => {
   const handleSortBy = (fieldName) => {
     console.log("SET:" + fieldName);
     setSortBy(fieldName);
+  };
+
+  // handle change pageSize:
+  const handleChangePageSize = (e) => {
+    setPageSizeState(e.target.value);
   };
 
   // handle loading :
@@ -363,6 +363,25 @@ const StudentManager = () => {
             {keyword.trim() && <b>{'từ khóa "' + keyword + '"'}</b>}
           </h2>
         )}
+
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4 p-2 bg-gray-50 rounded-md shadow-sm">
+          <div className="text-gray-700 font-medium">
+            Tổng số sinh viên:{" "}
+            <span className="font-semibold">{totalElements}</span>
+          </div>
+          <div className="flex items-center gap-2 text-gray-700">
+            <span>Hiển thị:</span>
+            <FormControl size="small">
+              <Select value={pageSizeState} onChange={handleChangePageSize}>
+                <MenuItem value={5}>5</MenuItem>
+                <MenuItem value={10}>10</MenuItem>
+                <MenuItem value={15}>15</MenuItem>
+                <MenuItem value={20}>20</MenuItem>
+              </Select>
+            </FormControl>
+            <span>item / trang</span>
+          </div>
+        </div>
 
         {/* TABLE */}
         {teacherReducer.studentsOfInstructorPagination?.content.length <= 0 &&
