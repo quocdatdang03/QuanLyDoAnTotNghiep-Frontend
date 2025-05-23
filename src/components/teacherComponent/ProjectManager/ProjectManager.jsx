@@ -117,6 +117,7 @@ const ProjectManager = () => {
   const [openModalProjectDetails, setOpenModalProjectDetails] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [pageSizeState, setPageSizeState] = useState(5);
 
   const [currentPageNum, setCurrentPageNum] = useState(1);
 
@@ -129,7 +130,7 @@ const ProjectManager = () => {
   const { instructorProjectReducer, teacherReducer, semesterReducer } =
     useSelector((store) => store);
 
-  const isInstructorProjectLoading = instructorProjectReducer.isLoading;
+  const isInstructorProjectLoading = instructorProjectReducer.isProjectLoading;
   const projectStatusId =
     instructorProjectReducer.project?.projectStatus.projectStatusId;
 
@@ -171,6 +172,7 @@ const ProjectManager = () => {
         semesterId,
         classId,
         pageNumber: value,
+        pageSize: pageSizeState,
         sortDir,
         sortBy,
       },
@@ -190,6 +192,7 @@ const ProjectManager = () => {
         semesterId,
         classId,
         pageNumber: pageNum,
+        pageSize: pageSizeState,
         sortDir,
         sortBy,
       },
@@ -204,7 +207,7 @@ const ProjectManager = () => {
   useEffect(() => {
     // Nếu filter -> reset về pageNumber là 1
     handleFilterProject(1);
-  }, [keyword, classId, semesterId]);
+  }, [keyword, classId, semesterId, pageSizeState]);
 
   // handle sort by and sort dir
   useEffect(() => {
@@ -219,6 +222,7 @@ const ProjectManager = () => {
     setCurrentPageNum(1);
     setSortDir("asc");
     setSortBy("studentSemester.student.account.fullName");
+    setPageSizeState(5);
   };
 
   // handle sort dir:
@@ -231,6 +235,11 @@ const ProjectManager = () => {
   const handleSortBy = (fieldName) => {
     console.log("SET:" + fieldName);
     setSortBy(fieldName);
+  };
+
+  // handle change pageSize:
+  const handleChangePageSize = (e) => {
+    setPageSizeState(e.target.value);
   };
 
   const handleOpenMenuOptionFile = (event, currentFile) => {
@@ -332,7 +341,7 @@ const ProjectManager = () => {
     } else {
       const timer = setTimeout(() => {
         setIsDelayedLoading(false);
-      }, 500);
+      }, 200);
 
       return () => clearTimeout(timer);
     }
@@ -453,10 +462,29 @@ const ProjectManager = () => {
 
           {keyword.trim() && (
             <h2 className="text-center mb-5 mt-2">
-              <i>Kết quả danh sách sinh viên được tìm kiếm theo </i>
+              <i>Kết quả danh sách đề tài của sinh viên được tìm kiếm theo </i>
               {keyword.trim() && <b>{'từ khóa "' + keyword + '"'}</b>}
             </h2>
           )}
+
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4 p-2 bg-gray-50 rounded-md shadow-sm">
+            <div className="text-gray-700 font-medium">
+              Tổng số đề tài:{" "}
+              <span className="font-semibold">{totalElements}</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-700">
+              <span>Hiển thị:</span>
+              <FormControl size="small">
+                <Select value={pageSizeState} onChange={handleChangePageSize}>
+                  <MenuItem value={5}>5</MenuItem>
+                  <MenuItem value={10}>10</MenuItem>
+                  <MenuItem value={15}>15</MenuItem>
+                  <MenuItem value={20}>20</MenuItem>
+                </Select>
+              </FormControl>
+              <span>item / trang</span>
+            </div>
+          </div>
 
           {/* TABLE PROJECTS*/}
           {instructorProjectReducer.projectPagination?.content.length <= 0 &&
@@ -599,6 +627,8 @@ const ProjectManager = () => {
                   page={pageNumber}
                   color="primary"
                   onChange={handleChangePage}
+                  showFirstButton
+                  showLastButton
                 />
               </div>
             )}

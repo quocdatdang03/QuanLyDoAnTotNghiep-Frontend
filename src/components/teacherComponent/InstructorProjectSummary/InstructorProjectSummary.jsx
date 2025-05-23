@@ -94,6 +94,7 @@ const InstructorProjectSummary = () => {
   const [sortBy, setSortBy] = useState(
     "studentSemester.student.account.fullName"
   );
+  const [pageSizeState, setPageSizeState] = useState(5);
   const [isDelayedLoading, setIsDelayedLoading] = useState(true);
 
   const { teacherLeaderReducer, teacherReducer, semesterReducer, authReducer } =
@@ -144,6 +145,7 @@ const InstructorProjectSummary = () => {
         instructorCode,
         projectStatusId,
         pageNumber: value,
+        pageSize: pageSizeState,
         sortDir,
         sortBy,
       },
@@ -165,6 +167,7 @@ const InstructorProjectSummary = () => {
         instructorCode,
         projectStatusId,
         pageNumber: pageNum,
+        pageSize: pageSizeState,
         sortDir,
         sortBy,
       },
@@ -196,7 +199,14 @@ const InstructorProjectSummary = () => {
   useEffect(() => {
     // Nếu filter -> reset về pageNumber là 1
     handleFilterProject(1);
-  }, [keyword, classId, semesterId, instructorCode, projectStatusId]);
+  }, [
+    keyword,
+    classId,
+    semesterId,
+    instructorCode,
+    projectStatusId,
+    pageSizeState,
+  ]);
 
   // handle sort by and sort dir
   useEffect(() => {
@@ -213,6 +223,7 @@ const InstructorProjectSummary = () => {
     setCurrentPageNum(1);
     setSortDir("asc");
     setSortBy("studentSemester.student.account.fullName");
+    setPageSizeState(5);
   };
 
   // handle sort dir:
@@ -225,6 +236,11 @@ const InstructorProjectSummary = () => {
   const handleSortBy = (fieldName) => {
     console.log("SET:" + fieldName);
     setSortBy(fieldName);
+  };
+
+  // handle change pageSize:
+  const handleChangePageSize = (e) => {
+    setPageSizeState(e.target.value);
   };
 
   // handle Export to Excel:
@@ -460,7 +476,7 @@ const InstructorProjectSummary = () => {
 
           {keyword.trim() && (
             <h2 className="text-center mb-5 mt-2">
-              <i>Kết quả danh sách sinh viên được tìm kiếm theo </i>
+              <i>Kết quả danh sách đề tài được tìm kiếm theo </i>
               {keyword.trim() && <b>{'từ khóa "' + keyword + '"'}</b>}
             </h2>
           )}
@@ -525,6 +541,25 @@ const InstructorProjectSummary = () => {
               </Button>
             </div>
           )}
+
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4 p-2 bg-gray-50 rounded-md shadow-sm">
+            <div className="text-gray-700 font-medium">
+              Tổng số đề tài:{" "}
+              <span className="font-semibold">{totalElements}</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-700">
+              <span>Hiển thị:</span>
+              <FormControl size="small">
+                <Select value={pageSizeState} onChange={handleChangePageSize}>
+                  <MenuItem value={5}>5</MenuItem>
+                  <MenuItem value={10}>10</MenuItem>
+                  <MenuItem value={15}>15</MenuItem>
+                  <MenuItem value={20}>20</MenuItem>
+                </Select>
+              </FormControl>
+              <span>item / trang</span>
+            </div>
+          </div>
           {/* TABLE PROJECTS*/}
           {teacherLeaderReducer.projectSummaryPagination?.content.length <= 0 &&
           !isDelayedLoading ? (
@@ -652,6 +687,8 @@ const InstructorProjectSummary = () => {
                   page={pageNumber}
                   color="primary"
                   onChange={handleChangePage}
+                  showFirstButton
+                  showLastButton
                 />
               </div>
             )}

@@ -521,6 +521,8 @@ const StudentManager = () => {
                 page={pageNumber}
                 color="primary"
                 onChange={handleChangePage}
+                showFirstButton
+                showLastButton
               />
             </div>
           )}

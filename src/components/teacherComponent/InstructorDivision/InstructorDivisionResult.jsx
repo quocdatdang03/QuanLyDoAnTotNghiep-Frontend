@@ -149,6 +149,7 @@ const InstructorDivisionResult = () => {
   const [classId, setClassId] = useState("");
   const [instructorCode, setInstructorCode] = useState("");
   const [currentPageNum, setCurrentPageNum] = useState(1);
+  const [pageSizeState, setPageSizeState] = useState(5);
 
   const [sortDir, setSortDir] = useState("asc");
   const [sortBy, setSortBy] = useState("account.fullName");
@@ -199,6 +200,7 @@ const InstructorDivisionResult = () => {
       keyword,
       studentPagination: {
         pageNumber: value,
+        pageSize: pageSizeState,
         sortDir,
         sortBy,
         classId,
@@ -218,6 +220,7 @@ const InstructorDivisionResult = () => {
       keyword,
       studentPagination: {
         pageNumber: pageNum,
+        pageSize: pageSizeState,
         sortDir,
         sortBy,
         classId,
@@ -234,11 +237,11 @@ const InstructorDivisionResult = () => {
   useEffect(() => {
     // Nếu filter -> reset về pageNumber là 1
     handleFilterStudent(1);
-  }, [keyword, classId, instructorCode]);
+  }, [keyword, classId, instructorCode, pageSizeState]);
 
   // handle sort by and sort dir
   useEffect(() => {
-    // Nếu filter -> reset về pageNumber là 1
+    // Nếu filter -> giữ nguyên current page
     handleFilterStudent(currentPageNum);
   }, [sortBy, sortDir, instructorCode]);
 
@@ -262,6 +265,11 @@ const InstructorDivisionResult = () => {
   const handleSortBy = (fieldName) => {
     console.log("SET:" + fieldName);
     setSortBy(fieldName);
+  };
+
+  // handle change pageSize:
+  const handleChangePageSize = (e) => {
+    setPageSizeState(e.target.value);
   };
 
   // handle close MODAL Instructor:
@@ -448,6 +456,24 @@ const InstructorDivisionResult = () => {
             </h2>
           )}
 
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4 p-2 bg-gray-50 rounded-md shadow-sm">
+            <div className="text-gray-700 font-medium">
+              Tổng số sinh viên:{" "}
+              <span className="font-semibold">{totalElements}</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-700">
+              <span>Hiển thị:</span>
+              <FormControl size="small">
+                <Select value={pageSizeState} onChange={handleChangePageSize}>
+                  <MenuItem value={5}>5</MenuItem>
+                  <MenuItem value={10}>10</MenuItem>
+                  <MenuItem value={15}>15</MenuItem>
+                  <MenuItem value={20}>20</MenuItem>
+                </Select>
+              </FormControl>
+              <span>item / trang</span>
+            </div>
+          </div>
           {/* TABLE */}
           {teacherLeaderReducer.studentHavingInstructorPagination?.content
             ?.length <= 0 && !isDelayedLoading ? (
@@ -584,6 +610,8 @@ const InstructorDivisionResult = () => {
                   page={pageNumber}
                   color="primary"
                   onChange={handleChangePage}
+                  showFirstButton
+                  showLastButton
                 />
               </div>
             )}
