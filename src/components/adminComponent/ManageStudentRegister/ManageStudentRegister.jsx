@@ -4,6 +4,7 @@ import {
   Backdrop,
   Box,
   Button,
+  CircularProgress,
   Container,
   Divider,
   Fade,
@@ -132,6 +133,9 @@ const ManageStudentRegister = () => {
 
   const { semesterReducer, facultyReducer, classReducer, studentReducer } =
     useSelector((store) => store);
+
+  const isRegisteredStudentLoading = studentReducer.isRegisteredStudentLoading;
+  const [isDelayedLoading, setIsDelayedLoading] = useState(true);
 
   // get all info for pagination:
   const totalElements = studentReducer.studentPagination?.totalElements;
@@ -278,6 +282,18 @@ const ManageStudentRegister = () => {
 
     handleCloseModalConfirmDeleteStudentSemester();
   };
+
+  useEffect(() => {
+    if (isRegisteredStudentLoading) {
+      setIsDelayedLoading(true);
+    } else {
+      const timer = setTimeout(() => {
+        setIsDelayedLoading(false);
+      }, 200);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isRegisteredStudentLoading]);
 
   return (
     <>
@@ -439,7 +455,8 @@ const ManageStudentRegister = () => {
           )}
 
           {/* TABLE */}
-          {studentReducer.studentPagination?.content.length <= 0 ? (
+          {studentReducer.studentPagination?.content.length <= 0 &&
+          !isDelayedLoading ? (
             <div className="flex flex-col justify-center items-center">
               <img
                 className="w-52 h-52"
@@ -482,51 +499,64 @@ const ManageStudentRegister = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {studentReducer.studentPagination?.content.map(
-                    (item, index) => {
-                      return (
-                        <StyledTableRow key={item.studentCode}>
-                          <StyledTableCell align="left">
-                            {index + 1}
-                          </StyledTableCell>
-                          <StyledTableCell align="left">
-                            {item.studentCode}
-                          </StyledTableCell>
-                          <StyledTableCell align="left">
-                            {item.fullName}
-                          </StyledTableCell>
-                          <StyledTableCell align="left">
-                            {item.studentClass.className}
-                          </StyledTableCell>
-                          <StyledTableCell align="left">
-                            {item.studentClass.faculty.facultyName}
-                          </StyledTableCell>
-                          <StyledTableCell align="left">
-                            <p
-                              className="flex items-center"
-                              key={item.semester.semesterId}
-                            >
-                              {item.semester.semesterName}
-                            </p>
-                          </StyledTableCell>
-                          <StyledTableCell align="left">
-                            <Button
-                              variant="contained"
-                              color="error"
-                              startIcon={<DeleteIcon />}
-                              title="Xóa sinh viên khỏi học kỳ hiện tại"
-                              onClick={() =>
-                                handleOpenModalConfirmDeleteStudentSemester(
-                                  item
-                                )
-                              }
-                            >
-                              Xóa
-                            </Button>
-                          </StyledTableCell>
-                        </StyledTableRow>
-                      );
-                    }
+                  {isDelayedLoading ? (
+                    <TableRow>
+                      <TableCell
+                        colSpan={tableHeaderDatas.length}
+                        align="center"
+                      >
+                        <div className="w-full flex items-center justify-center min-h-36">
+                          <CircularProgress />
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    studentReducer.studentPagination?.content.map(
+                      (item, index) => {
+                        return (
+                          <StyledTableRow key={item.studentCode}>
+                            <StyledTableCell align="left">
+                              {index + 1}
+                            </StyledTableCell>
+                            <StyledTableCell align="left">
+                              {item.studentCode}
+                            </StyledTableCell>
+                            <StyledTableCell align="left">
+                              {item.fullName}
+                            </StyledTableCell>
+                            <StyledTableCell align="left">
+                              {item.studentClass.className}
+                            </StyledTableCell>
+                            <StyledTableCell align="left">
+                              {item.studentClass.faculty.facultyName}
+                            </StyledTableCell>
+                            <StyledTableCell align="left">
+                              <p
+                                className="flex items-center"
+                                key={item.semester.semesterId}
+                              >
+                                {item.semester.semesterName}
+                              </p>
+                            </StyledTableCell>
+                            <StyledTableCell align="left">
+                              <Button
+                                variant="contained"
+                                color="error"
+                                startIcon={<DeleteIcon />}
+                                title="Xóa sinh viên khỏi học kỳ hiện tại"
+                                onClick={() =>
+                                  handleOpenModalConfirmDeleteStudentSemester(
+                                    item
+                                  )
+                                }
+                              >
+                                Xóa
+                              </Button>
+                            </StyledTableCell>
+                          </StyledTableRow>
+                        );
+                      }
+                    )
                   )}
                 </TableBody>
               </Table>
@@ -536,16 +566,17 @@ const ManageStudentRegister = () => {
           {/* END TABLE */}
 
           {/* Pagination */}
-          {studentReducer.studentPagination?.content.length > 0 && (
-            <div className="flex items-center justify-center mt-10">
-              <Pagination
-                count={Math.ceil(totalElements / pageSize)}
-                page={pageNumber}
-                color="primary"
-                onChange={handleChangePage}
-              />
-            </div>
-          )}
+          {studentReducer.studentPagination?.content.length > 0 &&
+            !isDelayedLoading && (
+              <div className="flex items-center justify-center mt-10">
+                <Pagination
+                  count={Math.ceil(totalElements / pageSize)}
+                  page={pageNumber}
+                  color="primary"
+                  onChange={handleChangePage}
+                />
+              </div>
+            )}
         </div>
       </Container>
 

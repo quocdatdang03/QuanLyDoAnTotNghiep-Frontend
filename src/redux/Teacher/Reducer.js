@@ -8,19 +8,27 @@ const initialState = {
   error: null,
   success: null,
   isLoading: false,
+  isTeacherAccountLoading: false,
 };
 
 const teacherReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.GET_ALL_STUDENTS_BY_INSTRUCTOR_REQUEST:
     case actionTypes.GET_ALL_CLASSES_BY_FACULTY_OF_TEACHER_REQUEST:
-    case actionTypes.GET_ALL_TEACHERS_REQUEST:
     case actionTypes.GET_TEACHER_BY_CODE_REQUEST:
     case actionTypes.UPDATE_TEACHER_REQUEST:
     case actionTypes.UPDATE_ENABLE_STATUS_OF_TEACHER_REQUEST:
       return {
         ...state,
         isLoading: true,
+        success: null,
+        error: null,
+      };
+
+    case actionTypes.GET_ALL_TEACHERS_REQUEST:
+      return {
+        ...state,
+        isTeacherAccountLoading: true,
         success: null,
         error: null,
       };
@@ -44,7 +52,7 @@ const teacherReducer = (state = initialState, action) => {
     case actionTypes.GET_ALL_TEACHERS_SUCCESS:
       return {
         ...state,
-        isLoading: false,
+        isTeacherAccountLoading: false,
         teacherPagination: action.payload,
         error: null,
       };
@@ -74,13 +82,20 @@ const teacherReducer = (state = initialState, action) => {
 
     case actionTypes.GET_ALL_STUDENTS_BY_INSTRUCTOR_FAILURE:
     case actionTypes.GET_ALL_CLASSES_BY_FACULTY_OF_TEACHER_FAILURE:
-    case actionTypes.GET_ALL_TEACHERS_FAILURE:
     case actionTypes.GET_TEACHER_BY_CODE_FAILURE:
     case actionTypes.UPDATE_TEACHER_FAILURE:
     case actionTypes.UPDATE_ENABLE_STATUS_OF_TEACHER_FAILURE:
       return {
         ...state,
         isLoading: false,
+        success: null,
+        error: action.payload,
+      };
+
+    case actionTypes.GET_ALL_TEACHERS_FAILURE:
+      return {
+        ...state,
+        isTeacherAccountLoading: false,
         success: null,
         error: action.payload,
       };

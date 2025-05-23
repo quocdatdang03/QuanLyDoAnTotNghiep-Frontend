@@ -1,6 +1,7 @@
 import {
   Button,
   Chip,
+  CircularProgress,
   Container,
   Divider,
   FormControl,
@@ -82,7 +83,7 @@ const ManageTeacher = () => {
 
   const { teacherReducer, facultyReducer } = useSelector((store) => store);
 
-  const isInstructorLoading = teacherReducer.isLoading;
+  const isTeacherAccountLoading = teacherReducer.isTeacherAccountLoading;
 
   // get all info for pagination:
   const totalElements = teacherReducer.teacherPagination?.totalElements;
@@ -182,16 +183,16 @@ const ManageTeacher = () => {
 
   // handle loading :
   useEffect(() => {
-    if (isInstructorLoading) {
+    if (isTeacherAccountLoading) {
       setIsDelayedLoading(true);
     } else {
       const timer = setTimeout(() => {
         setIsDelayedLoading(false);
-      }, 800);
+      }, 200);
 
       return () => clearTimeout(timer);
     }
-  }, [isInstructorLoading]);
+  }, [isTeacherAccountLoading]);
 
   return (
     <Container className="my-10">
@@ -301,7 +302,8 @@ const ManageTeacher = () => {
         )}
 
         {/* TABLE */}
-        {teacherReducer.teacherPagination?.content.length <= 0 ? (
+        {teacherReducer.teacherPagination?.content.length <= 0 &&
+        !isDelayedLoading ? (
           <div className="flex flex-col justify-center items-center">
             <img
               className="w-52 h-52"
@@ -347,74 +349,84 @@ const ManageTeacher = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {teacherReducer.teacherPagination?.content.map(
-                  (item, index) => {
-                    return (
-                      <TableRow key={item.teacherCode}>
-                        <TableCell align="left">{index + 1}</TableCell>
-                        <TableCell align="left">
-                          <img
-                            className="w-16 h-16 object-cover object-top rounded-sm"
-                            src={item.image || defaultImage}
-                            alt={item.fullName}
-                          />
-                        </TableCell>
-                        <TableCell align="left">{item.teacherCode}</TableCell>
-                        <TableCell align="left">
-                          {item.fullName}
-                          {item.leader && (
-                            <p className="font-bold">(Trưởng bộ môn)</p>
-                          )}
-                        </TableCell>
-                        <TableCell align="left">
-                          {item.faculty.facultyName}
-                        </TableCell>
-                        <TableCell align="left">
-                          <div className="flex items-center gap-3">
-                            <Button
-                              variant="contained"
-                              color="info"
-                              startIcon={<EditIcon />}
-                              onClick={() =>
-                                navigate("edit/" + item.teacherCode)
-                              }
-                            >
-                              Sửa
-                            </Button>
-                            {item.enable ? (
-                              <Button
-                                variant="contained"
-                                color="error"
-                                startIcon={<LockOutlinedIcon />}
-                                onClick={() =>
-                                  handleUpdateEnableStatusOfTeacher(
-                                    item,
-                                    "lock"
-                                  )
-                                }
-                              >
-                                Khóa
-                              </Button>
-                            ) : (
-                              <Button
-                                variant="contained"
-                                color="success"
-                                startIcon={<LockOpenIcon />}
-                                onClick={() =>
-                                  handleUpdateEnableStatusOfTeacher(
-                                    item,
-                                    "unlock"
-                                  )
-                                }
-                              >
-                                Mở khóa
-                              </Button>
+                {isDelayedLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={tableHeaderDatas.length} align="center">
+                      <div className="w-full flex items-center justify-center min-h-36">
+                        <CircularProgress />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  teacherReducer.teacherPagination?.content.map(
+                    (item, index) => {
+                      return (
+                        <TableRow key={item.teacherCode}>
+                          <TableCell align="left">{index + 1}</TableCell>
+                          <TableCell align="left">
+                            <img
+                              className="w-16 h-16 object-cover object-top rounded-sm"
+                              src={item.image || defaultImage}
+                              alt={item.fullName}
+                            />
+                          </TableCell>
+                          <TableCell align="left">{item.teacherCode}</TableCell>
+                          <TableCell align="left">
+                            {item.fullName}
+                            {item.leader && (
+                              <p className="font-bold">(Trưởng bộ môn)</p>
                             )}
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  }
+                          </TableCell>
+                          <TableCell align="left">
+                            {item.faculty.facultyName}
+                          </TableCell>
+                          <TableCell align="left">
+                            <div className="flex items-center gap-3">
+                              <Button
+                                variant="contained"
+                                color="info"
+                                startIcon={<EditIcon />}
+                                onClick={() =>
+                                  navigate("edit/" + item.teacherCode)
+                                }
+                              >
+                                Sửa
+                              </Button>
+                              {item.enable ? (
+                                <Button
+                                  variant="contained"
+                                  color="error"
+                                  startIcon={<LockOutlinedIcon />}
+                                  onClick={() =>
+                                    handleUpdateEnableStatusOfTeacher(
+                                      item,
+                                      "lock"
+                                    )
+                                  }
+                                >
+                                  Khóa
+                                </Button>
+                              ) : (
+                                <Button
+                                  variant="contained"
+                                  color="success"
+                                  startIcon={<LockOpenIcon />}
+                                  onClick={() =>
+                                    handleUpdateEnableStatusOfTeacher(
+                                      item,
+                                      "unlock"
+                                    )
+                                  }
+                                >
+                                  Mở khóa
+                                </Button>
+                              )}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    }
+                  )
                 )}
               </TableBody>
             </Table>
@@ -424,16 +436,17 @@ const ManageTeacher = () => {
         {/* END TABLE */}
 
         {/* Pagination */}
-        {teacherReducer.teacherPagination?.content.length > 0 && (
-          <div className="flex items-center justify-center mt-10">
-            <Pagination
-              count={Math.ceil(totalElements / pageSize)}
-              page={pageNumber}
-              color="primary"
-              onChange={handleChangePage}
-            />
-          </div>
-        )}
+        {teacherReducer.teacherPagination?.content.length > 0 &&
+          !isDelayedLoading && (
+            <div className="flex items-center justify-center mt-10">
+              <Pagination
+                count={Math.ceil(totalElements / pageSize)}
+                page={pageNumber}
+                color="primary"
+                onChange={handleChangePage}
+              />
+            </div>
+          )}
       </div>
     </Container>
   );

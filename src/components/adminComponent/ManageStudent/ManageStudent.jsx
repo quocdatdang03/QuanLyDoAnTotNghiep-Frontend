@@ -2,6 +2,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Button,
+  CircularProgress,
   Container,
   Divider,
   FormControl,
@@ -100,6 +101,8 @@ const ManageStudent = () => {
   const [sortDir, setSortDir] = useState("asc");
   const [sortBy, setSortBy] = useState("account.fullName");
 
+  const [isDelayedLoading, setIsDelayedLoading] = useState(true);
+
   const { facultyReducer, classReducer, studentReducer } = useSelector(
     (store) => store
   );
@@ -108,6 +111,8 @@ const ManageStudent = () => {
   const totalElements = studentReducer.studentAccountPagination?.totalElements;
   const pageSize = studentReducer.studentAccountPagination?.pageSize;
   const pageNumber = studentReducer.studentAccountPagination?.pageNumber;
+
+  const isStudentAccountLoading = studentReducer.isStudentAccountLoading;
 
   // get all Faculty, Class
   useEffect(() => {
@@ -222,6 +227,19 @@ const ManageStudent = () => {
 
     dispatch(updateEnableStatusOfStudentAction(requestData));
   };
+
+  // handle loading:
+  useEffect(() => {
+    if (isStudentAccountLoading) {
+      setIsDelayedLoading(true);
+    } else {
+      const timer = setTimeout(() => {
+        setIsDelayedLoading(false);
+      }, 200);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isStudentAccountLoading]);
 
   return (
     <Container className="my-10">
@@ -352,7 +370,8 @@ const ManageStudent = () => {
         )}
 
         {/* TABLE */}
-        {studentReducer.studentAccountPagination?.content.length <= 0 ? (
+        {studentReducer.studentAccountPagination?.content.length <= 0 &&
+        !isDelayedLoading ? (
           <div className="flex flex-col justify-center items-center">
             <img
               className="w-52 h-52"
@@ -394,74 +413,84 @@ const ManageStudent = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {studentReducer.studentAccountPagination?.content.map(
-                  (item, index) => {
-                    return (
-                      <StyledTableRow key={item.studentCode}>
-                        <StyledTableCell align="left">
-                          {index + 1}
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          {item.studentCode}
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          {item.fullName}
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          {item.studentClass.className}
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          {item.studentClass.faculty.facultyName}
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          <div className="flex gap-2">
-                            <Button
-                              variant="contained"
-                              color="info"
-                              startIcon={<EditIcon />}
-                              onClick={() =>
-                                navigate(`edit/${item.studentCode}`)
-                              }
-                            >
-                              Sửa
-                            </Button>
-                            {/* <Button variant="contained" color="error">
+                {isDelayedLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={tableHeaderDatas.length} align="center">
+                      <div className="w-full flex items-center justify-center min-h-36">
+                        <CircularProgress />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  studentReducer.studentAccountPagination?.content.map(
+                    (item, index) => {
+                      return (
+                        <StyledTableRow key={item.studentCode}>
+                          <StyledTableCell align="left">
+                            {index + 1}
+                          </StyledTableCell>
+                          <StyledTableCell align="left">
+                            {item.studentCode}
+                          </StyledTableCell>
+                          <StyledTableCell align="left">
+                            {item.fullName}
+                          </StyledTableCell>
+                          <StyledTableCell align="left">
+                            {item.studentClass.className}
+                          </StyledTableCell>
+                          <StyledTableCell align="left">
+                            {item.studentClass.faculty.facultyName}
+                          </StyledTableCell>
+                          <StyledTableCell align="left">
+                            <div className="flex gap-2">
+                              <Button
+                                variant="contained"
+                                color="info"
+                                startIcon={<EditIcon />}
+                                onClick={() =>
+                                  navigate(`edit/${item.studentCode}`)
+                                }
+                              >
+                                Sửa
+                              </Button>
+                              {/* <Button variant="contained" color="error">
                             Xóa
                           </Button> */}
-                            {item.enable ? (
-                              <Button
-                                variant="contained"
-                                color="error"
-                                startIcon={<LockOutlinedIcon />}
-                                onClick={() =>
-                                  handleUpdateEnableStatusOfStudent(
-                                    item,
-                                    "lock"
-                                  )
-                                }
-                              >
-                                Khóa
-                              </Button>
-                            ) : (
-                              <Button
-                                variant="contained"
-                                color="success"
-                                startIcon={<LockOpenIcon />}
-                                onClick={() =>
-                                  handleUpdateEnableStatusOfStudent(
-                                    item,
-                                    "unlock"
-                                  )
-                                }
-                              >
-                                Mở khóa
-                              </Button>
-                            )}
-                          </div>
-                        </StyledTableCell>
-                      </StyledTableRow>
-                    );
-                  }
+                              {item.enable ? (
+                                <Button
+                                  variant="contained"
+                                  color="error"
+                                  startIcon={<LockOutlinedIcon />}
+                                  onClick={() =>
+                                    handleUpdateEnableStatusOfStudent(
+                                      item,
+                                      "lock"
+                                    )
+                                  }
+                                >
+                                  Khóa
+                                </Button>
+                              ) : (
+                                <Button
+                                  variant="contained"
+                                  color="success"
+                                  startIcon={<LockOpenIcon />}
+                                  onClick={() =>
+                                    handleUpdateEnableStatusOfStudent(
+                                      item,
+                                      "unlock"
+                                    )
+                                  }
+                                >
+                                  Mở khóa
+                                </Button>
+                              )}
+                            </div>
+                          </StyledTableCell>
+                        </StyledTableRow>
+                      );
+                    }
+                  )
                 )}
               </TableBody>
             </Table>
@@ -471,16 +500,17 @@ const ManageStudent = () => {
         {/* END TABLE */}
 
         {/* Pagination */}
-        {studentReducer.studentAccountPagination?.content.length > 0 && (
-          <div className="flex items-center justify-center mt-10">
-            <Pagination
-              count={Math.ceil(totalElements / pageSize)}
-              page={pageNumber}
-              color="primary"
-              onChange={handleChangePage}
-            />
-          </div>
-        )}
+        {studentReducer.studentAccountPagination?.content.length > 0 &&
+          !isDelayedLoading && (
+            <div className="flex items-center justify-center mt-10">
+              <Pagination
+                count={Math.ceil(totalElements / pageSize)}
+                page={pageNumber}
+                color="primary"
+                onChange={handleChangePage}
+              />
+            </div>
+          )}
       </div>
     </Container>
   );

@@ -11,13 +11,13 @@ const initialState = {
   error: null,
   success: null,
   isLoading: false,
+  isStudentAccountLoading: false,
+  isRegisteredStudentLoading: false,
 };
 
 const studentReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.GET_STUDENT_BY_STUDENTCODE_REQUEST:
-    case actionTypes.FILTER_ALL_STUDENTS_REQUEST:
-    case actionTypes.GET_ALL_STUDENTS_ACCOUNT_REQUEST:
     case actionTypes.GET_INSTRUCTOR_BY_STUDENTID_IN_CURRENT_SEMESTER_REQUEST:
     case actionTypes.UPDATE_ENABLE_STATUS_REQUEST:
     case actionTypes.CREATE_STUDENT_ACCOUNT_REQUEST:
@@ -33,6 +33,22 @@ const studentReducer = (state = initialState, action) => {
         error: null,
       };
 
+    case actionTypes.GET_ALL_STUDENTS_ACCOUNT_REQUEST:
+      return {
+        ...state,
+        isStudentAccountLoading: true,
+        success: null,
+        error: null,
+      };
+
+    case actionTypes.FILTER_ALL_STUDENTS_REQUEST:
+      return {
+        ...state,
+        isRegisteredStudentLoading: true,
+        success: null,
+        error: null,
+      };
+
     case actionTypes.GET_STUDENT_BY_STUDENTCODE_SUCCESS:
       return {
         ...state,
@@ -44,7 +60,7 @@ const studentReducer = (state = initialState, action) => {
     case actionTypes.FILTER_ALL_STUDENTS_SUCCESS:
       return {
         ...state,
-        isLoading: false,
+        isRegisteredStudentLoading: false,
         studentPagination: action.payload,
         error: null,
       };
@@ -75,7 +91,7 @@ const studentReducer = (state = initialState, action) => {
     case actionTypes.GET_ALL_STUDENTS_ACCOUNT_SUCCESS:
       return {
         ...state,
-        isLoading: false,
+        isStudentAccountLoading: false,
         studentAccountPagination: action.payload,
         error: null,
       };
@@ -120,8 +136,6 @@ const studentReducer = (state = initialState, action) => {
       };
 
     case actionTypes.GET_STUDENT_BY_STUDENTCODE_FAILURE:
-    case actionTypes.FILTER_ALL_STUDENTS_FAILURE:
-    case actionTypes.GET_ALL_STUDENTS_ACCOUNT_FAILURE:
     case actionTypes.GET_INSTRUCTOR_BY_STUDENTID_IN_CURRENT_SEMESTER_FAILURE:
     case actionTypes.UPDATE_ENABLE_STATUS_FAILURE:
     case actionTypes.CREATE_STUDENT_ACCOUNT_FAILURE:
@@ -133,6 +147,22 @@ const studentReducer = (state = initialState, action) => {
       return {
         ...state,
         isLoading: false,
+        success: null,
+        error: action.payload,
+      };
+
+    case actionTypes.GET_ALL_STUDENTS_ACCOUNT_FAILURE:
+      return {
+        ...state,
+        isStudentAccountLoading: false,
+        success: null,
+        error: action.payload,
+      };
+
+    case actionTypes.FILTER_ALL_STUDENTS_FAILURE:
+      return {
+        ...state,
+        isRegisteredStudentLoading: false,
         success: null,
         error: action.payload,
       };
