@@ -125,6 +125,8 @@ const ManageStudentRegister = () => {
   const [currentPageNum, setCurrentPageNum] = useState(1);
   const [sortDir, setSortDir] = useState("asc");
   const [sortBy, setSortBy] = useState("account.fullName");
+  const [pageSizeState, setPageSizeState] = useState(5);
+
   const [
     openModalConfirmDeleteStudentSemester,
     setOpenModalConfirmDeleteStudentSemester,
@@ -192,6 +194,7 @@ const ManageStudentRegister = () => {
         classId,
         facultyId,
         pageNumber: value,
+        pageSize: pageSizeState,
         sortDir,
         sortBy,
       },
@@ -212,6 +215,7 @@ const ManageStudentRegister = () => {
         classId,
         facultyId,
         pageNumber: pageNum,
+        pageSize: pageSizeState,
         sortDir,
         sortBy,
       },
@@ -226,7 +230,8 @@ const ManageStudentRegister = () => {
   useEffect(() => {
     // Nếu filter -> reset về pageNumber là 1
     handleFilterStudent(1);
-  }, [keyword, semesterId, facultyId, classId]);
+    setCurrentPageNum(1);
+  }, [keyword, semesterId, facultyId, classId, pageSizeState]);
 
   // handle sort by and sort dir
   useEffect(() => {
@@ -244,6 +249,7 @@ const ManageStudentRegister = () => {
     setSortDir("asc");
     setSortBy("account.fullName");
     dispatch(getAllClassesAction()); // when clear filter -> get all classes
+    setPageSizeState(5);
   };
 
   // handle sort dir:
@@ -256,6 +262,11 @@ const ManageStudentRegister = () => {
   const handleSortBy = (fieldName) => {
     console.log("SET:" + fieldName);
     setSortBy(fieldName);
+  };
+
+  // handle change page size:
+  const handleChangePageSize = (e) => {
+    setPageSizeState(e.target.value);
   };
 
   // handle open modal confirm delete studentSemester:
@@ -454,6 +465,24 @@ const ManageStudentRegister = () => {
             </h2>
           )}
 
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4 p-2 bg-gray-50 rounded-md shadow-sm">
+            <div className="text-gray-700 font-medium">
+              Tổng số sinh viên:{" "}
+              <span className="font-semibold">{totalElements}</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-700">
+              <span>Hiển thị:</span>
+              <FormControl size="small">
+                <Select value={pageSizeState} onChange={handleChangePageSize}>
+                  <MenuItem value={5}>5</MenuItem>
+                  <MenuItem value={10}>10</MenuItem>
+                  <MenuItem value={15}>15</MenuItem>
+                  <MenuItem value={20}>20</MenuItem>
+                </Select>
+              </FormControl>
+              <span>item / trang</span>
+            </div>
+          </div>
           {/* TABLE */}
           {studentReducer.studentPagination?.content.length <= 0 &&
           !isDelayedLoading ? (
@@ -574,6 +603,8 @@ const ManageStudentRegister = () => {
                   page={pageNumber}
                   color="primary"
                   onChange={handleChangePage}
+                  showFirstButton
+                  showLastButton
                 />
               </div>
             )}

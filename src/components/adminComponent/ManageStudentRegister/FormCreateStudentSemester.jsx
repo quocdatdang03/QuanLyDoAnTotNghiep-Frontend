@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Chip,
+  CircularProgress,
   Container,
   Divider,
   Fade,
@@ -129,12 +130,14 @@ const FormCreateStudentSemester = () => {
   ] = useState(false);
   const [sortDir, setSortDir] = useState("asc");
   const [sortBy, setSortBy] = useState("account.fullName");
+  const [pageSizeState, setPageSizeState] = useState(5);
   const [isDelayedLoading, setIsDelayedLoading] = useState(true);
 
   const { studentReducer, classReducer, facultyReducer, semesterReducer } =
     useSelector((store) => store);
 
-  const isStudentLoading = studentReducer.isLoading;
+  const isStudentNotEnrrolledLoading =
+    studentReducer.isStudentNotEnrrolledLoading;
 
   // get all info for pagination:
   const totalElements =
@@ -182,6 +185,7 @@ const FormCreateStudentSemester = () => {
         facultyId,
         classId,
         pageNumber: value,
+        pageSize: pageSizeState,
         sortDir,
         sortBy,
       },
@@ -201,6 +205,7 @@ const FormCreateStudentSemester = () => {
         classId,
         facultyId,
         pageNumber: pageNum,
+        pageSize: pageSizeState,
         sortDir,
         sortBy,
       },
@@ -215,7 +220,8 @@ const FormCreateStudentSemester = () => {
   useEffect(() => {
     // Nếu filter -> reset về pageNumber là 1
     handleFilterStudent(1);
-  }, [keyword, classId, facultyId]);
+    setCurrentPageNum(1);
+  }, [keyword, classId, facultyId, pageSizeState]);
 
   // handle sort by and sort dir
   useEffect(() => {
@@ -232,6 +238,7 @@ const FormCreateStudentSemester = () => {
     setSortDir("asc");
     setSortBy("account.fullName");
     dispatch(getAllClassesAction()); // when clear filter -> get all classes
+    setPageSizeState(5);
   };
 
   // handle sort dir:
@@ -244,6 +251,11 @@ const FormCreateStudentSemester = () => {
   const handleSortBy = (fieldName) => {
     console.log("SET:" + fieldName);
     setSortBy(fieldName);
+  };
+
+  // handle change page size
+  const handleChangePageSize = (e) => {
+    setPageSizeState(e.target.value);
   };
 
   // handle add student to temporary list:
@@ -302,16 +314,16 @@ const FormCreateStudentSemester = () => {
 
   // handle loading :
   useEffect(() => {
-    if (isStudentLoading) {
+    if (isStudentNotEnrrolledLoading) {
       setIsDelayedLoading(true);
     } else {
       const timer = setTimeout(() => {
         setIsDelayedLoading(false);
-      }, 800);
+      }, 200);
 
       return () => clearTimeout(timer);
     }
-  }, [isStudentLoading]);
+  }, [isStudentNotEnrrolledLoading]);
 
   return (
     <>
@@ -438,6 +450,24 @@ const FormCreateStudentSemester = () => {
             </h2>
           )}
 
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4 p-2 bg-gray-50 rounded-md shadow-sm">
+            <div className="text-gray-700 font-medium">
+              Tổng số sinh viên chưa đăng ký đồ án tốt nghiệp:{" "}
+              <span className="font-semibold">{totalElements}</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-700">
+              <span>Hiển thị:</span>
+              <FormControl size="small">
+                <Select value={pageSizeState} onChange={handleChangePageSize}>
+                  <MenuItem value={5}>5</MenuItem>
+                  <MenuItem value={10}>10</MenuItem>
+                  <MenuItem value={15}>15</MenuItem>
+                  <MenuItem value={20}>20</MenuItem>
+                </Select>
+              </FormControl>
+              <span>item / trang</span>
+            </div>
+          </div>
           {/* TABLE */}
           {studentReducer.studentNotEnrolledInCurrentSemesterPagination?.content
             .length <= 0 ? (
@@ -483,55 +513,70 @@ const FormCreateStudentSemester = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {studentReducer.studentNotEnrolledInCurrentSemesterPagination?.content.map(
-                    (item, index) => {
-                      return (
-                        <TableRow key={item.studentCode}>
-                          <TableCell align="left">{index + 1}</TableCell>
-                          <TableCell align="left">
-                            <img
-                              className="w-16 h-16 object-cover object-center rounded-"
-                              src={item.image}
-                              alt={item.fullName}
-                            />
-                          </TableCell>
-                          <TableCell align="left">{item.studentCode}</TableCell>
-                          <TableCell align="left">{item.fullName}</TableCell>
-                          <TableCell align="left">
-                            {item.studentClass.className}
-                          </TableCell>
-                          <TableCell align="left">
-                            {item.studentClass.faculty.facultyName}
-                          </TableCell>
-                          <TableCell align="left">
-                            {isStudentPresentInList(
-                              item,
-                              studentReducer.choosenStudents
-                            ) ? (
-                              <Button
-                                variant="contained"
-                                color="success"
-                                disabled
-                              >
-                                Đã chọn
-                              </Button>
-                            ) : (
-                              <Button
-                                variant="contained"
-                                color="success"
-                                onClick={() =>
-                                  handleAddStudentToTemporaryList(
-                                    item.studentCode
-                                  )
-                                }
-                              >
-                                Chọn
-                              </Button>
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    }
+                  {isDelayedLoading ? (
+                    <TableRow>
+                      <TableCell
+                        colSpan={tableHeaderDatas.length}
+                        align="center"
+                      >
+                        <div className="w-full flex items-center justify-center min-h-36">
+                          <CircularProgress />
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    studentReducer.studentNotEnrolledInCurrentSemesterPagination?.content.map(
+                      (item, index) => {
+                        return (
+                          <TableRow key={item.studentCode}>
+                            <TableCell align="left">{index + 1}</TableCell>
+                            <TableCell align="left">
+                              <img
+                                className="w-16 h-16 object-cover object-center rounded-"
+                                src={item.image}
+                                alt={item.fullName}
+                              />
+                            </TableCell>
+                            <TableCell align="left">
+                              {item.studentCode}
+                            </TableCell>
+                            <TableCell align="left">{item.fullName}</TableCell>
+                            <TableCell align="left">
+                              {item.studentClass.className}
+                            </TableCell>
+                            <TableCell align="left">
+                              {item.studentClass.faculty.facultyName}
+                            </TableCell>
+                            <TableCell align="left">
+                              {isStudentPresentInList(
+                                item,
+                                studentReducer.choosenStudents
+                              ) ? (
+                                <Button
+                                  variant="contained"
+                                  color="success"
+                                  disabled
+                                >
+                                  Đã chọn
+                                </Button>
+                              ) : (
+                                <Button
+                                  variant="contained"
+                                  color="success"
+                                  onClick={() =>
+                                    handleAddStudentToTemporaryList(
+                                      item.studentCode
+                                    )
+                                  }
+                                >
+                                  Chọn
+                                </Button>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      }
+                    )
                   )}
                 </TableBody>
               </Table>
@@ -549,6 +594,8 @@ const FormCreateStudentSemester = () => {
                 page={pageNumber}
                 color="primary"
                 onChange={handleChangePage}
+                showFirstButton
+                showLastButton
               />
             </div>
           )}

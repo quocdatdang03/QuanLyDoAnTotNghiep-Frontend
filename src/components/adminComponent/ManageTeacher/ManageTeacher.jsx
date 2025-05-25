@@ -79,6 +79,7 @@ const ManageTeacher = () => {
 
   const [sortDir, setSortDir] = useState("asc");
   const [sortBy, setSortBy] = useState("account.fullName");
+  const [pageSizeState, setPageSizeState] = useState(5);
   const [isDelayedLoading, setIsDelayedLoading] = useState(true);
 
   const { teacherReducer, facultyReducer } = useSelector((store) => store);
@@ -107,6 +108,7 @@ const ManageTeacher = () => {
       studentPagination: {
         facultyId,
         pageNumber: value,
+        pageSize: pageSizeState,
         sortDir,
         sortBy,
       },
@@ -125,6 +127,7 @@ const ManageTeacher = () => {
       studentPagination: {
         facultyId,
         pageNumber: pageNum,
+        pageSize: pageSizeState,
         sortDir,
         sortBy,
       },
@@ -139,11 +142,12 @@ const ManageTeacher = () => {
   useEffect(() => {
     // Nếu filter -> reset về pageNumber là 1
     handleFilterStudent(1);
-  }, [keyword, facultyId]);
+    setCurrentPageNum(1);
+  }, [keyword, facultyId, pageSizeState]);
 
   // handle sort by and sort dir
   useEffect(() => {
-    // Nếu filter -> reset về pageNumber là 1
+    // Nếu filter -> Giữ nguyên current page
     handleFilterStudent(currentPageNum);
   }, [sortBy, sortDir]);
 
@@ -154,6 +158,7 @@ const ManageTeacher = () => {
     setCurrentPageNum(1);
     setSortDir("asc");
     setSortBy("account.fullName");
+    setPageSizeState(5);
   };
 
   // handle sort dir:
@@ -166,6 +171,11 @@ const ManageTeacher = () => {
   const handleSortBy = (fieldName) => {
     console.log("SET:" + fieldName);
     setSortBy(fieldName);
+  };
+
+  // handle change pageSize:
+  const handleChangePageSize = (e) => {
+    setPageSizeState(e.target.value);
   };
 
   // handle lock/unlock student account:
@@ -301,6 +311,24 @@ const ManageTeacher = () => {
           </h2>
         )}
 
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4 p-2 bg-gray-50 rounded-md shadow-sm">
+          <div className="text-gray-700 font-medium">
+            Tổng số tài khoản giảng viên:{" "}
+            <span className="font-semibold">{totalElements}</span>
+          </div>
+          <div className="flex items-center gap-2 text-gray-700">
+            <span>Hiển thị:</span>
+            <FormControl size="small">
+              <Select value={pageSizeState} onChange={handleChangePageSize}>
+                <MenuItem value={5}>5</MenuItem>
+                <MenuItem value={10}>10</MenuItem>
+                <MenuItem value={15}>15</MenuItem>
+                <MenuItem value={20}>20</MenuItem>
+              </Select>
+            </FormControl>
+            <span>item / trang</span>
+          </div>
+        </div>
         {/* TABLE */}
         {teacherReducer.teacherPagination?.content.length <= 0 &&
         !isDelayedLoading ? (
@@ -444,6 +472,8 @@ const ManageTeacher = () => {
                 page={pageNumber}
                 color="primary"
                 onChange={handleChangePage}
+                showFirstButton
+                showLastButton
               />
             </div>
           )}

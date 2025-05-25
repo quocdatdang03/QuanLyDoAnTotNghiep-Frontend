@@ -13,6 +13,7 @@ const initialState = {
   isLoading: false,
   isStudentAccountLoading: false,
   isRegisteredStudentLoading: false,
+  isStudentNotEnrrolledLoading: false,
 };
 
 const studentReducer = (state = initialState, action) => {
@@ -21,7 +22,6 @@ const studentReducer = (state = initialState, action) => {
     case actionTypes.GET_INSTRUCTOR_BY_STUDENTID_IN_CURRENT_SEMESTER_REQUEST:
     case actionTypes.UPDATE_ENABLE_STATUS_REQUEST:
     case actionTypes.CREATE_STUDENT_ACCOUNT_REQUEST:
-    case actionTypes.GET_ALL_STUDENTS_NOT_ENROLLED_IN_CURRENT_SEMESTER_REQUEST:
     case actionTypes.CHOOSE_STUDENT_REQUEST:
     case actionTypes.REMOVE_STUDENT_FROM_TEMPORARY_LIST_REQUEST:
     case actionTypes.ADD_STUDENT_TO_CURRENT_SEMESTER_REQUEST:
@@ -45,6 +45,14 @@ const studentReducer = (state = initialState, action) => {
       return {
         ...state,
         isRegisteredStudentLoading: true,
+        success: null,
+        error: null,
+      };
+
+    case actionTypes.GET_ALL_STUDENTS_NOT_ENROLLED_IN_CURRENT_SEMESTER_REQUEST:
+      return {
+        ...state,
+        isStudentNotEnrrolledLoading: true,
         success: null,
         error: null,
       };
@@ -99,7 +107,7 @@ const studentReducer = (state = initialState, action) => {
     case actionTypes.GET_ALL_STUDENTS_NOT_ENROLLED_IN_CURRENT_SEMESTER_SUCCESS:
       return {
         ...state,
-        isLoading: false,
+        isStudentNotEnrrolledLoading: false,
         studentNotEnrolledInCurrentSemesterPagination: action.payload,
         error: null,
       };
@@ -139,7 +147,6 @@ const studentReducer = (state = initialState, action) => {
     case actionTypes.GET_INSTRUCTOR_BY_STUDENTID_IN_CURRENT_SEMESTER_FAILURE:
     case actionTypes.UPDATE_ENABLE_STATUS_FAILURE:
     case actionTypes.CREATE_STUDENT_ACCOUNT_FAILURE:
-    case actionTypes.GET_ALL_STUDENTS_NOT_ENROLLED_IN_CURRENT_SEMESTER_FAILURE:
     case actionTypes.CHOOSE_STUDENT_FAILURE:
     case actionTypes.REMOVE_STUDENT_FROM_TEMPORARY_LIST_FAILURE:
     case actionTypes.ADD_STUDENT_TO_CURRENT_SEMESTER_FAILURE:
@@ -163,6 +170,14 @@ const studentReducer = (state = initialState, action) => {
       return {
         ...state,
         isRegisteredStudentLoading: false,
+        success: null,
+        error: action.payload,
+      };
+
+    case actionTypes.GET_ALL_STUDENTS_NOT_ENROLLED_IN_CURRENT_SEMESTER_FAILURE:
+      return {
+        ...state,
+        isStudentNotEnrrolledLoading: false,
         success: null,
         error: action.payload,
       };
