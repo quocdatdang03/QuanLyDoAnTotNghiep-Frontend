@@ -5,6 +5,7 @@ const initialState = {
   schoolYears: null,
   schoolYear: null,
   isLoading: false,
+  isSchoolYearLoading: false,
   success: null,
   error: null,
 };
@@ -12,7 +13,6 @@ const initialState = {
 const schoolYearReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.GET_ALL_SCHOOL_YEAR_REQUEST:
-    case actionTypes.GET_ALL_SCHOOL_YEAR_BY_PAGINATION_REQUEST:
     case actionTypes.CREATE_SCHOOL_YEAR_REQUEST:
     case actionTypes.DELETE_SCHOOL_YEAR_REQUEST:
     case actionTypes.GET_SCHOOL_YEAR_BY_ID_REQUEST:
@@ -20,6 +20,14 @@ const schoolYearReducer = (state = initialState, action) => {
       return {
         ...state,
         isLoading: true,
+        success: null,
+        error: null,
+      };
+
+    case actionTypes.GET_ALL_SCHOOL_YEAR_BY_PAGINATION_REQUEST:
+      return {
+        ...state,
+        isSchoolYearLoading: true,
         success: null,
         error: null,
       };
@@ -35,7 +43,7 @@ const schoolYearReducer = (state = initialState, action) => {
     case actionTypes.GET_ALL_SCHOOL_YEAR_BY_PAGINATION_SUCCESS:
       return {
         ...state,
-        isLoading: false,
+        isSchoolYearLoading: false,
         schoolYearPagination: action.payload,
         error: null,
       };
@@ -86,7 +94,6 @@ const schoolYearReducer = (state = initialState, action) => {
       };
 
     case actionTypes.GET_ALL_SCHOOL_YEAR_FAILURE:
-    case actionTypes.GET_ALL_SCHOOL_YEAR_BY_PAGINATION_FAILURE:
     case actionTypes.CREATE_SCHOOL_YEAR_FAILURE:
     case actionTypes.DELETE_SCHOOL_YEAR_FAILURE:
     case actionTypes.GET_SCHOOL_YEAR_BY_ID_FAILURE:
@@ -94,6 +101,14 @@ const schoolYearReducer = (state = initialState, action) => {
       return {
         ...state,
         isLoading: false,
+        success: null,
+        error: action.payload,
+      };
+
+    case actionTypes.GET_ALL_SCHOOL_YEAR_BY_PAGINATION_FAILURE:
+      return {
+        ...state,
+        isSchoolYearLoading: false,
         success: null,
         error: action.payload,
       };

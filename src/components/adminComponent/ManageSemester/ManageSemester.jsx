@@ -2,6 +2,7 @@ import {
   Backdrop,
   Box,
   Button,
+  CircularProgress,
   Fade,
   FormControl,
   FormHelperText,
@@ -63,8 +64,16 @@ const ManageSemester = () => {
   const [openDeleteSemesterModal, setOpenDeleteSemesterModal] = useState(false);
   const [selectedSchoolYear, setSelectedSchoolYear] = useState(null);
   const [selectedSemester, setSelectedSemester] = useState(null);
-  const isSchoolYearLoading = schoolYearReducer.isLoading;
-  const isSemesterLoading = semesterReducer.isLoading;
+  const [pageSizeSchoolYearState, setPageSizeSchoolYearState] = useState(5);
+  const [pageSizeSemesterState, setPageSizeSemesterState] = useState(5);
+
+  const isSchoolYearLoading = schoolYearReducer.isSchoolYearLoading;
+  const isSemesterLoading = semesterReducer.isSemesterLoading;
+
+  const [isDelayedSchoolYearLoading, setIsDelayedSchoolYearLoading] =
+    useState(true);
+  const [isDelayedSemesterLoading, setIsDelayedSemesterLoading] =
+    useState(true);
 
   var totalElementsSchoolYear =
     schoolYearReducer.schoolYearPagination?.totalElements;
@@ -127,25 +136,31 @@ const ManageSemester = () => {
     },
   });
 
-  // get all school years and all semesters:
+  // get all school years:
   useEffect(() => {
     const requestDataSchoolYear = {
-      schoolYearPagination: {},
-    };
-
-    const requestDataSemester = {
-      semesterPagination: {},
+      schoolYearPagination: {
+        pageSize: pageSizeSchoolYearState,
+      },
     };
 
     // get all school years by pagination
     dispatch(getAllSchoolYearsByPaginationAction(requestDataSchoolYear));
 
-    // get all semesters:
-    dispatch(getAllSemestersAction(requestDataSemester));
-
     // get all school years
     dispatch(getAllSchoolYearAction());
-  }, [dispatch]);
+  }, [pageSizeSchoolYearState]);
+
+  // get all semesters:
+  useEffect(() => {
+    const requestDataSemester = {
+      semesterPagination: {
+        pageSize: pageSizeSemesterState,
+      },
+    };
+    // get all semesters:
+    dispatch(getAllSemestersAction(requestDataSemester));
+  }, [pageSizeSemesterState]);
 
   // handle load schoolYear list when schoolYearPagination change
   useEffect(() => {
@@ -158,6 +173,7 @@ const ManageSemester = () => {
     const requestData = {
       schoolYearPagination: {
         pageNumber: value,
+        pageSize: pageSizeSchoolYearState,
       },
     };
 
@@ -169,6 +185,7 @@ const ManageSemester = () => {
     const requestData = {
       semesterPagination: {
         pageNumber: value,
+        pageSize: pageSizeSemesterState,
       },
     };
 
@@ -217,6 +234,40 @@ const ManageSemester = () => {
     setOpenDeleteSemesterModal(false);
     toast.success("Xóa học kỳ thành công");
   };
+
+  // handle change pageSize:
+  const handleChangePageSizeSchoolYear = (e) => {
+    setPageSizeSchoolYearState(e.target.value);
+  };
+
+  const handleChangePageSizeSemester = (e) => {
+    setPageSizeSemesterState(e.target.value);
+  };
+
+  // handle loading:
+  useEffect(() => {
+    if (isSchoolYearLoading) {
+      setIsDelayedSchoolYearLoading(true);
+    } else {
+      const timer = setTimeout(() => {
+        setIsDelayedSchoolYearLoading(false);
+      }, 200);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isSchoolYearLoading]);
+
+  useEffect(() => {
+    if (isSemesterLoading) {
+      setIsDelayedSemesterLoading(true);
+    } else {
+      const timer = setTimeout(() => {
+        setIsDelayedSemesterLoading(false);
+      }, 200);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isSemesterLoading]);
 
   return (
     <>
@@ -400,12 +451,34 @@ const ManageSemester = () => {
         </div>
 
         {/* TABLE */}
+        {/* TABLE SCHOOL YEAR */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {/* TABLE SCHOOL YEAR */}
-          <div>
-            <h1 className="uppercase text-lg font-bold mt-10 mb-2">
+          <div className="mt-10">
+            <h1 className="uppercase text-lg font-bold mb-2">
               Danh sách năm học
             </h1>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4 p-2 bg-gray-50 rounded-md shadow-sm">
+              <div className="text-gray-700 font-medium">
+                Tổng số năm học:{" "}
+                <span className="font-semibold">{totalElementsSchoolYear}</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-700">
+                <span>Hiển thị:</span>
+                <FormControl size="small">
+                  <Select
+                    value={pageSizeSchoolYearState}
+                    onChange={handleChangePageSizeSchoolYear}
+                  >
+                    <MenuItem value={5}>5</MenuItem>
+                    <MenuItem value={10}>10</MenuItem>
+                    <MenuItem value={15}>15</MenuItem>
+                    <MenuItem value={20}>20</MenuItem>
+                  </Select>
+                </FormControl>
+                <span>item / trang</span>
+              </div>
+            </div>
+
             <TableContainer component={Paper}>
               <Table sx={{ minWidth: 650 }}>
                 <TableHead className="bg-blue-400">
@@ -416,41 +489,53 @@ const ManageSemester = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {schoolYearReducer.schoolYearPagination?.content.map(
-                    (item, index) => (
-                      <TableRow
-                        key={item.schoolYearId}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell align="center">{index + 1}</TableCell>
-                        <TableCell align="center">
-                          {item.schoolYearName}
-                        </TableCell>
-                        <TableCell align="center">
-                          <div className="flex justify-center space-x-2">
-                            <Button
-                              variant="contained"
-                              color="warning"
-                              onClick={() =>
-                                navigate(`schoolYear/edit/${item.schoolYearId}`)
-                              }
-                            >
-                              Sửa
-                            </Button>
-                            <Button
-                              variant="contained"
-                              color="error"
-                              onClick={() =>
-                                handleOpenDeleteSchoolYearModal(item)
-                              }
-                            >
-                              Xóa
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
+                  {isDelayedSchoolYearLoading ? (
+                    <TableRow>
+                      <TableCell colSpan={3} align="center">
+                        <div className="w-full flex items-center justify-center min-h-40">
+                          <CircularProgress />
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    schoolYearReducer.schoolYearPagination?.content.map(
+                      (item, index) => (
+                        <TableRow
+                          key={item.schoolYearId}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell align="center">{index + 1}</TableCell>
+                          <TableCell align="center">
+                            {item.schoolYearName}
+                          </TableCell>
+                          <TableCell align="center">
+                            <div className="flex justify-center space-x-2">
+                              <Button
+                                variant="contained"
+                                color="warning"
+                                onClick={() =>
+                                  navigate(
+                                    `schoolYear/edit/${item.schoolYearId}`
+                                  )
+                                }
+                              >
+                                Sửa
+                              </Button>
+                              <Button
+                                variant="contained"
+                                color="error"
+                                onClick={() =>
+                                  handleOpenDeleteSchoolYearModal(item)
+                                }
+                              >
+                                Xóa
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      )
                     )
                   )}
                 </TableBody>
@@ -463,6 +548,8 @@ const ManageSemester = () => {
                 page={currentPageNumberSchoolYear || 1}
                 color="primary"
                 onChange={handleChangePageSchoolYear}
+                showFirstButton
+                showLastButton
               />
             </div>
           </div>
@@ -472,6 +559,27 @@ const ManageSemester = () => {
             <h1 className="uppercase text-lg font-bold mt-10 mb-2">
               Danh sách học kỳ
             </h1>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4 p-2 bg-gray-50 rounded-md shadow-sm">
+              <div className="text-gray-700 font-medium">
+                Tổng số học kỳ:{" "}
+                <span className="font-semibold">{totalElementsSemester}</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-700">
+                <span>Hiển thị:</span>
+                <FormControl size="small">
+                  <Select
+                    value={pageSizeSemesterState}
+                    onChange={handleChangePageSizeSemester}
+                  >
+                    <MenuItem value={5}>5</MenuItem>
+                    <MenuItem value={10}>10</MenuItem>
+                    <MenuItem value={15}>15</MenuItem>
+                    <MenuItem value={20}>20</MenuItem>
+                  </Select>
+                </FormControl>
+                <span>item / trang</span>
+              </div>
+            </div>
             <TableContainer component={Paper}>
               <Table sx={{ minWidth: 650 }}>
                 <TableHead className="bg-blue-400">
@@ -483,48 +591,58 @@ const ManageSemester = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {semesterReducer.semesterPagination?.content.map(
-                    (item, index) => (
-                      <TableRow
-                        key={item.semesterId}
-                        className={`${item.isCurrent ? "bg-green-300" : "bg-white"}`}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell align="center">{index + 1}</TableCell>
-                        <TableCell align="center">
-                          {item.semesterName}{" "}
-                          {item.isCurrent && (
-                            <i className="font-bold">(Học kỳ hiện tại)</i>
-                          )}
-                        </TableCell>
-                        <TableCell align="center">
-                          {item.schoolYear.schoolYearName}
-                        </TableCell>
-                        <TableCell align="center">
-                          <div className="flex justify-center space-x-2">
-                            <Button
-                              variant="contained"
-                              color="warning"
-                              onClick={() =>
-                                navigate(`semester/edit/${item.semesterId}`)
-                              }
-                            >
-                              Sửa
-                            </Button>
-                            <Button
-                              variant="contained"
-                              color="error"
-                              onClick={() =>
-                                handleOpenDeleteSemesterModal(item)
-                              }
-                            >
-                              Xóa
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
+                  {isDelayedSemesterLoading ? (
+                    <TableRow>
+                      <TableCell colSpan={4} align="center">
+                        <div className="w-full flex items-center justify-center min-h-40">
+                          <CircularProgress />
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    semesterReducer.semesterPagination?.content.map(
+                      (item, index) => (
+                        <TableRow
+                          key={item.semesterId}
+                          className={`${item.isCurrent ? "bg-green-300" : "bg-white"}`}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell align="center">{index + 1}</TableCell>
+                          <TableCell align="center">
+                            {item.semesterName}{" "}
+                            {item.isCurrent && (
+                              <i className="font-bold">(Học kỳ hiện tại)</i>
+                            )}
+                          </TableCell>
+                          <TableCell align="center">
+                            {item.schoolYear.schoolYearName}
+                          </TableCell>
+                          <TableCell align="center">
+                            <div className="flex justify-center space-x-2">
+                              <Button
+                                variant="contained"
+                                color="warning"
+                                onClick={() =>
+                                  navigate(`semester/edit/${item.semesterId}`)
+                                }
+                              >
+                                Sửa
+                              </Button>
+                              <Button
+                                variant="contained"
+                                color="error"
+                                onClick={() =>
+                                  handleOpenDeleteSemesterModal(item)
+                                }
+                              >
+                                Xóa
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      )
                     )
                   )}
                 </TableBody>
@@ -537,6 +655,8 @@ const ManageSemester = () => {
                 page={currentPageNumberSemester || 1}
                 color="primary"
                 onChange={handleChangePageSemester}
+                showFirstButton
+                showLastButton
               />
             </div>
           </div>

@@ -6,13 +6,13 @@ const initialState = {
   semester: null,
   currentSemester: null,
   isLoading: false,
+  isSemesterLoading: false,
   error: null,
   success: null,
 };
 
 const semesterReducer = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.GET_ALL_SEMESTER_REQUEST:
     case actionTypes.CREATE_SEMESTER_REQUEST:
     case actionTypes.DELETE_SEMESTER_REQUEST:
     case actionTypes.GET_SEMESTER_BY_ID_REQUEST:
@@ -26,10 +26,18 @@ const semesterReducer = (state = initialState, action) => {
         error: null,
       };
 
+    case actionTypes.GET_ALL_SEMESTER_REQUEST:
+      return {
+        ...state,
+        isSemesterLoading: true,
+        success: null,
+        error: null,
+      };
+
     case actionTypes.GET_ALL_SEMESTER_SUCCESS:
       return {
         ...state,
-        isLoading: false,
+        isSemesterLoading: false,
         semesterPagination: action.payload,
         error: null,
       };
@@ -96,7 +104,6 @@ const semesterReducer = (state = initialState, action) => {
         error: null,
       };
 
-    case actionTypes.GET_ALL_SEMESTER_FAILURE:
     case actionTypes.CREATE_SEMESTER_FAILURE:
     case actionTypes.DELETE_SEMESTER_FAILURE:
     case actionTypes.GET_SEMESTER_BY_ID_FAILURE:
@@ -106,6 +113,13 @@ const semesterReducer = (state = initialState, action) => {
       return {
         ...state,
         isLoading: false,
+        error: action.payload,
+      };
+
+    case actionTypes.GET_ALL_SEMESTER_FAILURE:
+      return {
+        ...state,
+        isSemesterLoading: false,
         error: action.payload,
       };
 
