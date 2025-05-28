@@ -23,7 +23,7 @@ import Groups3Icon from "@mui/icons-material/Groups3";
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import ManageStudentRegister from "../ManageStudentRegister/ManageStudentRegister";
 import ManageSemester from "../ManageSemester/ManageSemester";
 import AdminProfile from "../AdminProfile/AdminProfile";
@@ -154,6 +154,7 @@ const sidebarAdminOptions = [
 export const SideBar = () => {
   const [open, setOpen] = React.useState(true);
   const navigate = useNavigate();
+  const location = useLocation(); // Lấy đường dẫn hiện tại
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -195,60 +196,77 @@ export const SideBar = () => {
         </DrawerHeader>
         <Divider />
         <List>
-          {sidebarAdminOptions.map((item, index) => (
-            <ListItem
-              key={index}
-              sx={{ display: "block", paddingX: 1, paddingY: 0 }}
-              onClick={() => navigate(item.path)}
-            >
-              <ListItemButton
-                sx={[
-                  {
-                    minHeight: 48,
-                    px: 2.5,
-                    borderRadius: 2,
-                  },
-                  open
-                    ? {
-                        justifyContent: "initial",
-                      }
-                    : {
-                        justifyContent: "center",
-                      },
-                ]}
+          {sidebarAdminOptions.map((item, index) => {
+            const isActive =
+              location.pathname === item.path ||
+              (item.path !== "/admin/" &&
+                location.pathname.startsWith(item.path));
+            return (
+              <ListItem
+                key={index}
+                sx={{ display: "block", paddingX: 1, paddingY: 0 }}
+                onClick={() => navigate(item.path)}
               >
-                <ListItemIcon
+                <ListItemButton
                   sx={[
                     {
-                      minWidth: 0,
-                      justifyContent: "center",
+                      minHeight: 48,
+                      px: 2.5,
+                      borderRadius: 2,
+                      transition: "background-color 0.25s, color 0.25s",
+                      ...(isActive && {
+                        backgroundColor: "primary.main",
+                        color: "#fff",
+                        "&:hover": { backgroundColor: "primary.dark" },
+                      }),
                     },
                     open
                       ? {
-                          mr: 3,
+                          justifyContent: "initial",
                         }
                       : {
-                          mr: "auto",
+                          justifyContent: "center",
                         },
                   ]}
                 >
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={item.text}
-                  sx={[
-                    open
-                      ? {
-                          opacity: 1,
-                        }
-                      : {
-                          opacity: 0,
-                        },
-                  ]}
-                />
-              </ListItemButton>
-            </ListItem>
-          ))}
+                  <ListItemIcon
+                    sx={[
+                      {
+                        minWidth: 0,
+                        justifyContent: "center",
+                        color: isActive ? "#fff" : undefined,
+                        transition: "color 0.25s",
+                      },
+                      open
+                        ? {
+                            mr: 3,
+                          }
+                        : {
+                            mr: "auto",
+                          },
+                    ]}
+                  >
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={item.text}
+                    sx={[
+                      open
+                        ? {
+                            opacity: 1,
+                            color: isActive ? "#fff" : undefined,
+                            transition: "color 0.25s, opacity 0.25s",
+                          }
+                        : {
+                            opacity: 0,
+                            transition: "opacity 0.25s",
+                          },
+                    ]}
+                  />
+                </ListItemButton>
+              </ListItem>
+            );
+          })}
         </List>
       </Drawer>
       {/* END SIDE BAR */}
