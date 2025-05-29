@@ -40,20 +40,38 @@ const ProfileDetails = () => {
               ? "Sinh viên"
               : "Giảng viên"}
           </span>
+          {userInfo?.roles[0].roleName === "GIANGVIEN" &&
+            userInfo?.userDetails.isLeader && (
+              <b className="italic pl-1">(Trưởng bộ môn)</b>
+            )}
         </p>
-        {userInfo?.roles[0].roleName === "GIANGVIEN" ||
-          (userInfo?.roles[0].roleName === "ADMIN" && (
-            <>
-              <p>
-                <b className="pr-2">Khoa:</b>
-                <span>{userInfo?.userDetails.faculty.facultyName}</span>
-              </p>
-              <p>
-                <b className="pr-2">Học vị:</b>
-                <span>{userInfo?.userDetails.degree.degreeName}</span>
-              </p>
-            </>
-          ))}
+        {userInfo?.roles[0].roleName === "SINHVIEN" && (
+          <>
+            <p>
+              <b className="pr-2">Khoa:</b>
+              <span>
+                {userInfo?.userDetails.studentClass.faculty.facultyName}
+              </span>
+            </p>
+            <p>
+              <b className="pr-2">Lớp sinh hoạt:</b>
+              <span>{userInfo?.userDetails.studentClass.className}</span>
+            </p>
+          </>
+        )}
+        {(userInfo?.roles[0].roleName === "GIANGVIEN" ||
+          userInfo?.roles[0].roleName === "ADMIN") && (
+          <>
+            <p>
+              <b className="pr-2">Khoa:</b>
+              <span>{userInfo?.userDetails.faculty.facultyName}</span>
+            </p>
+            <p>
+              <b className="pr-2">Học vị:</b>
+              <span>{userInfo?.userDetails.degree.degreeName}</span>
+            </p>
+          </>
+        )}
       </div>
     </>
   );
