@@ -69,8 +69,11 @@ const tableHeaderDatas = [
   // {
   //   title: "Ngày đăng ký",
   // },
+  // {
+  //   title: "Trạng thái",
+  // },
   {
-    title: "Trạng thái",
+    title: "Tiến độ",
   },
   {
     title: "Hành động",
@@ -466,12 +469,41 @@ const TeacherProgressManager = () => {
                           {item.createdAt &&
                             new Date(item.createdAt).toLocaleString("en-GB")}
                         </TableCell> */}
-                            <TableCell align="left">
+                            {/* <TableCell align="left">
                               <Chip
                                 label={item.projectStatus.projectStatusName}
                                 variant="filled"
                                 color={`${item.projectStatus.projectStatusId === 1 ? "warning" : item.projectStatus.projectStatusId === 2 ? "primary" : item.projectStatus.projectStatusId === 3 ? "success" : "error"}`}
                               />
+                            </TableCell> */}
+                            <TableCell align="left">
+                              <div className="min-w-[200px]">
+                                <div className="flex items-center gap-2 mb-1">
+                                  {item.inProgressStage ? (
+                                    <>
+                                      <span className="text-gray-700">
+                                        Giai đoạn đang thực hiện:
+                                      </span>
+                                      <Chip
+                                        label={item.inProgressStage}
+                                        color="primary"
+                                        size="small"
+                                      />
+                                    </>
+                                  ) : (
+                                    <span className="text-gray-500 italic text-sm">
+                                      Không có giai đoạn nào đang thực hiện
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-1 text-sm text-gray-700">
+                                  <span>Số giai đoạn đã hoàn thành:</span>
+                                  <span className="font-semibold text-blue-700">
+                                    {item.numberOfCompletedStages} /{" "}
+                                    {item.totalStages}
+                                  </span>
+                                </div>
+                              </div>
                             </TableCell>
                             <TableCell align="left">
                               <Button
