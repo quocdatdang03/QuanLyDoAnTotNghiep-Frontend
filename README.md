@@ -13,7 +13,7 @@ This project focuses on developing a system to support registration, management,
 
 ## 🔗 Backend Repository
 The Backend API powering this Frontend is built with Spring Boot.\
-👉 Check it out here: [Graduation Thesis Management – Backend (Spring Boot)](https://github.com/quocdatdang03/QuanLyDoAnTotNghiep-Frontend)
+👉 Check it out here: [Graduation Thesis Management – Backend (Spring Boot)](https://github.com/quocdatdang03/QuanLyDoAnTotNghiep-Backend)
 
 ## 🔧 Technologies Used
 - **Languages**: *HTML, CSS, JavaScript*
