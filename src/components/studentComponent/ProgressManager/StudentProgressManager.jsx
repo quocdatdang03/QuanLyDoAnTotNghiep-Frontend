@@ -200,11 +200,9 @@ const StudentProgressManager = () => {
                         ? "warning"
                         : projectReducer.project?.projectStatus
                               .projectStatusId === 2
-                          ? "info"
+                          ? "success"
                           : projectReducer.project?.projectStatus
-                                .projectStatusId === 3
-                            ? "success"
-                            : "error"
+                              .projectStatusId === 3 && "error"
                     }
                   />
                 </p>

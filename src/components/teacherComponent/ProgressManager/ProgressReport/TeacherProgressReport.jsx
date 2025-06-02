@@ -256,6 +256,10 @@ const TeacherProgressReport = () => {
                             size="small"
                             color={item.approved ? "success" : "error"}
                           />
+                          {new Date(item.createdDate) >
+                            new Date(item.stage?.endDate) && (
+                            <Chip label="Nộp muộn" size="small" color="error" />
+                          )}
                         </div>
 
                         {

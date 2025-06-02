@@ -315,6 +315,14 @@ const StudentProgressReport = ({ projectId }) => {
                               size="small"
                               color={item.approved ? "success" : "error"}
                             />
+                            {new Date(item.createdDate) >
+                              new Date(item.stage?.endDate) && (
+                              <Chip
+                                label="Nộp muộn"
+                                size="small"
+                                color="error"
+                              />
+                            )}
                           </div>
                           <div className="flex items-center gap-3">
                             {/* 

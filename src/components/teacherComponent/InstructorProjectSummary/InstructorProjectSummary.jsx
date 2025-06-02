@@ -466,8 +466,8 @@ const InstructorProjectSummary = () => {
                     {/* Giá trị rỗng để hiển thị khi chưa chọn */}
                   </MenuItem>
                   <MenuItem value={1}>Chờ duyệt</MenuItem>
-                  <MenuItem value={2}>Đang thực hiện</MenuItem>
-                  <MenuItem value={4}>Bị từ chối</MenuItem>
+                  <MenuItem value={2}>Đã duyệt</MenuItem>
+                  <MenuItem value={3}>Bị từ chối</MenuItem>
                 </Select>
               </FormControl>
             </div>

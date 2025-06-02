@@ -589,7 +589,7 @@ const ProjectManager = () => {
                               <Chip
                                 label={item.projectStatus.projectStatusName}
                                 variant="filled"
-                                color={`${item.projectStatus.projectStatusId === 1 ? "warning" : item.projectStatus.projectStatusId === 2 ? "primary" : item.projectStatus.projectStatusId === 3 ? "success" : "error"}`}
+                                color={`${item.projectStatus.projectStatusId === 1 ? "warning" : item.projectStatus.projectStatusId === 2 ? "success" : item.projectStatus.projectStatusId === 3 && "error"}`}
                               />
                             </TableCell>
                             <TableCell align="left">
@@ -684,7 +684,7 @@ const ProjectManager = () => {
                 {/* Header */}
                 <div className="flex justify-between items-center border-b pb-3">
                   <Badge
-                    className={`text-sm px-3 py-1 ${projectStatusId === 1 ? "bg-orange-100 text-orange-700" : projectStatusId === 2 ? "bg-blue-100 text-blue-700" : projectStatusId === 3 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"} rounded-full`}
+                    className={`text-sm px-3 py-1 ${projectStatusId === 1 ? "bg-orange-100 text-orange-700" : projectStatusId === 2 ? "bg-green-100 text-green-700" : projectStatusId === 3 && "bg-red-100 text-red-700"} rounded-full`}
                   >
                     {
                       instructorProjectReducer.project?.projectStatus
@@ -827,7 +827,7 @@ const ProjectManager = () => {
                       color="error"
                       disabled={
                         instructorProjectReducer.project?.projectStatus
-                          .projectStatusId === 4
+                          .projectStatusId === 3
                       }
                       onClick={() =>
                         handleDeclineProject(

@@ -315,11 +315,11 @@ const ProjectRegister = () => {
                 {/* Header */}
                 <div className="flex justify-between items-center border-b pb-3">
                   <Badge
-                    className={`text-sm px-3 py-1 ${projectStatusId === 1 ? "bg-orange-100 text-orange-700" : projectStatusId === 2 ? "bg-blue-100 text-blue-700" : projectStatusId === 3 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"} rounded-full`}
+                    className={`text-sm px-3 py-1 ${projectStatusId === 1 ? "bg-orange-100 text-orange-700" : projectStatusId === 2 ? "bg-green-100 text-green-700" : projectStatusId === 3 && "bg-red-100 text-red-700"} rounded-full`}
                   >
                     {projectReducer.project?.projectStatus.projectStatusName}
                   </Badge>
-                  {(projectStatusId === 1 || projectStatusId === 4) && (
+                  {(projectStatusId === 1 || projectStatusId === 3) && (
                     <IconButton
                       title="Chỉnh sửa đề tài"
                       color="primary"
@@ -403,7 +403,7 @@ const ProjectRegister = () => {
                                 <span className="pl-2">Tải xuống</span>
                               </MenuItem>
                               {(projectStatusId === 1 ||
-                                projectStatusId === 4) && (
+                                projectStatusId === 3) && (
                                 <MenuItem
                                   onClick={(e) =>
                                     handleDeleteFile(e, selectedFile)
