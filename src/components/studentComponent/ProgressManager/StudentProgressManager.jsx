@@ -326,12 +326,12 @@ const StudentProgressManager = () => {
                                   <b>Tiêu đề: </b>{" "}
                                   <span>{item.stageTitle}</span>
                                 </p>
-                                <p>
-                                  <b>Nội dung: </b>{" "}
-                                  <span className="text-justify ">
-                                    {item.stageContent}
-                                  </span>
-                                </p>
+                                <div
+                                  className="prose prose-sm max-w-none"
+                                  dangerouslySetInnerHTML={{
+                                    __html: item.stageContent,
+                                  }}
+                                />
                                 <div className="bg-gray-50 p-3 rounded-lg border">
                                   <h4 className="font-medium text-gray-800 mb-2">
                                     📂 Danh sách file:

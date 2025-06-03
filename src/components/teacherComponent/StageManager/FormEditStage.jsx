@@ -33,6 +33,7 @@ import {
   updateStageAction,
 } from "../../../redux/InstructorStage/Action";
 import CustomBreadCrumb from "../../BreadCrumb/CustomBreadCrumb";
+import ReactQuill from "react-quill";
 
 const FormEditStage = () => {
   const { stageId } = useParams();
@@ -267,7 +268,7 @@ const FormEditStage = () => {
                   }
                 />
               </div>
-              <div>
+              {/* <div>
                 <label
                   htmlFor="stageContent"
                   className="text-sm block font-medium mb-2"
@@ -293,6 +294,30 @@ const FormEditStage = () => {
                     formik.errors.stageContent && formik.errors.stageContent
                   }
                 />
+              </div> */}
+              <div>
+                <label
+                  htmlFor="notificationContent"
+                  className="block mb-2 text-sm font-medium"
+                >
+                  Nội dung
+                </label>
+                <ReactQuill
+                  theme="snow"
+                  value={formik.values.stageContent}
+                  onChange={(value) =>
+                    formik.setFieldValue("stageContent", value)
+                  }
+                  style={{
+                    marginBottom: "3rem",
+                    height: "220px",
+                  }}
+                />
+                {formik.touched.stageContent && formik.errors.stageContent && (
+                  <p className="text-[#d32f2f] text-[0.75rem] mt-10">
+                    {formik.errors.stageContent}
+                  </p>
+                )}
               </div>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <div className="grid grid-cols-2 gap-5">

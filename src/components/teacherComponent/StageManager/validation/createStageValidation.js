@@ -1,11 +1,15 @@
 import * as Yup from "yup";
 
 export const createStageValidation = Yup.object({
-  stageName: Yup.string().required("Tên giai đoạn không được bỏ trống"),
-  stageTitle: Yup.string().required(
-    "Tên tiêu đề giai đoạn không được bỏ trống"
+  stageName: Yup.string().trim().required("Tên giai đoạn không được bỏ trống"),
+  stageTitle: Yup.string()
+    .trim()
+    .required("Tên tiêu đề giai đoạn không được bỏ trống"),
+  stageContent: Yup.string().test(
+    "not-empty",
+    "Nội dung giai đoạn không được bỏ trống",
+    (value) => value && value.replace(/<(.|\n)*?>/g, "").trim() !== ""
   ),
-  stageContent: Yup.string().required("Nội dung giai đoạn không được bỏ trống"),
   stageFile: Yup.string().url("Đường dẫn file không hợp lệ"),
   startDate: Yup.date()
     .nullable()

@@ -35,6 +35,7 @@ import {
 } from "../../../redux/InstructorStage/Action";
 import { createStageValidation } from "./validation/createStageValidation";
 import CustomBreadCrumb from "../../BreadCrumb/CustomBreadCrumb";
+import ReactQuill from "react-quill";
 
 const StageManager = () => {
   const navigate = useNavigate();
@@ -256,7 +257,7 @@ const StageManager = () => {
                   }
                 />
               </div>
-              <div>
+              {/* <div>
                 <label
                   htmlFor="stageContent"
                   className="text-sm block font-medium mb-2"
@@ -282,6 +283,30 @@ const StageManager = () => {
                     formik.errors.stageContent && formik.errors.stageContent
                   }
                 />
+              </div> */}
+              <div>
+                <label
+                  htmlFor="notificationContent"
+                  className="block mb-2 text-sm font-medium"
+                >
+                  Nội dung
+                </label>
+                <ReactQuill
+                  theme="snow"
+                  value={formik.values.stageContent}
+                  onChange={(value) =>
+                    formik.setFieldValue("stageContent", value)
+                  }
+                  style={{
+                    marginBottom: "3rem",
+                    height: "220px",
+                  }}
+                />
+                {formik.touched.stageContent && formik.errors.stageContent && (
+                  <p className="text-[#d32f2f] text-[0.75rem] mt-10">
+                    {formik.errors.stageContent}
+                  </p>
+                )}
               </div>
               {/* <div className="grid grid-cols-2 gap-5">
                 <div>

@@ -274,7 +274,10 @@ const StageDetail = ({ stage, offset, stages }) => {
             </p>
             <p>
               <b>Nội dung: </b>{" "}
-              <span className="text-justify">{stage.stageContent}</span>
+              <div
+                className="prose prose-sm max-w-none"
+                dangerouslySetInnerHTML={{ __html: stage.stageContent }}
+              />
             </p>
             <div className="bg-gray-50 border p-3 rounded-lg">
               <h4 className="text-gray-800 font-medium mb-2">
