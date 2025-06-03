@@ -275,7 +275,7 @@ const StageDetail = ({ stage, offset, stages }) => {
             <p>
               <b>Nội dung: </b>{" "}
               <div
-                className="prose prose-sm max-w-none"
+                className="prose prose-sm max-w-none ml-3"
                 dangerouslySetInnerHTML={{ __html: stage.stageContent }}
               />
             </p>
