@@ -277,7 +277,7 @@ const TeacherNotification = () => {
               htmlFor="notificationTitle"
               className="block mb-2 text-sm font-medium"
             >
-              Tiêu đề
+              Tiêu đề <b className="text-red-600">(*)</b>
             </label>
             <TextField
               label="Nhập tiêu đề thông báo"
@@ -328,12 +328,12 @@ const TeacherNotification = () => {
               }
             />
           </div> */}
-          <div>
+          <div className="mb-3 pb-1">
             <label
               htmlFor="notificationContent"
               className="block mb-2 text-sm font-medium"
             >
-              Nội dung
+              Nội dung <b className="text-red-600">(*)</b>
             </label>
             <ReactQuill
               theme="snow"
@@ -348,7 +348,7 @@ const TeacherNotification = () => {
             />
             {formik.touched.notificationContent &&
               formik.errors.notificationContent && (
-                <p className="text-red-500 text-sm mt-10">
+                <p className="text-[#d32f2f] text-[0.75rem] mt-10 mx-[14px]">
                   {formik.errors.notificationContent}
                 </p>
               )}
@@ -383,7 +383,7 @@ const TeacherNotification = () => {
                         {item.notificationTitle}
                       </h2>
                       <div
-                        className="prose prose-sm max-w-none"
+                        className="prose prose-sm max-w-none ml-3"
                         dangerouslySetInnerHTML={{
                           __html: item.notificationContent,
                         }}
@@ -467,7 +467,7 @@ const TeacherNotification = () => {
                   htmlFor="notificationTitle"
                   className="block mb-2 text-sm font-medium"
                 >
-                  Tiêu đề
+                  Tiêu đề <b className="text-red-600">(*)</b>
                 </label>
                 <TextField
                   label="Nhập tiêu đề thông báo"
@@ -523,7 +523,7 @@ const TeacherNotification = () => {
                   htmlFor="notificationContent"
                   className="block mb-2 text-sm font-medium"
                 >
-                  Nội dung
+                  Nội dung <b className="text-red-600">(*)</b>
                 </label>
                 <ReactQuill
                   theme="snow"
@@ -538,7 +538,7 @@ const TeacherNotification = () => {
                 />
                 {formikUpdate.touched.notificationContent &&
                   formikUpdate.errors.notificationContent && (
-                    <p className="text-red-500 text-sm mt-10">
+                    <p className="text-[#d32f2f] text-[0.75rem] mt-10 mx-[14px]">
                       {formikUpdate.errors.notificationContent}
                     </p>
                   )}

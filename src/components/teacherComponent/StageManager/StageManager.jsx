@@ -284,12 +284,12 @@ const StageManager = () => {
                   }
                 />
               </div> */}
-              <div>
+              <div className="mb-3 pb-1">
                 <label
-                  htmlFor="notificationContent"
+                  htmlFor="stageContent"
                   className="block mb-2 text-sm font-medium"
                 >
-                  Nội dung
+                  Nội dung <b className="text-red-600">(*)</b>
                 </label>
                 <ReactQuill
                   theme="snow"
@@ -303,7 +303,7 @@ const StageManager = () => {
                   }}
                 />
                 {formik.touched.stageContent && formik.errors.stageContent && (
-                  <p className="text-[#d32f2f] text-[0.75rem] mt-10">
+                  <p className="text-[#d32f2f] text-[0.75rem] mt-10 mx-[14px]">
                     {formik.errors.stageContent}
                   </p>
                 )}

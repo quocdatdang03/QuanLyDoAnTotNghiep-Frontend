@@ -26,6 +26,7 @@ import { useFormik } from "formik";
 import { createProgressReportValidation } from "./validation/createProgressReportValidation";
 import { createProgressReportAction } from "../../../../redux/ProgressReport/Action";
 import CustomBreadCrumb from "../../../BreadCrumb/CustomBreadCrumb";
+import ReactQuill from "react-quill";
 
 const FormCreateProgressReport = () => {
   const navigate = useNavigate();
@@ -221,7 +222,7 @@ const FormCreateProgressReport = () => {
                 formik.errors.progressReportTitle
               }
             />
-            <div>
+            {/* <div>
               <label
                 htmlFor="progressReportContent"
                 className="block mb-2 text-sm font-medium"
@@ -249,6 +250,31 @@ const FormCreateProgressReport = () => {
                   formik.errors.progressReportContent
                 }
               />
+            </div> */}
+            <div className="mb-3 pb-1">
+              <label
+                htmlFor="progressReportContent"
+                className="block mb-2 text-sm font-medium"
+              >
+                Nội dung báo cáo <b className="text-red-600">(*)</b>
+              </label>
+              <ReactQuill
+                theme="snow"
+                value={formik.values.progressReportContent}
+                onChange={(value) =>
+                  formik.setFieldValue("progressReportContent", value)
+                }
+                style={{
+                  marginBottom: "3rem",
+                  height: "220px",
+                }}
+              />
+              {formik.touched.progressReportContent &&
+                formik.errors.progressReportContent && (
+                  <p className="text-[#d32f2f] text-[0.75rem] mt-10 mx-[14px]">
+                    {formik.errors.progressReportContent}
+                  </p>
+                )}
             </div>
             <div>
               <label

@@ -205,9 +205,12 @@ const TeacherProgressReview = ({ progressReport, progressReview }) => {
           </p>
           <p>
             <b className="pr-2">Nội dung:</b>
-            <span className="text-justify">
-              {progressReview.progressReviewContent}
-            </span>
+            <div
+              className="prose prose-sm max-w-none ml-3"
+              dangerouslySetInnerHTML={{
+                __html: progressReview.progressReviewContent,
+              }}
+            />
           </p>
 
           {/* Progress Review File */}

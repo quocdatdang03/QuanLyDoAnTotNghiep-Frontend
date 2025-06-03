@@ -38,6 +38,7 @@ import {
   getProjectByIdAction,
 } from "../../../../redux/InstructorProgress/Action";
 import CustomBreadCrumb from "../../../BreadCrumb/CustomBreadCrumb";
+import ReactQuill from "react-quill";
 
 const FormCreateProgressReview = () => {
   const { progressReportId, projectId } = useParams();
@@ -297,12 +298,14 @@ const FormCreateProgressReview = () => {
             </p>
             <p>
               <b className="pr-2">Nội dung:</b>
-              <span className="text-justify">
-                {
-                  instructorProgressReducer.progressReport
-                    ?.progressReportContent
-                }
-              </span>
+              <div
+                className="prose prose-sm max-w-none ml-3"
+                dangerouslySetInnerHTML={{
+                  __html:
+                    instructorProgressReducer.progressReport
+                      ?.progressReportContent,
+                }}
+              />
             </p>
 
             {/* Progress Report File */}
@@ -436,7 +439,7 @@ const FormCreateProgressReview = () => {
                 }
               />
             </div>
-            <div>
+            {/* <div>
               <label
                 htmlFor="progressReviewContent"
                 className="block mb-2 text-sm font-medium"
@@ -463,6 +466,31 @@ const FormCreateProgressReview = () => {
                   formik.errors.progressReviewContent
                 }
               />
+            </div> */}
+            <div className="mb-3 pb-1">
+              <label
+                htmlFor="progressReviewContent"
+                className="block mb-2 text-sm font-medium"
+              >
+                Nội dung đánh giá <b className="text-red-600">(*)</b>
+              </label>
+              <ReactQuill
+                theme="snow"
+                value={formik.values.progressReviewContent}
+                onChange={(value) =>
+                  formik.setFieldValue("progressReviewContent", value)
+                }
+                style={{
+                  marginBottom: "3rem",
+                  height: "220px",
+                }}
+              />
+              {formik.touched.progressReviewContent &&
+                formik.errors.progressReviewContent && (
+                  <p className="text-[#d32f2f] text-[0.75rem] mt-10 mx-[14px]">
+                    {formik.errors.progressReviewContent}
+                  </p>
+                )}
             </div>
             <div>
               <label className="block mb-2 text-sm font-medium">

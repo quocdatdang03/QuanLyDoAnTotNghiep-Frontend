@@ -172,7 +172,7 @@ const StudentNotification = () => {
                     {item.notificationTitle}
                   </h2>
                   <div
-                    className="prose prose-sm max-w-none"
+                    className="prose prose-sm max-w-none ml-3"
                     dangerouslySetInnerHTML={{
                       __html: item.notificationContent,
                     }}
