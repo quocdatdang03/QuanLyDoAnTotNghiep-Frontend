@@ -171,9 +171,13 @@ const StudentNotification = () => {
                   <h2 className="text-lg font-semibold">
                     {item.notificationTitle}
                   </h2>
-                  <p className="text-sm text-gray-600">
-                    {item.notificationContent}
-                  </p>
+                  <div
+                    className="prose prose-sm max-w-none"
+                    dangerouslySetInnerHTML={{
+                      __html: item.notificationContent,
+                    }}
+                  />
+
                   <div className="text-xs text-gray-500 mt-1">
                     Được đăng bởi{" "}
                     <b className="px-1">{item.teacher.fullName}</b> vào lúc

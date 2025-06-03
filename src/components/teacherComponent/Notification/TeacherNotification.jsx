@@ -13,6 +13,8 @@ import {
   Typography,
 } from "@mui/material";
 
+import ReactQuill from "react-quill";
+
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
@@ -297,7 +299,7 @@ const TeacherNotification = () => {
               }
             />
           </div>
-          <div>
+          {/* <div>
             <label
               htmlFor="notificationContent"
               className="block mb-2 text-sm font-medium"
@@ -325,6 +327,31 @@ const TeacherNotification = () => {
                 formik.errors.notificationContent
               }
             />
+          </div> */}
+          <div>
+            <label
+              htmlFor="notificationContent"
+              className="block mb-2 text-sm font-medium"
+            >
+              Nội dung
+            </label>
+            <ReactQuill
+              theme="snow"
+              value={formik.values.notificationContent}
+              onChange={(value) =>
+                formik.setFieldValue("notificationContent", value)
+              }
+              style={{
+                marginBottom: "3rem",
+                height: "220px",
+              }}
+            />
+            {formik.touched.notificationContent &&
+              formik.errors.notificationContent && (
+                <p className="text-red-500 text-sm mt-10">
+                  {formik.errors.notificationContent}
+                </p>
+              )}
           </div>
           <div className="flex items-center justify-center">
             <Button variant="contained" sx={{ paddingY: 1 }} type="submit">
@@ -355,9 +382,12 @@ const TeacherNotification = () => {
                       <h2 className="text-lg font-semibold">
                         {item.notificationTitle}
                       </h2>
-                      <p className="text-sm text-gray-600">
-                        {item.notificationContent}
-                      </p>
+                      <div
+                        className="prose prose-sm max-w-none"
+                        dangerouslySetInnerHTML={{
+                          __html: item.notificationContent,
+                        }}
+                      />
                       <div className="text-xs text-gray-500 mt-1">
                         Được đăng bởi{" "}
                         <b className="px-1">{item.teacher.fullName}</b> vào lúc
@@ -459,7 +489,7 @@ const TeacherNotification = () => {
                   }
                 />
               </div>
-              <div>
+              {/* <div>
                 <label
                   htmlFor="notificationContent"
                   className="block mb-2 text-sm font-medium"
@@ -487,6 +517,31 @@ const TeacherNotification = () => {
                     formikUpdate.errors.notificationContent
                   }
                 />
+              </div> */}
+              <div>
+                <label
+                  htmlFor="notificationContent"
+                  className="block mb-2 text-sm font-medium"
+                >
+                  Nội dung
+                </label>
+                <ReactQuill
+                  theme="snow"
+                  value={formikUpdate.values.notificationContent}
+                  onChange={(value) =>
+                    formikUpdate.setFieldValue("notificationContent", value)
+                  }
+                  style={{
+                    marginBottom: "3rem",
+                    height: "220px",
+                  }}
+                />
+                {formikUpdate.touched.notificationContent &&
+                  formikUpdate.errors.notificationContent && (
+                    <p className="text-red-500 text-sm mt-10">
+                      {formikUpdate.errors.notificationContent}
+                    </p>
+                  )}
               </div>
               <div className="flex items-center justify-center">
                 <Button variant="contained" sx={{ paddingY: 1 }} type="submit">
