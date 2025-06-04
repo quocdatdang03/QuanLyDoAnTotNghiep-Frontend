@@ -135,6 +135,9 @@ const tableInstructorHeaderDatas = [
     title: "Khoa",
   },
   {
+    title: "Số sinh viên đã phân công",
+  },
+  {
     title: "Hành động",
   },
 ];
@@ -933,12 +936,16 @@ const InstructorDivision = () => {
               component={Paper}
             >
               <Table aria-label="customized table">
-                <TableHead>
+                <TableHead className="bg-blue-900">
                   <TableRow>
                     {/* TABLE HEADER */}
                     {tableInstructorHeaderDatas.map((item, index) => {
                       return (
-                        <TableCell key={index} align="left">
+                        <TableCell
+                          key={index}
+                          align="left"
+                          sx={{ color: "white" }}
+                        >
                           {item.title}
                         </TableCell>
                       );
@@ -965,6 +972,10 @@ const InstructorDivision = () => {
 
                         <TableCell align="left">
                           {item.faculty.facultyName}
+                        </TableCell>
+
+                        <TableCell align="center">
+                          {item.numberOfAssignedStudent}
                         </TableCell>
 
                         <TableCell align="left">

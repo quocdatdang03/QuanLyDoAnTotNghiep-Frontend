@@ -125,6 +125,9 @@ const tableInstructorHeaderDatas = [
     title: "Khoa",
   },
   {
+    title: "Số sinh viên đã phân công",
+  },
+  {
     title: "Hành động",
   },
 ];
@@ -781,6 +784,10 @@ const InstructorDivisionResult = () => {
 
                         <TableCell align="left">
                           {item.faculty.facultyName}
+                        </TableCell>
+
+                        <TableCell align="center">
+                          {item.numberOfAssignedStudent}
                         </TableCell>
 
                         <TableCell align="left">
