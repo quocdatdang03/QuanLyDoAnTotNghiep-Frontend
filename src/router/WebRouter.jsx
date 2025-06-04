@@ -44,8 +44,7 @@ const WebRouter = () => {
             <Route
               path="/teacher/*"
               element={
-                authReducer.user?.roles[0].roleName === "GIANGVIEN" ||
-                authReducer.user?.roles[0].roleName === "ADMIN" ? (
+                authReducer.user?.roles[0].roleName === "GIANGVIEN" ? (
                   <TeacherRoutes />
                 ) : (
                   <Forbidden />

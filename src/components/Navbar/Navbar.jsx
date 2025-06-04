@@ -139,7 +139,6 @@ const giangVienOptions = [
     path: "/teacher/documents",
   },
 ];
-const loggedInSettings = ["Thông tin cá nhân", "Đăng xuất"];
 const nonLoggedInSettings = ["Đăng nhập"];
 
 function Navbar() {
@@ -276,8 +275,7 @@ function Navbar() {
                   </div>
                 )
               ) : page.title === "Giảng Viên" ? (
-                (authReducer.user?.roles[0].roleName === "GIANGVIEN" ||
-                  authReducer.user?.roles[0].roleName === "ADMIN") && (
+                authReducer.user?.roles[0].roleName === "GIANGVIEN" && (
                   <div
                     className="relative group inline-block text-left"
                     onMouseEnter={() => setIsOpenMenu(true)}
@@ -411,8 +409,7 @@ function Navbar() {
                       </>
                     )
                   ) : page.title === "Giảng Viên" ? (
-                    (authReducer.user?.roles[0].roleName === "GIANGVIEN" ||
-                      authReducer.user?.roles[0].roleName === "ADMIN") && (
+                    authReducer.user?.roles[0].roleName === "GIANGVIEN" && (
                       <>
                         <ListItemButton
                           onClick={() =>
@@ -576,28 +573,40 @@ function Navbar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {authReducer.user
-                ? loggedInSettings.map((setting) => (
+              {authReducer.user ? (
+                <>
+                  <MenuItem key="profile" onClick={handleNavigateToProfile}>
+                    <Typography sx={{ textAlign: "center" }}>
+                      Thông tin cá nhân
+                    </Typography>
+                  </MenuItem>
+
+                  {authReducer.user.roles[0].roleName === "ADMIN" && (
                     <MenuItem
-                      key={setting}
-                      onClick={
-                        setting === "Đăng xuất"
-                          ? handleLogout
-                          : handleNavigateToProfile
-                      }
+                      key="admin"
+                      onClick={() => handleNavigateToPath("/admin")}
                     >
                       <Typography sx={{ textAlign: "center" }}>
-                        {setting}
+                        Đi đến trang admin
                       </Typography>
                     </MenuItem>
-                  ))
-                : nonLoggedInSettings.map((setting) => (
-                    <MenuItem key={setting} onClick={handleNavigateToLoginPage}>
-                      <Typography sx={{ textAlign: "center" }}>
-                        {setting}
-                      </Typography>
-                    </MenuItem>
-                  ))}
+                  )}
+
+                  <MenuItem key="logout" onClick={handleLogout}>
+                    <Typography sx={{ textAlign: "center" }}>
+                      Đăng xuất
+                    </Typography>
+                  </MenuItem>
+                </>
+              ) : (
+                nonLoggedInSettings.map((setting) => (
+                  <MenuItem key={setting} onClick={handleNavigateToLoginPage}>
+                    <Typography sx={{ textAlign: "center" }}>
+                      {setting}
+                    </Typography>
+                  </MenuItem>
+                ))
+              )}
             </Menu>
           </Box>
           {/* END AVATAR SETTING */}
