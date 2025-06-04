@@ -28,6 +28,9 @@ export const loginUserAction = (requestData) => async (dispatch) => {
     console.log(error);
     const errorMessage = error.response?.data?.message || error.message;
     dispatch({ type: actionTypes.LOGIN_USER_FAILURE, payload: errorMessage });
+
+    localStorage.removeItem("jwtToken");
+    localStorage.removeItem("refreshToken");
   }
 };
 
