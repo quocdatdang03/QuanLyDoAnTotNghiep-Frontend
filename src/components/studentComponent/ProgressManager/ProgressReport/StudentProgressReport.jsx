@@ -463,17 +463,19 @@ const StudentProgressReport = ({ projectId }) => {
                                       <FileDownloadOutlinedIcon />
                                       <span className="pl-2">Tải xuống</span>
                                     </MenuItem>
-                                    {!item.approved && (
-                                      <MenuItem
-                                        onClick={(e) =>
-                                          handleDeleteFile(e, file)
-                                        }
-                                        className="hover:text-red-500 transition-all"
-                                      >
-                                        <DeleteOutlineOutlinedIcon />
-                                        <span className="pl-2">Xóa</span>
-                                      </MenuItem>
-                                    )}
+                                    {!item.approved &&
+                                      item.stage?.stageStatus.stageStatusId !=
+                                        3 && (
+                                        <MenuItem
+                                          onClick={(e) =>
+                                            handleDeleteFile(e, file)
+                                          }
+                                          className="hover:text-red-500 transition-all"
+                                        >
+                                          <DeleteOutlineOutlinedIcon />
+                                          <span className="pl-2">Xóa</span>
+                                        </MenuItem>
+                                      )}
                                   </Menu>
                                 </div>
                               ))}
@@ -485,15 +487,47 @@ const StudentProgressReport = ({ projectId }) => {
                           )}
                         </div>
 
-                        <p className="text-gray-500 italic text-right">
-                          {new Date(item.createdDate).toLocaleString("vi-VN", {
-                            year: "numeric",
-                            month: "2-digit",
-                            day: "2-digit",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </p>
+                        <div
+                          className={`flex items-center ${item.updatedDate ? "justify-between" : "justify-end"} flex-wrap gap-3`}
+                          style={{ marginTop: "20px", marginBottom: "10px" }}
+                        >
+                          {item.updatedDate && (
+                            <div className="flex items-center gap-1">
+                              <span className="text-gray-600">
+                                Cập nhật vào lúc:
+                              </span>
+                              <p className="text-gray-500 italic text-right">
+                                {new Date(item.updatedDate).toLocaleString(
+                                  "vi-VN",
+                                  {
+                                    year: "numeric",
+                                    month: "2-digit",
+                                    day: "2-digit",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  }
+                                )}
+                              </p>
+                            </div>
+                          )}
+                          <div className="flex items-center gap-1">
+                            <span className="text-gray-600">
+                              Đã tạo vào lúc:
+                            </span>
+                            <p className="text-gray-500 italic text-right">
+                              {new Date(item.createdDate).toLocaleString(
+                                "vi-VN",
+                                {
+                                  year: "numeric",
+                                  month: "2-digit",
+                                  day: "2-digit",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                }
+                              )}
+                            </p>
+                          </div>
+                        </div>
 
                         <div className="text-right">
                           <Button

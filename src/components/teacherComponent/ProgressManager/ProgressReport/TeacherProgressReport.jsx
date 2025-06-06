@@ -168,7 +168,7 @@ const TeacherProgressReport = () => {
           Tải lại danh sách
         </Button>
 
-        <div className="flex justify-end gap-3">
+        <div className="flex flex-wrap justify-end gap-3">
           {/* Dropdown lọc theo giai đoạn (stage) */}
           <FormControl size="small" className="w-60 bg-white rounded-md">
             <InputLabel>Tất cả giai đoạn</InputLabel>
@@ -388,15 +388,45 @@ const TeacherProgressReport = () => {
                         )}
                       </div>
 
-                      <p className="text-gray-500 italic text-right">
-                        {new Date(item.createdDate).toLocaleString("vi-VN", {
-                          year: "numeric",
-                          month: "2-digit",
-                          day: "2-digit",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </p>
+                      <div
+                        className={`flex items-center ${item.updatedDate ? "justify-between" : "justify-end"} flex-wrap gap-3`}
+                        style={{ marginTop: "20px", marginBottom: "10px" }}
+                      >
+                        {item.updatedDate && (
+                          <div className="flex items-center gap-1">
+                            <span className="text-gray-600">
+                              Cập nhật vào lúc:
+                            </span>
+                            <p className="text-gray-500 italic text-right">
+                              {new Date(item.updatedDate).toLocaleString(
+                                "vi-VN",
+                                {
+                                  year: "numeric",
+                                  month: "2-digit",
+                                  day: "2-digit",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                }
+                              )}
+                            </p>
+                          </div>
+                        )}
+                        <div className="flex items-center gap-1">
+                          <span className="text-gray-600">Đã tạo vào lúc:</span>
+                          <p className="text-gray-500 italic text-right">
+                            {new Date(item.createdDate).toLocaleString(
+                              "vi-VN",
+                              {
+                                year: "numeric",
+                                month: "2-digit",
+                                day: "2-digit",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              }
+                            )}
+                          </p>
+                        </div>
+                      </div>
 
                       <div className="text-right">
                         <Button

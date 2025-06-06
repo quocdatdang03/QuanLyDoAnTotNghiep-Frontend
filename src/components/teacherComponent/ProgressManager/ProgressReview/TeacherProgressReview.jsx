@@ -294,15 +294,40 @@ const TeacherProgressReview = ({ progressReport, progressReview }) => {
             )}
           </div>
 
-          <p className="text-gray-500 italic text-right">
-            {new Date(progressReview?.createdDate).toLocaleString("vi-VN", {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          </p>
+          <div
+            className={`flex items-center ${progressReview.updatedDate ? "justify-between" : "justify-end"} flex-wrap gap-3`}
+            style={{ marginTop: "20px", marginBottom: "10px" }}
+          >
+            {progressReview.updatedDate && (
+              <div className="flex items-center gap-1">
+                <span className="text-gray-600">Cập nhật vào lúc:</span>
+                <p className="text-gray-500 italic text-right">
+                  {new Date(progressReview.updatedDate).toLocaleString(
+                    "vi-VN",
+                    {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    }
+                  )}
+                </p>
+              </div>
+            )}
+            <div className="flex items-center gap-1">
+              <span className="text-gray-600">Đã tạo vào lúc:</span>
+              <p className="text-gray-500 italic text-right">
+                {new Date(progressReview.createdDate).toLocaleString("vi-VN", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
       {/* DELETE PROGRESSREVIEW MODAL : */}
