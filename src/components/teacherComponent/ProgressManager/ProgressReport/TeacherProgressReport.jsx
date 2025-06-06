@@ -233,7 +233,18 @@ const TeacherProgressReport = () => {
                 className="border border-gray-300 rounded-md"
               >
                 {/* PROGRESS REPORT OF STUDENT */}
-                <AccordionSummary id={`panel-${item.id}-header`}>
+                <AccordionSummary
+                  id={`panel-${item.id}-header`}
+                  sx={{
+                    "& .MuiAccordionSummary-content": {
+                      userSelect: "text",
+                      cursor: "default",
+                    },
+                    "& .MuiAccordionSummary-root": {
+                      cursor: "default",
+                    },
+                  }}
+                >
                   <div className="flex gap-5 w-full">
                     <img
                       src={

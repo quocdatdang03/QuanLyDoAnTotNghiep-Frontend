@@ -10,7 +10,7 @@ const Unauthenticated = () => {
       <h1 className="text-8xl font-bold text-gray-800">Unauthorized</h1>
 
       <p className="text-lg text-gray-500 mt-2">
-        You need to log in to access this page.
+        Bạn cần đăng nhập để truy cập trang này.
       </p>
       <Button
         onClick={() => navigate("/account/login")}
@@ -24,7 +24,7 @@ const Unauthenticated = () => {
           borderRadius: "50px",
         }}
       >
-        Go to Login
+        Đi đến trang đăng nhập
       </Button>
     </div>
   );

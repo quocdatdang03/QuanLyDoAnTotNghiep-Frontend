@@ -10,7 +10,7 @@ const Forbidden = () => {
       <h1 className="text-9xl font-bold text-gray-800">403</h1>
       <h2 className="text-3xl font-semibold text-gray-600 mt-4">Forbidden</h2>
       <p className="text-lg text-gray-500 mt-2">
-        You do not have permission to access this page
+        Bạn không có quyền truy cập vào trang này.
       </p>
       <Button
         onClick={() => navigate("/")}
@@ -24,7 +24,7 @@ const Forbidden = () => {
           borderRadius: "50px",
         }}
       >
-        Go to Home
+        Về trang chủ
       </Button>
     </div>
   );
