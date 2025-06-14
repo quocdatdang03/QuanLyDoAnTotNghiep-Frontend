@@ -282,6 +282,12 @@ const FormCreateProgressReview = () => {
                       : "error"
                   }
                 />
+                {new Date(
+                  instructorProgressReducer.progressReport?.createdDate
+                ) >
+                  new Date(
+                    instructorProgressReducer.progressReport?.stage?.endDate
+                  ) && <Chip label="Nộp muộn" size="small" color="error" />}
               </div>
             </div>
             <Chip

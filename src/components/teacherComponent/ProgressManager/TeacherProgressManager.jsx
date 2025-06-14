@@ -23,6 +23,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
@@ -35,7 +36,10 @@ import {
   getAllSemestersWithoutPaginationAction,
   getCurrentSemesterAction,
 } from "../../../redux/Semester/Action";
-import { getAllProjectsByInstructorAction } from "../../../redux/InstructorProject/Action";
+import {
+  applyAllStagesToProjectAction,
+  getAllProjectsByInstructorAction,
+} from "../../../redux/InstructorProject/Action";
 import CustomBreadCrumb from "../../BreadCrumb/CustomBreadCrumb";
 
 // Table header data:
@@ -216,6 +220,15 @@ const TeacherProgressManager = () => {
     // dispatch(getProjectByIdAction(requestData));
   };
 
+  // handle apply all stages to project:
+  const handleApplyAllStagesToProject = (projectIdParam, semesterIdParam) => {
+    const requestData = {
+      projectId: projectIdParam,
+      semesterId: semesterIdParam,
+    };
+
+    dispatch(applyAllStagesToProjectAction(requestData, toast));
+  };
   // handle loading :
   useEffect(() => {
     if (isProjectLoading) {
@@ -477,33 +490,55 @@ const TeacherProgressManager = () => {
                               />
                             </TableCell> */}
                             <TableCell align="left">
-                              <div className="min-w-[200px]">
-                                <div className="flex items-center gap-2 mb-1">
-                                  {item.inProgressStage ? (
-                                    <>
-                                      <span className="text-gray-700">
-                                        Giai đoạn đang thực hiện:
+                              {item.totalStages < item.totalCreatedStages ? (
+                                <div>
+                                  <p className="mb-2">
+                                    Sinh viên mới chưa được thêm giai đoạn báo
+                                    cáo
+                                  </p>
+                                  <Button
+                                    variant="contained"
+                                    size="small"
+                                    color="warning"
+                                    onClick={() =>
+                                      handleApplyAllStagesToProject(
+                                        item.projectId,
+                                        item.semester.semesterId
+                                      )
+                                    }
+                                  >
+                                    Thêm giai đoạn
+                                  </Button>
+                                </div>
+                              ) : (
+                                <div className="min-w-[200px]">
+                                  <div className="flex items-center gap-2 mb-1">
+                                    {item.inProgressStage ? (
+                                      <>
+                                        <span className="text-gray-700">
+                                          Giai đoạn đang thực hiện:
+                                        </span>
+                                        <Chip
+                                          label={item.inProgressStage}
+                                          color="primary"
+                                          size="small"
+                                        />
+                                      </>
+                                    ) : (
+                                      <span className="text-gray-500 italic text-sm">
+                                        Không có giai đoạn nào đang thực hiện
                                       </span>
-                                      <Chip
-                                        label={item.inProgressStage}
-                                        color="primary"
-                                        size="small"
-                                      />
-                                    </>
-                                  ) : (
-                                    <span className="text-gray-500 italic text-sm">
-                                      Không có giai đoạn nào đang thực hiện
+                                    )}
+                                  </div>
+                                  <div className="flex items-center gap-1 text-sm text-gray-700">
+                                    <span>Số giai đoạn đã hoàn thành:</span>
+                                    <span className="font-semibold text-blue-700">
+                                      {item.numberOfCompletedStages} /{" "}
+                                      {item.totalStages}
                                     </span>
-                                  )}
+                                  </div>
                                 </div>
-                                <div className="flex items-center gap-1 text-sm text-gray-700">
-                                  <span>Số giai đoạn đã hoàn thành:</span>
-                                  <span className="font-semibold text-blue-700">
-                                    {item.numberOfCompletedStages} /{" "}
-                                    {item.totalStages}
-                                  </span>
-                                </div>
-                              </div>
+                              )}
                             </TableCell>
                             <TableCell align="left">
                               <Button

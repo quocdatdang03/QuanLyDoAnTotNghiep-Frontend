@@ -124,3 +124,43 @@ export const declineProjectAction = (requestData) => async (dispatch) => {
     });
   }
 };
+
+export const applyAllStagesToProjectAction =
+  (requestData, toast) => async (dispatch) => {
+    dispatch({ type: actionTypes.APPLY_ALL_STAGES_TO_PROJECT_REQUEST });
+
+    try {
+      const params = new URLSearchParams();
+      params.append("semesterId", requestData.semesterId);
+      params.append("projectId", requestData.projectId);
+
+      const response = await axiosAPI.post(
+        `/instructor/stages/project/apply?${params.toString()}`
+      );
+
+      if (response.data) {
+        toast.success("Thêm các giai đoạn vào đề tài của sinh viên thành công");
+
+        // load all projects by instructor after applying stages
+        const requestProjectData = {
+          keyword: "",
+          projectPagination: {
+            semesterId: "",
+            classId: "",
+            pageNumber: 1,
+            pageSize: 5,
+            sortDir: "asc",
+            sortBy: "studentSemester.student.account.fullName",
+          },
+        };
+        dispatch(getAllProjectsByInstructorAction(requestProjectData));
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+
+      dispatch({
+        type: actionTypes.APPLY_ALL_STAGES_TO_PROJECT_FAILURE,
+        payload: errorMessage,
+      });
+    }
+  };

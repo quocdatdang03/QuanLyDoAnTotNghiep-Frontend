@@ -101,11 +101,6 @@ const sinhVienOptions = [
     title: "Quản lý tiến độ",
     path: "/student/progress/manage",
   },
-  {
-    icon: <DescriptionIcon />,
-    title: "Tài liệu hướng dẫn",
-    path: "/student/documents",
-  },
 ];
 const giangVienOptions = [
   {
@@ -132,11 +127,6 @@ const giangVienOptions = [
     icon: <ManageHistoryIcon />,
     title: "Quản lý tiến độ",
     path: "/teacher/progress/manage",
-  },
-  {
-    icon: <DescriptionIcon />,
-    title: "Tài liệu hướng dẫn",
-    path: "/teacher/documents",
   },
 ];
 const nonLoggedInSettings = ["Đăng nhập"];
