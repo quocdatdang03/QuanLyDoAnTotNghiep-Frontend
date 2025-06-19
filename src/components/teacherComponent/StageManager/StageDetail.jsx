@@ -203,7 +203,7 @@ const StageDetail = ({ stage, offset, stages }) => {
           <div className="flex justify-between items-center">
             <div className="flex gap-3 items-center">
               <div className="flex flex-col justify-center md:flex-row md:items-center">
-                <p>{stage.stageOrder}</p>
+                {/* <p>{stage.stageOrder}</p> */}
                 <p className="pr-2">
                   <Chip
                     className="font-bold"
