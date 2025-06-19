@@ -700,9 +700,16 @@ const ProjectManager = () => {
                   {/* Nội dung đề tài */}
                   <div className="">
                     <b className="mb-2 block">Mô tả đề tài:</b>
-                    <p className="text-gray-700 text-justify w-full overflow-x-auto">
+                    {/* <p className="text-gray-700 text-justify w-full overflow-x-auto">
                       {instructorProjectReducer.project?.projectContent}
-                    </p>
+                    </p> */}
+                    <div
+                      className="prose"
+                      dangerouslySetInnerHTML={{
+                        __html:
+                          instructorProjectReducer.project?.projectContent,
+                      }}
+                    />
                   </div>
 
                   {/* Danh sách file */}

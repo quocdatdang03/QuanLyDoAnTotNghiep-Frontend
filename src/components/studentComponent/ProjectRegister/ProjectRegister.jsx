@@ -47,6 +47,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import CustomBreadCrumb from "../../BreadCrumb/CustomBreadCrumb";
 
+import ReactQuill from "react-quill";
+
 const ProjectRegister = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -337,9 +339,15 @@ const ProjectRegister = () => {
                   {/* Nội dung đề tài */}
                   <div className="">
                     <b className="mb-2 block">Mô tả đề tài:</b>
-                    <p className="text-gray-700 text-justify w-full overflow-x-auto">
+                    {/* <p className="text-gray-700 text-justify w-full overflow-x-auto">
                       {projectReducer.project?.projectContent}
-                    </p>
+                    </p> */}
+                    <div
+                      className="prose"
+                      dangerouslySetInnerHTML={{
+                        __html: projectReducer.project?.projectContent,
+                      }}
+                    />
                   </div>
 
                   {/* Danh sách file */}
@@ -470,7 +478,7 @@ const ProjectRegister = () => {
                       formik.errors.projectName && formik.errors.projectName
                     }
                   />
-                  <div>
+                  {/* <div>
                     <label
                       htmlFor="projectContent"
                       className="block mb-2 text-sm font-medium"
@@ -498,6 +506,31 @@ const ProjectRegister = () => {
                         formik.errors.projectContent
                       }
                     />
+                  </div> */}
+                  <div className="mb-3 pb-1">
+                    <label
+                      htmlFor="projectContent"
+                      className="block mb-2 text-sm font-medium"
+                    >
+                      Nội dung đề tài <b className="text-red-600">(*)</b>
+                    </label>
+                    <ReactQuill
+                      theme="snow"
+                      value={formik.values.projectContent}
+                      onChange={(value) =>
+                        formik.setFieldValue("projectContent", value)
+                      }
+                      style={{
+                        marginBottom: "3rem",
+                        height: "220px",
+                      }}
+                    />
+                    {formik.touched.projectContent &&
+                      formik.errors.projectContent && (
+                        <p className="text-[#d32f2f] text-[0.75rem] mt-10 mx-[14px]">
+                          {formik.errors.projectContent}
+                        </p>
+                      )}
                   </div>
                   <div>
                     <label

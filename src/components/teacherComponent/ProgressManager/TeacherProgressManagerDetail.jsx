@@ -168,9 +168,15 @@ const TeacherProgressManagerDetail = () => {
             </p>
             <p>
               <b>Mô tả:</b>
-              <span className="pl-3 text-justify">
+              {/* <span className="pl-3 text-justify">
                 {instructorProgressReducer.project?.projectContent}
-              </span>
+              </span> */}
+              <div
+                className="prose ml-5"
+                dangerouslySetInnerHTML={{
+                  __html: instructorProgressReducer.project?.projectContent,
+                }}
+              />
             </p>
           </div>
         </div>

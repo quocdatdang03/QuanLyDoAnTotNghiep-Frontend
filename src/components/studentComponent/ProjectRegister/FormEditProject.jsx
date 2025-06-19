@@ -38,6 +38,7 @@ import {
 } from "../../../redux/Project/Action";
 import { useNavigate } from "react-router-dom";
 import CustomBreadCrumb from "../../BreadCrumb/CustomBreadCrumb";
+import ReactQuill from "react-quill";
 
 const FormEditProject = () => {
   const dispatch = useDispatch();
@@ -328,7 +329,7 @@ const FormEditProject = () => {
                   }
                 />
               </div>
-              <div>
+              {/* <div>
                 <label
                   htmlFor="projectContent"
                   className="block mb-2 text-sm font-medium"
@@ -355,6 +356,31 @@ const FormEditProject = () => {
                     formik.errors.projectContent && formik.errors.projectContent
                   }
                 />
+              </div> */}
+              <div className="mb-3 pb-1">
+                <label
+                  htmlFor="projectContent"
+                  className="block mb-2 text-sm font-medium"
+                >
+                  Nội dung đề tài <b className="text-red-600">(*)</b>
+                </label>
+                <ReactQuill
+                  theme="snow"
+                  value={formik.values.projectContent}
+                  onChange={(value) =>
+                    formik.setFieldValue("projectContent", value)
+                  }
+                  style={{
+                    marginBottom: "3rem",
+                    height: "220px",
+                  }}
+                />
+                {formik.touched.projectContent &&
+                  formik.errors.projectContent && (
+                    <p className="text-[#d32f2f] text-[0.75rem] mt-10 mx-[14px]">
+                      {formik.errors.projectContent}
+                    </p>
+                  )}
               </div>
               <div>
                 <label

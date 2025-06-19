@@ -184,9 +184,15 @@ const StudentProgressManager = () => {
                   </p>
                   <p>
                     <b>Mô tả:</b>
-                    <span className="pl-3 text-justify">
+                    {/* <span className="pl-3 text-justify">
                       {projectReducer.project?.projectContent}
-                    </span>
+                    </span> */}
+                    <div
+                      className="prose ml-5"
+                      dangerouslySetInnerHTML={{
+                        __html: projectReducer.project?.projectContent,
+                      }}
+                    />
                   </p>
                   <p className="flex items-center gap-3">
                     <b>Trạng thái</b>
