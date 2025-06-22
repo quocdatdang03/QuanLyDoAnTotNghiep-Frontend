@@ -833,7 +833,7 @@ const InstructorDivision = () => {
                         <div className="flex items-center gap-2">
                           <p className="flex items-center gap-1 text-gray-600">
                             <LocalPhoneIcon />
-                            <b>Số điện thoại:</b>
+                            <b>SĐT:</b>
                           </p>
                           <span>
                             {/* {new Date(
