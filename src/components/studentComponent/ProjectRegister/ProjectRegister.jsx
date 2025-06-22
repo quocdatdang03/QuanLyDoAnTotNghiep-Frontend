@@ -268,12 +268,13 @@ const ProjectRegister = () => {
                     <div className="flex items-center gap-2">
                       <p className="flex items-center gap-1 text-gray-600">
                         <CalendarMonthIcon />
-                        <b>Ngày sinh:</b>
+                        <b>Số điện thoại:</b>
                       </p>
                       <span>
-                        {new Date(
+                        {/* {new Date(
                           projectReducer.instructor?.dateOfBirth
-                        ).toLocaleDateString("en-GB")}
+                        ).toLocaleDateString("en-GB")} */}
+                        {projectReducer.instructor?.phoneNumber}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">

@@ -43,6 +43,7 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import noResultImage from "../../../assets/images/no-result-img.png";
 import SearchIcon from "@mui/icons-material/Search";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -831,13 +832,17 @@ const InstructorDivision = () => {
                         </div>
                         <div className="flex items-center gap-2">
                           <p className="flex items-center gap-1 text-gray-600">
-                            <CalendarMonthIcon />
-                            <b>Ngày sinh:</b>
+                            <LocalPhoneIcon />
+                            <b>Số điện thoại:</b>
                           </p>
                           <span>
-                            {new Date(
+                            {/* {new Date(
                               teacherLeaderReducer.choosenInstructor?.dateOfBirth
-                            ).toLocaleDateString("en-GB")}
+                            ).toLocaleDateString("en-GB")} */}
+                            {
+                              teacherLeaderReducer.choosenInstructor
+                                ?.phoneNumber
+                            }
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
